@@ -1,0 +1,39 @@
+.site-container {
+    --at-apply: bg-transparent mx-auto max-w-[96.25rem] px-2 lg:px-6;
+}
+
+.logo-text {
+    --at-apply: font-display capitalize flex items-center gap-2 text-[clamp(1.5rem,4vw,3.5rem)] scale-y-[1.4];
+}
+
+.logo-text > span {
+    --at-apply: leading-none;
+}
+
+.slogan-text {
+  --at-apply: font-display capitalize flex items-center gap-2
+    text-[clamp(1.375rem,-0.1019rem+9.8462vw,9.375rem)];
+}
+.slogan-svg {
+    --at-apply:font-display capitalize flex items-center gap-2 
+    text-[calc(10rem)];
+}
+
+.navbar--initial {
+    --at-apply: border-b-transparent bg-transparent py-1 mb-5;
+}
+/* Position adjustment moved to NavLink component using isLast prop */
+#mobile-nav {
+    --at-apply: my-auto hidden md:hidden;
+}
+.nav__link--base {
+    --at-apply: text-[clamp(1rem,0.875rem+0.4vw,1.3313rem)] font-sans font-medium leading-[1.45] text-foreground/80 hover:text-foreground transition-colors;
+}
+
+.nav__link--mobile {
+    --at-apply: text-xl md:text-base;
+}
+
+#footer {
+    --at-apply: overflow-hidden pt-25 pb-9 bg-[linear-gradient(to_bottom,rgba(255,252,238,0),rgba(255,225,208,0.9))];
+}

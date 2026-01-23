@@ -14,19 +14,25 @@
     "@astrojs/react": "^4.4.2",
     "@sanity/astro": "^3.2.11",
     "@sanity/client": "^7.14.0",
-    "@sanity/vision": "^5.2.0",
-    "@types/react": "^19.2.8",
+    "@sanity/vision": "^5.5.0",
+    "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
-    "astro": "^5.16.9",
+    "astro": "^5.16.12",
+    "astro-icon": "^1.1.5",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-is": "^19.2.3",
-    "sanity": "^5.2.0",
-    "styled-components": "^6.3.5"
+    "sanity": "^5.5.0",
+    "styled-components": "^6.3.8"
   },
   "devDependencies": {
-    "@unocss/preset-wind4": "^66.5.12",
+    "@unocss/preset-attributify": "^66.6.0",
+    "@unocss/preset-wind4": "^66.6.0",
+    "@unocss/reset": "^66.6.0",
+    "lodash": "^4.17.21",
+    "react-compiler-runtime": "^1.0.0",
     "tsx": "^4.21.0",
-    "unocss": "^66.5.12"
+    "unocss": "^66.6.0",
+    "unocss-preset-theme": "^0.14.1"
   }
 }

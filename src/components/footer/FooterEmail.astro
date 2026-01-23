@@ -1,0 +1,12 @@
+---
+import { contactData } from "@config/contact";
+---
+
+<p class="text-primaryMuted">
+    <a
+        class="text-foreground hover:text-secondary hover:decoration-accent"
+        href={`mailto:${contactData.email}`}
+    >
+        {contactData.email}
+    </a>
+</p>

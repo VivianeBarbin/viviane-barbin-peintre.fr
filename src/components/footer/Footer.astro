@@ -1,0 +1,77 @@
+---
+import SiteSlogan from "../site-logo/SiteSlogan.astro";
+import FooterLegalNav from "./FooterLegalNav.astro";
+import FooterEmail from "./FooterEmail.astro";
+import FooterCopyright from "./FooterCopyright.astro";
+---
+
+<section id="footer">
+    <div class="site-container">
+        <SiteSlogan />
+        <div class="footer-content text-[14px]">
+            <div class="footer-grid">
+                <div data-align="start">
+                    <FooterLegalNav />
+                </div>
+                <div data-align="center">
+                    <FooterEmail />
+                </div>
+                <div data-align="end">
+                    <FooterCopyright />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .footer-content {
+        container-type: inline-size;
+        container-name: footer;
+    }
+    
+    .footer-grid {
+        --grid-gap: clamp(1.25rem, 3vw, 2.5rem);
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--grid-gap);
+        width: 100%;
+        align-items: start;
+    }
+    
+    @container footer (min-width: 768px) {
+        .footer-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+       
+        .footer-grid > [data-align="center"] {
+            justify-self: start;
+        }
+        
+        .footer-grid > [data-align="end"] {
+            justify-self: start;
+        }
+    }
+    
+    @container footer (min-width: 1024px) {
+        .footer-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .footer-grid > * {
+            width: fit-content;
+        }
+    }
+    
+    .footer-grid > [data-align="start"] {
+        justify-self: start;
+    }
+    
+    .footer-grid > [data-align="center"] {
+        justify-self: center;
+    }
+    
+    .footer-grid > [data-align="end"] {
+        justify-self: end;
+    }
+</style>

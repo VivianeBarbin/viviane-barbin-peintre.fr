@@ -1,3 +1,1 @@
-@import './global/variables.css';
-
-@layer base, components, utilities;
+@import "@/styles/global/index.css";

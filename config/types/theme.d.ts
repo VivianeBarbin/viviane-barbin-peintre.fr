@@ -1,12 +1,14 @@
-/* src/types/index.d.ts */
+/* config/types/theme.d.ts */
 export interface ThemeConfig {
   site: {
     title: string;
+    slogan: string;
     subtitle: string;
     description: string;
     author: string;
     url: string;
     base: string;
+    startYear: string,
     faviconSvg: string;
     faviconPng96: string;
     faviconPng: string;
@@ -26,14 +28,12 @@ export interface ThemeConfig {
       accent: string;
       accentForeground: string;
       link: string;
-
-      // Content/Surfaces
       background: string;
       backgroundBright: string;
       foreground: string;
       card: string;
       cardForeground: string;
-      muted: string; 
+      muted: string;
       mutedForeground: string;
       border: string;
     };
@@ -47,8 +47,6 @@ export interface ThemeConfig {
       accent: string;
       accentForeground: string;
       link: string;
-
-      // Content/Surfaces
       background: string;
       backgroundBright: string;
       foreground: string;
@@ -56,6 +54,7 @@ export interface ThemeConfig {
       cardForeground: string;
       muted: string;
       mutedForeground: string;
-      border: string;    };
+      border: string;
+    };
   };
 }

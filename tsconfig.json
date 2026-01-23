@@ -2,10 +2,12 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
+    "types": ["astro/client"],
     "lib": ["esnext", "dom"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@config/*": ["config/*"],
     },
     "allowJs": true
   },

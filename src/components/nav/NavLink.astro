@@ -1,0 +1,95 @@
+---
+// src/components/nav/NavLink.astro
+import { Icon } from "astro-icon/components";
+import type { NavLinkItem } from "@config/types";
+
+const comparePathsWithTrailingSlash = (
+    path1: string,
+    path2: string,
+): boolean => {
+    const ensureTrailingSlash = (path: string): string =>
+        path.endsWith("/") ? path : `${path}/`;
+    return ensureTrailingSlash(path1) === ensureTrailingSlash(path2);
+};
+
+export interface Props {
+    navItem: NavLinkItem;
+    class?: string;
+    noIcon?: boolean;
+    noUnderline?: boolean;
+    activeClass?: string;
+    isLast?: boolean; // Nouvelle prop
+}
+
+const {
+    navItem,
+    class: className = "",
+    noIcon = false,
+    noUnderline = false,
+    activeClass = "text-primary font-semibold",
+    isLast = false, // Nouvelle prop avec valeur par défaut
+} = Astro.props;
+
+const { text, link, newTab = false, icon } = navItem;
+
+const isExternal = link.startsWith("http") || link.startsWith("//");
+const isActive = comparePathsWithTrailingSlash(Astro.url.pathname, link);
+---
+
+<a
+    class:list={[
+        // Base styles
+        "nav__link--base relative flex h-fit items-center gap-2 rounded-md px-4 py-2",
+        "transition-all duration-300",
+        
+        // Retirer le padding-right sur desktop pour le dernier élément
+        isLast && "lg:pr-0",
+       
+        "text-foreground hover:text-foreground/80",
+        
+        // Underline animation
+        !noUnderline && "after:content-['']",
+        !noUnderline && "after:absolute after:left-3.6 after:bottom-1",
+        !noUnderline && !isLast && "after:right-3.6",
+        !noUnderline && isLast && "after:right-0 lg:after:right-0",
+        !noUnderline && "after:h-1px after:bg-primaryMuted/80 after:origin-left",
+        !noUnderline && "after:scale-x-0 hover:after:scale-x-100",
+        !noUnderline && "after:transition-transform after:duration-300",
+        
+        // Focus ring
+        "focus-visible:outline-none",
+        "focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        
+        className,
+        {
+            [activeClass]: isActive,
+        },
+    ]}
+    href={link}
+    target={newTab || isExternal ? "_blank" : undefined}
+    rel={newTab || isExternal ? "noopener noreferrer" : undefined}
+    aria-label={text}
+    aria-current={isActive ? "page" : undefined}
+>
+    {
+        icon && !noIcon && (
+            <Icon name={icon} aria-hidden="true" class="size-5 shrink-0" />
+        )
+    }
+    <span>{text}</span>
+    {
+        (newTab || isExternal) && (
+            <Icon
+                name="lucide:external-link"
+                aria-hidden="true"
+                class="size-3 opacity-50 ml-auto"
+            />
+        )
+    }
+</a>
+
+<style>
+    .nav-link {
+        --at-apply: text-foreground;
+    }
+</style>

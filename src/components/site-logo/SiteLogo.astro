@@ -1,0 +1,13 @@
+---
+import { themeConfig } from "@config/site.ts";
+
+const siteTitle = themeConfig.site.title;
+const [firstName, lastName] = siteTitle.split(/\s+/);
+---
+
+<a class="pr-2 lg:pr-4 py-2 rounded primary-focus text-foreground flex items-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background" href={"/"}>
+    <p class="logo-text flex items-center">
+        <span class="text-primary">{firstName}</span>
+        <span class="text-secondary">{lastName}</span>
+    </p>
+</a>

@@ -1,0 +1,177 @@
+---
+/**
+ * Polymorphic Button Component
+ * 
+ * If this is to be a link (<a>), pass an "href" prop
+ * If this is to be a button (<button>), pass a "type" prop
+ * 
+ * @example
+ * <!-- Button -->
+ * <Button variant="primary" type="submit">Submit</Button>
+ * 
+ * @example
+ * <!-- Link -->
+ * <Button variant="primary" href="/about">About</Button>
+ */
+
+type BaseProps = {
+  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'link';
+  size?: 'sm' | 'default' | 'lg';
+  class?: string;
+};
+
+type ButtonProps = BaseProps & {
+  href?: never;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  target?: never;
+  rel?: never;
+};
+
+type LinkProps = BaseProps & {
+  href: string;
+  type?: never;
+  disabled?: boolean; // Visual only for links
+  target?: string;
+  rel?: string;
+};
+
+type Props = ButtonProps | LinkProps;
+
+const {
+  variant = 'primary',
+  size = 'default',
+  class: className = '',
+  href,
+  type = 'button',
+  disabled = false,
+  target,
+  rel,
+  ...rest
+} = Astro.props;
+
+// Determine component type
+const Component = href ? 'a' : 'button';
+const isLink = Component === 'a';
+
+// Security: Auto-add rel="noopener noreferrer" for external links with target="_blank"
+let finalRel = rel;
+if (isLink && target === '_blank' && !rel) {
+  finalRel = 'noopener noreferrer';
+} else if (isLink && target === '_blank' && rel && !rel.includes('noopener')) {
+  finalRel = `${rel} noopener noreferrer`;
+}
+
+// Accessibility: aria-disabled for links (they don't have native disabled attribute)
+const ariaDisabled = isLink && disabled ? 'true' : undefined;
+const tabIndex = isLink && disabled ? -1 : undefined;
+
+// Build class list
+const classList = [
+  'button',
+  `button--${variant}`,
+  `button--${size}`,
+  className,
+];
+---
+
+{isLink ? (
+  <a
+    href={href}
+    target={target}
+    rel={finalRel}
+    aria-disabled={ariaDisabled}
+    tabindex={tabIndex}
+    class:list={classList}
+    {...rest}
+  >
+    <slot />
+  </a>
+) : (
+  <button
+    type={type}
+    disabled={disabled}
+    class:list={classList}
+    {...rest}
+  >
+    <slot />
+  </button>
+)}
+
+<style>
+.button {
+  --at-apply: inline-flex items-center justify-center
+    font-sans transition-colors duration-200
+    rounded-md text-primaryForeground
+    focus-visible:outline-none focus-visible:ring-2
+    focus-visible:ring-primary focus-visible:ring-offset-2
+    
+    disabled:pointer-events-none disabled:opacity-50
+    no-underline border-1 border-transparent;
+}
+
+  /* Sizes */ 
+  .button--sm {
+    --at-apply: text-base px-6 py-4 gap-1.5;
+  }
+
+  .button--default {
+    --at-apply: text-[1.31rem] px-8 py-6 gap-2;
+  }
+
+  .button--lg {
+    --at-apply: text-[1.5rem] px-10 py-8 gap-2.5;
+  }
+
+  /* Variants */
+  .button--primary {
+    --at-apply: bg-primary text-primaryForeground
+      hover:bg-transparent hover:text-primary hover:border-primary hover:border-1
+      focus:bg-primaryMuted 
+      focus:hover:bg-transparent focus:hover:text-primary focus:hover:border-primary focus:hover:border-1
+      active:bg-accent
+      shadow-sm;
+  }
+
+  .button--secondary {
+      --at-apply: bg-secondary text-primaryForeground
+        hover:bg-transparent hover:text-secondary hover:border-secondary hover:border-1
+        focus:bg-secondaryMuted 
+        focus:hover:bg-transparent focus:hover:text-secondary focus:hover:border-secondary focus:hover:border-1
+        active:bg-accent
+        shadow-sm;
+    }
+
+  .button--accent {
+    --at-apply: bg-accent text-accent-foreground
+      hover:opacity-90 active:opacity-100
+      shadow-sm;
+  }
+
+  .button--outline {
+    --at-apply: border-2 border-border bg-transparent
+      text-foreground hover:bg-muted
+      active:bg-background;
+  }
+
+  .button--ghost {
+    --at-apply: bg-transparent text-foreground
+      hover:bg-muted active:bg-background;
+  }
+
+  .button--link {
+    --at-apply: bg-transparent text-link
+      underline-offset-4 hover:underline
+      px-0 shadow-none;
+  }
+
+  /* Link-specific: aria-disabled support */
+  a.button[aria-disabled="true"] {
+    --at-apply: pointer-events-none opacity-50 cursor-not-allowed;
+  }
+
+  /* Ensure hover states don't apply when disabled */
+  a.button[aria-disabled="true"]:hover {
+    --at-apply: opacity-50;
+  }
+</style>
