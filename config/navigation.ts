@@ -1,5 +1,5 @@
 // config/navigation.ts
-import type { NavLinkItem, LegalLinkItem } from "./types";
+import type { NavLinkItem, LegalLinkItem, SocialLinkItem } from "./types";
 
 export const navigationLinks: NavLinkItem[] = [
   {
@@ -21,7 +21,7 @@ export const navigationLinks: NavLinkItem[] = [
   {
     text: "Contact",
     link: "/contact",
-  },
+  }
 ];
 
 export const legalLinks: LegalLinkItem[] = [
@@ -30,7 +30,18 @@ export const legalLinks: LegalLinkItem[] = [
     link: "/mentions-legales",
   },
   {
-    text: "Politique de confidentialité",
+    text: "Confidentialité",
     link: "/politique-confidentialite",
+  }
+];
+
+export const socialLinks: SocialLinkItem[] = [
+  {
+    text: "Facebook",
+    link: "https://www.facebook.com/viviane.barbin.9"
   },
+  {
+    text: "Bourgogne Tourisme",
+    link: "https://www.bourgogne-tourisme.com/locations-de-vacances/chez-viviani"
+  }
 ];

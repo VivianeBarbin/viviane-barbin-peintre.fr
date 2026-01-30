@@ -99,79 +99,126 @@ const classList = [
 )}
 
 <style>
+/* ─────────────────────────────
+   Base
+   No colors here. Ever.
+   ───────────────────────────── */
 .button {
-  --at-apply: inline-flex items-center justify-center
-    font-sans transition-colors duration-200
-    rounded-md text-primaryForeground
-    focus-visible:outline-none focus-visible:ring-2
-    focus-visible:ring-primary focus-visible:ring-offset-2
-    
-    disabled:pointer-events-none disabled:opacity-50
-    no-underline border-1 border-transparent;
+  --at-apply:
+    inline-flex items-center justify-center
+    font-sans
+    rounded-md
+    transition-colors duration-200
+    focus-visible:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-primary
+    focus-visible:ring-offset-2
+    no-underline
+    border-1 border-transparent;
 }
 
-  /* Sizes */ 
-  .button--sm {
-    --at-apply: text-base px-6 py-4 gap-1.5;
-  }
+/* Sizes */
+.button--sm {
+  --at-apply: text-base px-6 py-4 gap-1.5;
+}
 
-  .button--default {
-    --at-apply: text-[1.31rem] px-8 py-6 gap-2;
-  }
+.button--default {
+  --at-apply: text-[1.31rem] px-8 py-6 gap-2;
+}
 
-  .button--lg {
-    --at-apply: text-[1.5rem] px-10 py-8 gap-2.5;
-  }
+.button--lg {
+  --at-apply: text-[1.5rem] px-10 py-8 gap-2.5;
+}
 
-  /* Variants */
-  .button--primary {
-    --at-apply: bg-primary text-primaryForeground
-      hover:bg-transparent hover:text-primary hover:border-primary hover:border-1
-      focus:bg-primaryMuted 
-      focus:hover:bg-transparent focus:hover:text-primary focus:hover:border-primary focus:hover:border-1
-      active:bg-accent
-      shadow-sm;
-  }
+/* ─────────────────────────────
+   Variants (own ALL colors)
+   ───────────────────────────── */
+.button--primary {
+  --at-apply:
+    bg-primary
+    text-primaryForeground
+    shadow-sm
 
-  .button--secondary {
-      --at-apply: bg-secondary text-primaryForeground
-        hover:bg-transparent hover:text-secondary hover:border-secondary hover:border-1
-        focus:bg-secondaryMuted 
-        focus:hover:bg-transparent focus:hover:text-secondary focus:hover:border-secondary focus:hover:border-1
-        active:bg-accent
-        shadow-sm;
-    }
+    hover:bg-transparent
+    hover:text-primary
+    hover:border-primary
 
-  .button--accent {
-    --at-apply: bg-accent text-accent-foreground
-      hover:opacity-90 active:opacity-100
-      shadow-sm;
-  }
+    focus:bg-primaryMuted
+    focus:text-primaryForeground
 
-  .button--outline {
-    --at-apply: border-2 border-border bg-transparent
-      text-foreground hover:bg-muted
-      active:bg-background;
-  }
+    active:bg-accent;
+}
 
-  .button--ghost {
-    --at-apply: bg-transparent text-foreground
-      hover:bg-muted active:bg-background;
-  }
+.button--secondary {
+  --at-apply:
+    bg-secondary
+    text-primaryForeground
+    shadow-sm
 
-  .button--link {
-    --at-apply: bg-transparent text-link
-      underline-offset-4 hover:underline
-      px-0 shadow-none;
-  }
+    hover:bg-transparent
+    hover:text-secondary
+    hover:border-secondary
 
-  /* Link-specific: aria-disabled support */
-  a.button[aria-disabled="true"] {
-    --at-apply: pointer-events-none opacity-50 cursor-not-allowed;
-  }
+    focus:bg-secondaryMuted
+    focus:text-primaryForeground
 
-  /* Ensure hover states don't apply when disabled */
-  a.button[aria-disabled="true"]:hover {
-    --at-apply: opacity-50;
-  }
+    active:bg-accent;
+}
+
+.button--accent {
+  --at-apply:
+    bg-accent
+    text-accentForeground
+    shadow-sm
+
+    hover:opacity-90
+    active:opacity-100;
+}
+
+.button--outline {
+  --at-apply:
+    bg-transparent
+    border-2 border-border
+    text-foreground
+
+    hover:bg-muted
+    active:bg-background;
+}
+
+.button--ghost {
+  --at-apply:
+    bg-transparent
+    text-foreground
+
+    hover:bg-muted
+    active:bg-background;
+}
+
+.button--link {
+  --at-apply:
+    bg-transparent
+    text-link
+    underline-offset-4
+    hover:underline
+    px-0
+    shadow-none;
+}
+
+/* ─────────────────────────────
+   Disabled (wins over everything)
+   ───────────────────────────── */
+.button:disabled,
+a.button[aria-disabled="true"] {
+  --at-apply:
+    pointer-events-none
+    cursor-not-allowed
+    opacity-50
+    bg-muted
+    text-mutedForeground
+    border-muted;
+}
+
+a.button[aria-disabled="true"]:hover {
+  --at-apply: opacity-50;
+}
 </style>

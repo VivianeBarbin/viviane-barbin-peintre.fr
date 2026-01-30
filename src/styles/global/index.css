@@ -1,39 +1,108 @@
 .site-container {
-    --at-apply: bg-transparent mx-auto max-w-[96.25rem] px-2 lg:px-6;
+    background-color: transparent;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 96.25rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .site-container {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .site-container {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
 }
 
 .logo-text {
-    --at-apply: font-display capitalize flex items-center gap-2 text-[clamp(1.5rem,4vw,3.5rem)] scale-y-[1.4];
+    font-family: var(--font-display);
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: clamp(1.5rem, 4vw, 3.5rem);
+    transform: scaleY(1.4);
 }
 
 .logo-text > span {
-    --at-apply: leading-none;
+    line-height: 1;
 }
 
 .slogan-text {
-  --at-apply: font-display capitalize flex items-center gap-2
-    text-[clamp(1.375rem,-0.1019rem+9.8462vw,9.375rem)];
+    font-family: var(--font-display);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: clamp(1.375rem, -0.1019rem + 9.8462vw, 9.375rem);
 }
+
 .slogan-svg {
-    --at-apply:font-display capitalize flex items-center gap-2 
-    text-[calc(10rem)];
+    font-family: var(--font-display);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 10.2rem;
 }
 
 .navbar--initial {
-    --at-apply: border-b-transparent bg-transparent py-1 mb-5;
+    border-bottom-color: transparent;
+    background-color: transparent;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
+
 /* Position adjustment moved to NavLink component using isLast prop */
 #mobile-nav {
-    --at-apply: my-auto hidden md:hidden;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: none;
 }
+
+@media (min-width: 768px) {
+    #mobile-nav {
+        display: none;
+    }
+}
+
 .nav__link--base {
-    --at-apply: text-[clamp(1rem,0.875rem+0.4vw,1.3313rem)] font-sans font-medium leading-[1.45] text-foreground/80 hover:text-foreground transition-colors;
+    font-size: clamp(1rem, 0.875rem + 0.4vw, 1.3313rem);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    line-height: 1.45;
+    color: hsl(var(--foreground) / 0.8);
+    transition-property: color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.nav__link--base:hover {
+    color: hsl(var(--foreground));
 }
 
 .nav__link--mobile {
-    --at-apply: text-xl md:text-base;
+    font-size: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .nav__link--mobile {
+        font-size: 1rem;
+    }
 }
 
 #footer {
-    --at-apply: overflow-hidden pt-25 pb-9 bg-[linear-gradient(to_bottom,rgba(255,252,238,0),rgba(255,225,208,0.9))];
+    overflow: clip;
+    padding-top: 6.25rem;
+    padding-bottom: 1.5rem;
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 252, 238, 0),
+        rgba(255, 225, 208, 0.9)
+    );
 }

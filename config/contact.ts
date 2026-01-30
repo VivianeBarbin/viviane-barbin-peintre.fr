@@ -2,15 +2,15 @@
 import type { ContactDataProps } from "./types";
 
 export const contactData: ContactDataProps = {
-  phone: "+33 X XX XX XX XX",
-  phone_link: "tel:+33XXXXXXXXX",
+  phone: "+33 6 43 82 62 69",
+  phone_link: "tel:+33643826269",
   email: "viviane@vivianebarbin.fr",
   address: {
-    street: "",
-    city: "",
-    postalCode: "",
-    region: "",
-    country: "France",
+    street: "4 Rue de la Foire",
+    city: "TALON",
+    postalCode: "58190",
+    region: "58",
+    country: "FRANCE",
   },
 
   businessHours: {
@@ -19,5 +19,5 @@ export const contactData: ContactDataProps = {
     sunday: "Fermé",
   },
 
-  website: "https://vivianebarbin.com",
+  website: "https://viviane-barbin-peintre.fr",
 };

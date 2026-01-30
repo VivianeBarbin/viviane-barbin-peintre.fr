@@ -4,8 +4,8 @@ import type { ThemeConfig } from "./types";
 export const themeConfig: ThemeConfig = {
   site: {
     title: "Viviane Barbin",
-    slogan: "Couleurs d'Ailleurs",
-    subtitle: "",
+    slogan: "Couleurs d'ailleurs",
+    subtitle: "Peinture &\nPartage d'atelier",
     description: "",
     author: "Viviane Barbin",
     url: "",

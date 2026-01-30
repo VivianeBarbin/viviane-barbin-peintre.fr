@@ -1,0 +1,19 @@
+---
+import NavLink from "@/components/nav/NavLink.astro";
+import { navigationLinks } from "@config/navigation";
+---
+
+<ul class="footer-nav-list">
+    {
+        navigationLinks.map((navItem, index) => (
+            <li>
+                <NavLink
+                    class="footer-link-spacing"
+                    navItem={navItem}
+                    variant="footer"
+                    isLast={index === navigationLinks.length - 1}
+                />
+            </li>
+        ))
+    }
+</ul>

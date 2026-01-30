@@ -6,6 +6,12 @@ import react from "@astrojs/react";
 import icon from "astro-icon";
 
 export default defineConfig({
+  experimental: {
+    svgo: true,
+  },
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [
     UnoCSS({
       injectReset: true,
@@ -20,7 +26,7 @@ export default defineConfig({
     }),
     react(),
     icon({
-      iconDir: "src/icons"
+      iconDir: "src/icons",
     }),
   ],
 });

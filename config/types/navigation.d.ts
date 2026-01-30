@@ -12,3 +12,10 @@ export interface LegalLinkItem {
   newTab?: boolean;
   icon?: string;
 }
+
+export interface SocialLinkItem {
+  text: string;
+  link: string;
+  newTab?: boolean;
+  icon?: string;
+}

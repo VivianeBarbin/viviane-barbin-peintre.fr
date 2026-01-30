@@ -5,37 +5,37 @@ import { navigationLinks } from "@config/navigation";
 ---
 
 <div id="mobile-nav__container">
-    <!-- Burger Button - Perfectly positioned top-right -->
+    <!-- Burger Button -->
     <div class="flex items-center justify-end pr-4">
         <button
             id="mobile-nav__burger"
             aria-label="open navigation menu"
             aria-haspopup="true"
             aria-expanded="false"
-            class="md:hidden primary-focus flex h-12 w-12 items-center justify-center rounded-full bg-background/80 hover:bg-accent active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background p-0 transition-all"
+            class="icon-btn md:hidden"
         >
             <Icon
                 name="tabler/menu"
-                class="text-foreground h-7 w-7"
+                class="h-7 w-7 text-foreground"
                 aria-hidden="true"
             />
         </button>
     </div>
     <div
         id="mobile-nav__content"
-        class="whitepace-nowrap bg-background fixed top-0 -right-72 z-20 h-screen w-72 items-center overflow-x-hidden text-lg font-normal transition-all duration-300"
+        class="fixed top-0 -right-72 z-20 h-screen w-72 items-center overflow-x-hidden whitespace-nowrap bg-background text-lg font-normal transition-all duration-300"
     >
         <div class="w-full px-2 pb-6">
-            <!-- Header with Close Button - Identical positioning to burger -->
+            <!-- Header with Close Button -->
             <div class="flex h-20 items-center justify-end px-4 pt-4">
                 <button
                     id="mobile-nav__close"
-                    class="primary-focus flex h-12 w-12 items-center justify-center rounded-full bg-background/80 hover:bg-accent active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background p-0 transition-all"
+                    class="icon-btn"
                     aria-label="close navigation menu"
                 >
                     <Icon
                         name="tabler/x"
-                        class="text-primaryMuted h-7 w-7"
+                        class="h-7 w-7 text-primaryMuted"
                         aria-hidden="true"
                     />
                 </button>
@@ -45,7 +45,7 @@ import { navigationLinks } from "@config/navigation";
                 <ul class="mx-1 mt-2">
                     {
                         navigationLinks.map((navItem) => (
-                            <li class="">
+                            <li>
                                 <NavLink
                                     navItem={navItem}
                                     activeClass=""
@@ -116,7 +116,6 @@ import { navigationLinks } from "@config/navigation";
                     mobileNavBackdrop.classList.add(
                         "mobile-nav__backdrop--fade-out",
                     );
-                    // set a timeout
                 }
             event.preventDefault();
             return false;

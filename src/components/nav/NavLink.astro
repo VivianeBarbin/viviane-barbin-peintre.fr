@@ -18,7 +18,8 @@ export interface Props {
     noIcon?: boolean;
     noUnderline?: boolean;
     activeClass?: string;
-    isLast?: boolean; // Nouvelle prop
+    isLast?: boolean;
+    variant?: "header" | "footer";
 }
 
 const {
@@ -27,69 +28,89 @@ const {
     noIcon = false,
     noUnderline = false,
     activeClass = "text-primary font-semibold",
-    isLast = false, // Nouvelle prop avec valeur par défaut
+    isLast = false,
+    variant = "header",
 } = Astro.props;
 
 const { text, link, newTab = false, icon } = navItem;
 
 const isExternal = link.startsWith("http") || link.startsWith("//");
 const isActive = comparePathsWithTrailingSlash(Astro.url.pathname, link);
+const opensNewTab = newTab || isExternal;
+
+// Variant-specific styles
+const variantStyles = {
+    header: {
+        base: "px-3 lg:px-4 py-2",
+        text: "text-foreground hover:text-foreground/80",
+        underline: true,
+        underlineClasses: "after:left-3.6 after:bottom-1 after:bg-primaryMuted/80",
+        activeClass: activeClass,
+    },
+    footer: {
+        base: "pr-4 py-[0.25rem] lg:(py-2 px-3)",
+        text: "text-sm text-foreground hover:text-foreground/80",
+        underline: false,
+        underlineClasses: "after:left-3.6 after:bottom-1 after:bg-primaryMuted/80",
+        activeClass: "text-foreground font-normal underline underline-offset-4",
+    },
+};
+
+const currentVariant = variantStyles[variant];
+const shouldShowUnderline = !noUnderline && currentVariant.underline;
+const finalActiveClass = isActive ? currentVariant.activeClass : "";
 ---
 
 <a
     class:list={[
-        // Base styles
-        "nav__link--base relative flex h-fit items-center gap-2 rounded-md px-4 py-2",
+        // Base styles - items-start keeps icons aligned to first line when text wraps
+        "nav__link--base relative inline-flex max-w-full items-start gap-2 rounded-md",
         "transition-all duration-300",
+        currentVariant.base,
+        currentVariant.text,
         
-        // Retirer le padding-right sur desktop pour le dernier élément
+        // Remove padding-right on desktop for last element
         isLast && "lg:pr-0",
-       
-        "text-foreground hover:text-foreground/80",
         
-        // Underline animation
-        !noUnderline && "after:content-['']",
-        !noUnderline && "after:absolute after:left-3.6 after:bottom-1",
-        !noUnderline && !isLast && "after:right-3.6",
-        !noUnderline && isLast && "after:right-0 lg:after:right-0",
-        !noUnderline && "after:h-1px after:bg-primaryMuted/80 after:origin-left",
-        !noUnderline && "after:scale-x-0 hover:after:scale-x-100",
-        !noUnderline && "after:transition-transform after:duration-300",
+        // Underline animation (only for header variant or when explicitly enabled)
+        shouldShowUnderline && "after:content-[''] after:absolute after:h-1px after:origin-left",
+        shouldShowUnderline && currentVariant.underlineClasses,
+        shouldShowUnderline && !isLast && "after:right-3.6",
+        shouldShowUnderline && isLast && "after:right-3 lg:after:right-0",
+        shouldShowUnderline && "after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300",
         
         // Focus ring
-        "focus-visible:outline-none",
-        "focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        "focus-ring",
         
+        // Custom class overrides
         className,
-        {
-            [activeClass]: isActive,
-        },
+        finalActiveClass,
     ]}
     href={link}
-    target={newTab || isExternal ? "_blank" : undefined}
-    rel={newTab || isExternal ? "noopener noreferrer" : undefined}
-    aria-label={text}
+    target={opensNewTab ? "_blank" : undefined}
+    rel={opensNewTab ? "noopener noreferrer" : undefined}
     aria-current={isActive ? "page" : undefined}
 >
     {
         icon && !noIcon && (
-            <Icon name={icon} aria-hidden="true" class="size-5 shrink-0" />
-        )
-    }
-    <span>{text}</span>
-    {
-        (newTab || isExternal) && (
-            <Icon
-                name="lucide:external-link"
-                aria-hidden="true"
-                class="size-3 opacity-50 ml-auto"
+            <Icon 
+                name={icon} 
+                aria-hidden="true" 
+                class="size-5 shrink-0 translate-y-[0.125em]" 
             />
         )
     }
-</a>
-
-<style>
-    .nav-link {
-        --at-apply: text-foreground;
+    <span class="min-w-0 truncate">{text}</span>
+    {
+        opensNewTab && (
+            <>
+                <Icon
+                    name="tabler/external-link"
+                    aria-hidden="true"
+                    class="size-3 shrink-0 translate-y-[0.25em] opacity-50"
+                />
+                <span class="sr-only">(ouvre dans un nouvel onglet)</span>
+            </>
+        )
     }
-</style>
+</a>

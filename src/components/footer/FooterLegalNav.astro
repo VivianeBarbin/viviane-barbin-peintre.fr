@@ -1,43 +1,21 @@
 ---
+import NavLink from "@/components/nav/NavLink.astro";
 import { legalLinks } from "@config/navigation";
 ---
 
-<nav aria-label="Legal navigation" class="footer-nav">
-    {
-        legalLinks.map((legalItem) => (
-            <a
-                href={legalItem.link}
-                class="footer-link"
-                aria-label={legalItem.text}
-            >
-                {legalItem.text}
-            </a>
-        ))
-    }
+<nav aria-label="Legal navigation">
+    <ul class="flex flex-wrap gap-0 p-0 lg:(gap-6)">
+        {
+            legalLinks.map((legalItem, index) => (
+                <li>
+                    <NavLink
+                        class="footer-link-spacing"
+                        navItem={legalItem}
+                        variant="footer"
+                        isLast={index === legalLinks.length - 1}
+                    />
+                </li>
+            ))
+        }
+    </ul>
 </nav>
-
-<style>
-    .footer-nav {
-        display: flex;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-    }
-
-    .footer-link {
-        color: hsl(var(--foreground) / 0.7);
-        text-decoration: none;
-        font-size: 0.875rem;
-        transition: color 0.2s ease;
-    }
-
-    .footer-link:hover {
-        color: hsl(var(--primary));
-        text-decoration: underline;
-    }
-
-    .footer-link:focus-visible {
-        outline: 2px solid hsl(var(--primary));
-        outline-offset: 2px;
-        border-radius: 0.25rem;
-    }
-</style>
