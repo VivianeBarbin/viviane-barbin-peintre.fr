@@ -6,42 +6,40 @@ import { navigationLinks } from "@config/navigation";
 ---
 
 <div
-    id="nav__container"
-    class:list={[
-        "navbar--initial fixed top-0 left-0 z-1000 flex w-full flex-col transition-all duration-300",
-    ]}
+  id="nav__container"
+  class:list={[
+    "navbar--initial fixed top-0 left-0 z-1000 flex w-full flex-col transition-all duration-300",
+  ]}
 >
-    <div class="site-container h-auto pt-3 flex md:(h-22.5 pt-0) w-full items-center">
-        <header class="relative flex w-full items-center gap-2">
-            <!-- home button / image -->
+  <div class="site-container md:(h-22.5 pt-0) flex h-auto w-full items-center pt-3">
+    <header class="relative flex w-full items-center gap-2">
+      <!-- home button / image -->
 
-            <div class="flex flex-auto justify-start">
-                <SiteLogo />
-            </div>
+      <div class="flex flex-auto justify-start">
+        <SiteLogo />
+      </div>
 
-            <!-- desktop nav menu -->
-            <div class="flex flex-auto justify-end">
-                <nav id="desktop-nav" class="my-auto hidden md:block">
-                    <ul
-                        class="flex h-fit items-center pl-4 gap-[clamp(0rem,calc((100vw-1024px)*0.15),3rem)]"
-                    >
-                        {
-                            navigationLinks.map((navItem, index) => (
-                                <li>
-                                    <NavLink 
-                                        navItem={navItem} 
-                                        activeClass="" 
-                                        isLast={index === navigationLinks.length - 1}
-                                    />
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </nav>
-            </div>
-            <div class="md:hidden">
-                <MobileNav />
-            </div>
-        </header>
-    </div>
+      <!-- desktop nav menu -->
+      <div class="flex flex-auto justify-end">
+        <nav id="desktop-nav" class="my-auto hidden md:block">
+          <ul class="flex h-fit items-center gap-[clamp(0rem,calc((100vw-1024px)*0.15),3rem)] pl-4">
+            {
+              navigationLinks.map((navItem, index) => (
+                <li>
+                  <NavLink
+                    navItem={navItem}
+                    activeClass=""
+                    isLast={index === navigationLinks.length - 1}
+                  />
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+      <div class="md:hidden">
+        <MobileNav />
+      </div>
+    </header>
+  </div>
 </div>

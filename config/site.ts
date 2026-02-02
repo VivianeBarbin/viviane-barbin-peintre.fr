@@ -67,5 +67,4 @@ export const themeConfig: ThemeConfig = {
   },
 };
 
-export const base =
-  themeConfig.site.base === "/" ? "" : themeConfig.site.base.replace(/\/$/, "");
+export const base = themeConfig.site.base === "/" ? "" : themeConfig.site.base.replace(/\/$/, "");

@@ -1,28 +1,28 @@
 ---
 /**
  * Polymorphic Button Component
- * 
+ *
  * If this is to be a link (<a>), pass an "href" prop
  * If this is to be a button (<button>), pass a "type" prop
- * 
+ *
  * @example
  * <!-- Button -->
  * <Button variant="primary" type="submit">Submit</Button>
- * 
+ *
  * @example
  * <!-- Link -->
  * <Button variant="primary" href="/about">About</Button>
  */
 
 type BaseProps = {
-  variant?: 'primary' | 'secondary' | 'accent' | 'outline' | 'ghost' | 'link';
-  size?: 'sm' | 'default' | 'lg';
+  variant?: "primary" | "secondary" | "accent" | "outline" | "ghost" | "link";
+  size?: "sm" | "default" | "lg";
   class?: string;
 };
 
 type ButtonProps = BaseProps & {
   href?: never;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   target?: never;
   rel?: never;
@@ -39,11 +39,11 @@ type LinkProps = BaseProps & {
 type Props = ButtonProps | LinkProps;
 
 const {
-  variant = 'primary',
-  size = 'default',
-  class: className = '',
+  variant = "primary",
+  size = "default",
+  class: className = "",
   href,
-  type = 'button',
+  type = "button",
   disabled = false,
   target,
   rel,
@@ -51,174 +51,111 @@ const {
 } = Astro.props;
 
 // Determine component type
-const Component = href ? 'a' : 'button';
-const isLink = Component === 'a';
+const Component = href ? "a" : "button";
+const isLink = Component === "a";
 
 // Security: Auto-add rel="noopener noreferrer" for external links with target="_blank"
 let finalRel = rel;
-if (isLink && target === '_blank' && !rel) {
-  finalRel = 'noopener noreferrer';
-} else if (isLink && target === '_blank' && rel && !rel.includes('noopener')) {
+if (isLink && target === "_blank" && !rel) {
+  finalRel = "noopener noreferrer";
+} else if (isLink && target === "_blank" && rel && !rel.includes("noopener")) {
   finalRel = `${rel} noopener noreferrer`;
 }
 
 // Accessibility: aria-disabled for links (they don't have native disabled attribute)
-const ariaDisabled = isLink && disabled ? 'true' : undefined;
+const ariaDisabled = isLink && disabled ? "true" : undefined;
 const tabIndex = isLink && disabled ? -1 : undefined;
 
 // Build class list
-const classList = [
-  'button',
-  `button--${variant}`,
-  `button--${size}`,
-  className,
-];
+const classList = ["button", `button--${variant}`, `button--${size}`, className];
 ---
 
-{isLink ? (
-  <a
-    href={href}
-    target={target}
-    rel={finalRel}
-    aria-disabled={ariaDisabled}
-    tabindex={tabIndex}
-    class:list={classList}
-    {...rest}
-  >
-    <slot />
-  </a>
-) : (
-  <button
-    type={type}
-    disabled={disabled}
-    class:list={classList}
-    {...rest}
-  >
-    <slot />
-  </button>
-)}
+{
+  isLink ? (
+    <a
+      href={href}
+      target={target}
+      rel={finalRel}
+      aria-disabled={ariaDisabled}
+      tabindex={tabIndex}
+      class:list={classList}
+      {...rest}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button type={type} disabled={disabled} class:list={classList} {...rest}>
+      <slot />
+    </button>
+  )
+}
 
 <style>
-/* ─────────────────────────────
+  /* ─────────────────────────────
    Base
    No colors here. Ever.
    ───────────────────────────── */
-.button {
-  --at-apply:
-    inline-flex items-center justify-center
-    font-sans
-    rounded-md
-    transition-colors duration-200
-    focus-visible:outline-none
-    focus-visible:ring-2
-    focus-visible:ring-primary
-    focus-visible:ring-offset-2
-    no-underline
-    border-1 border-transparent;
-}
+  .button {
+    --at-apply: inline-flex items-center justify-center font-sans rounded-md transition-colors
+      duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+      focus-visible:ring-offset-2 no-underline border-1 border-transparent;
+  }
 
-/* Sizes */
-.button--sm {
-  --at-apply: text-base px-6 py-4 gap-1.5;
-}
+  /* Sizes */
+  .button--sm {
+    --at-apply: text-base px-6 py-4 gap-1.5;
+  }
 
-.button--default {
-  --at-apply: text-[1.31rem] px-8 py-6 gap-2;
-}
+  .button--default {
+    --at-apply: text-[1.31rem] px-8 py-6 gap-2;
+  }
 
-.button--lg {
-  --at-apply: text-[1.5rem] px-10 py-8 gap-2.5;
-}
+  .button--lg {
+    --at-apply: text-[1.5rem] px-10 py-8 gap-2.5;
+  }
 
-/* ─────────────────────────────
+  /* ─────────────────────────────
    Variants (own ALL colors)
    ───────────────────────────── */
-.button--primary {
-  --at-apply:
-    bg-primary
-    text-primaryForeground
-    shadow-sm
+  .button--primary {
+    --at-apply: bg-primary text-primaryForeground shadow-sm hover:bg-transparent
+      hover:text-primary hover:border-primary focus:bg-primaryMuted focus:text-primaryForeground
+      active:bg-accent;
+  }
 
-    hover:bg-transparent
-    hover:text-primary
-    hover:border-primary
+  .button--secondary {
+    --at-apply: bg-secondary text-primaryForeground shadow-sm hover:bg-transparent
+      hover:text-secondary hover:border-secondary focus:bg-secondaryMuted
+      focus:text-primaryForeground active:bg-accent;
+  }
 
-    focus:bg-primaryMuted
-    focus:text-primaryForeground
+  .button--accent {
+    --at-apply: bg-accent text-accentForeground shadow-sm hover:opacity-90 active:opacity-100;
+  }
 
-    active:bg-accent;
-}
+  .button--outline {
+    --at-apply: bg-transparent border-2 border-border text-foreground hover:bg-muted
+      active:bg-background;
+  }
 
-.button--secondary {
-  --at-apply:
-    bg-secondary
-    text-primaryForeground
-    shadow-sm
+  .button--ghost {
+    --at-apply: bg-transparent text-foreground hover:bg-muted active:bg-background;
+  }
 
-    hover:bg-transparent
-    hover:text-secondary
-    hover:border-secondary
+  .button--link {
+    --at-apply: bg-transparent text-link underline-offset-4 hover:underline px-0 shadow-none;
+  }
 
-    focus:bg-secondaryMuted
-    focus:text-primaryForeground
-
-    active:bg-accent;
-}
-
-.button--accent {
-  --at-apply:
-    bg-accent
-    text-accentForeground
-    shadow-sm
-
-    hover:opacity-90
-    active:opacity-100;
-}
-
-.button--outline {
-  --at-apply:
-    bg-transparent
-    border-2 border-border
-    text-foreground
-
-    hover:bg-muted
-    active:bg-background;
-}
-
-.button--ghost {
-  --at-apply:
-    bg-transparent
-    text-foreground
-
-    hover:bg-muted
-    active:bg-background;
-}
-
-.button--link {
-  --at-apply:
-    bg-transparent
-    text-link
-    underline-offset-4
-    hover:underline
-    px-0
-    shadow-none;
-}
-
-/* ─────────────────────────────
+  /* ─────────────────────────────
    Disabled (wins over everything)
    ───────────────────────────── */
-.button:disabled,
-a.button[aria-disabled="true"] {
-  --at-apply:
-    pointer-events-none
-    cursor-not-allowed
-    opacity-50
-    bg-muted
-    text-mutedForeground
-    border-muted;
-}
+  .button:disabled,
+  a.button[aria-disabled="true"] {
+    --at-apply: pointer-events-none cursor-not-allowed opacity-50 bg-muted text-mutedForeground
+      border-muted;
+  }
 
-a.button[aria-disabled="true"]:hover {
-  --at-apply: opacity-50;
-}
+  a.button[aria-disabled="true"]:hover {
+    --at-apply: opacity-50;
+  }
 </style>

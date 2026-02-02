@@ -9,172 +9,172 @@ import SiteSlogan from "../site-logo/SiteSlogan.astro";
 ---
 
 <section id="footer">
-    <div class="site-container footer-container">
-        <div class="footer-main">
-            <div class="footer-main_grid">
-                <nav class="footer-nav">
-                    <FooterMainNav />
-                </nav>
+  <div class="site-container footer-container">
+    <div class="footer-main">
+      <div class="footer-main_grid">
+        <nav class="footer-nav">
+          <FooterMainNav />
+        </nav>
 
-                <div class="footer-social">
-                    <FooterSocialNav />
-                </div>
+        <div class="footer-social">
+          <FooterSocialNav />
+        </div>
 
-                <div data-align="start" class="block pb-4 text-sm md:(pb-0 hidden)">
-                    <FooterEmail />
-                </div>
+        <div data-align="start" class="md:(pb-0 hidden) block pb-4 text-sm">
+          <FooterEmail />
+        </div>
 
-                <div class="footer-cta">
-                    <FooterCta />
-                </div>
-            </div>
+        <div class="footer-cta">
+          <FooterCta />
         </div>
-        <div class="footer-slogan hidden md:block">
-            <SiteSlogan />
-        </div>
-        <div class="footer-legal p-0 text-sm">
-            <div class="footer-legal_grid">
-                <div data-align="start">
-                    <FooterLegalNav />
-                </div>
-                <div data-align="center" class="hidden md:block">
-                    <FooterEmail />
-                </div>
-                <div data-align="end">
-                    <FooterCopyright />
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="footer-slogan hidden md:block">
+      <SiteSlogan />
+    </div>
+    <div class="footer-legal p-0 text-sm">
+      <div class="footer-legal_grid">
+        <div data-align="start">
+          <FooterLegalNav />
+        </div>
+        <div data-align="center" class="hidden md:block">
+          <FooterEmail />
+        </div>
+        <div data-align="end">
+          <FooterCopyright />
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
-    /* ===========================================
+  /* ===========================================
        MOBILE STRUCTURAL REORDER (≤768px)
        =========================================== */
-    @media (max-width: 768px) {
-        .footer-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: clamp(2rem, 6vw, 3rem);
-        }
-
-        /* Order top-level blocks */
-        .footer-slogan {
-            order: 1;
-        }
-
-        .footer-main {
-            order: 2;
-
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-areas:
-                "cta cta"
-                "email email"
-                "nav social";
-            row-gap: clamp(1.5rem, 4vw, 2.5rem);
-        }
-
-        .footer-legal {
-            order: 3;
-        }
-
-        /* Flatten desktop grid wrapper */
-        .footer-main_grid {
-            display: contents;
-        }
-
-        /* Area assignments */
-        .footer-cta {
-            grid-area: cta;
-            justify-self: start;
-        }
-
-        .footer-main [data-align="center"].block {
-            grid-area: email;
-            justify-self: center;
-        }
-
-        .footer-nav {
-            grid-area: nav;
-        }
-
-        .footer-social {
-            grid-area: social;
-        }
+  @media (max-width: 768px) {
+    .footer-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(2rem, 6vw, 3rem);
     }
 
-    /* ===========================================
+    /* Order top-level blocks */
+    .footer-slogan {
+      order: 1;
+    }
+
+    .footer-main {
+      order: 2;
+
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "cta cta"
+        "email email"
+        "nav social";
+      row-gap: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .footer-legal {
+      order: 3;
+    }
+
+    /* Flatten desktop grid wrapper */
+    .footer-main_grid {
+      display: contents;
+    }
+
+    /* Area assignments */
+    .footer-cta {
+      grid-area: cta;
+      justify-self: start;
+    }
+
+    .footer-main [data-align="center"].block {
+      grid-area: email;
+      justify-self: center;
+    }
+
+    .footer-nav {
+      grid-area: nav;
+    }
+
+    .footer-social {
+      grid-area: social;
+    }
+  }
+
+  /* ===========================================
        DESKTOP LAYOUT (>768px)
        =========================================== */
-    @media (min-width: 769px) {
-        .footer-main_grid {
-            --gap: clamp(1.5rem, 4vw, 3rem);
+  @media (min-width: 769px) {
+    .footer-main_grid {
+      --gap: clamp(1.5rem, 4vw, 3rem);
 
-            display: grid;
-            grid-template-columns: 1.5fr 1.5fr 1fr 4fr;
-            grid-template-areas: "nav social . cta";
-            gap: var(--gap);
-            width: 100%;
-        }
-
-        .footer-nav {
-            grid-area: nav;
-        }
-
-        .footer-social {
-            grid-area: social;
-        }
-
-        .footer-cta {
-            grid-area: cta;
-            justify-self: start;
-        }
+      display: grid;
+      grid-template-columns: 1.5fr 1.5fr 1fr 4fr;
+      grid-template-areas: "nav social . cta";
+      gap: var(--gap);
+      width: 100%;
     }
 
-    /* ===========================================
+    .footer-nav {
+      grid-area: nav;
+    }
+
+    .footer-social {
+      grid-area: social;
+    }
+
+    .footer-cta {
+      grid-area: cta;
+      justify-self: start;
+    }
+  }
+
+  /* ===========================================
        FOOTER LEGAL GRID
        =========================================== */
-    .footer-legal {
-        container-type: inline-size;
-        container-name: footer;
-    }
+  .footer-legal {
+    container-type: inline-size;
+    container-name: footer;
+  }
 
+  .footer-legal_grid {
+    --grid-gap: clamp(1.25rem, 3vw, 2.5rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--grid-gap);
+    width: 100%;
+    align-items: start;
+  }
+
+  .footer-legal_grid > [data-align="start"],
+  .footer-legal_grid > [data-align="center"],
+  .footer-legal_grid > [data-align="end"] {
+    justify-self: start;
+  }
+
+  @media (min-width: 768px) {
     .footer-legal_grid {
-        --grid-gap: clamp(1.25rem, 3vw, 2.5rem);
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: var(--grid-gap);
-        width: 100%;
-        align-items: start;
+      grid-template-columns: repeat(3, 1fr);
     }
 
-    .footer-legal_grid > [data-align="start"],
-    .footer-legal_grid > [data-align="center"],
+    .footer-legal_grid > * {
+      width: fit-content;
+    }
+
+    .footer-legal_grid > [data-align="start"] {
+      justify-self: start;
+    }
+
+    .footer-legal_grid > [data-align="center"] {
+      justify-self: center;
+    }
+
     .footer-legal_grid > [data-align="end"] {
-        justify-self: start;
+      justify-self: end;
     }
-
-    @media (min-width: 768px) {
-        .footer-legal_grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .footer-legal_grid > * {
-            width: fit-content;
-        }
-
-        .footer-legal_grid > [data-align="start"] {
-            justify-self: start;
-        }
-
-        .footer-legal_grid > [data-align="center"] {
-            justify-self: center;
-        }
-
-        .footer-legal_grid > [data-align="end"] {
-            justify-self: end;
-        }
-    }
+  }
 </style>

@@ -8,7 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "generate:vars": "tsx scripts/generate-css-vars.ts"
+    "generate:vars": "tsx scripts/generate-css-vars.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
@@ -26,12 +28,20 @@
     "styled-components": "^6.3.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@unocss/preset-attributify": "^66.6.0",
     "@unocss/preset-wind4": "^66.6.0",
     "@unocss/reset": "^66.6.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-astro": "^1.5.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.3.0",
     "lodash": "^4.17.23",
     "react-compiler-runtime": "^1.0.0",
     "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
     "unocss": "^66.6.0",
     "unocss-preset-theme": "^0.14.1"
   },

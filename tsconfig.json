@@ -7,7 +7,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@config/*": ["config/*"],
+      "@config/*": ["config/*"]
     },
     "allowJs": true
   },

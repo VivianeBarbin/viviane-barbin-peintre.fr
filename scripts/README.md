@@ -31,6 +31,7 @@ yarn generate:vars
 ### Workflow
 
 1. **Edit colors** in `src/config.ts`:
+
    ```ts
    colors: {
      light: {
@@ -41,6 +42,7 @@ yarn generate:vars
    ```
 
 2. **Run the script**:
+
    ```bash
    pnpm run generate:vars
    ```
@@ -50,6 +52,7 @@ yarn generate:vars
 ### What it generates
 
 The script generates a complete CSS file with:
+
 - All light mode color variables (`:root`)
 - All dark mode color variables (`.dark`)
 - Organized sections (Brand colors, Content/Surfaces)
@@ -78,6 +81,7 @@ This ensures CSS variables are always up-to-date before building.
 ### OKLCH Color Format
 
 Colors use the OKLCH format (Lightness Chroma Hue):
+
 - **Lightness**: 0-1 (0 = black, 1 = white)
 - **Chroma**: 0-0.4 (saturation/vividness)
 - **Hue**: 0-360 (color angle)

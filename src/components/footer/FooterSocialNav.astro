@@ -4,16 +4,16 @@ import { socialLinks } from "@config/navigation";
 ---
 
 <ul class="footer-nav-list">
-    {
-        socialLinks.map((socialItem, index) => (
-            <li>
-                <NavLink
-                    class="footer-link-spacing"
-                    navItem={socialItem}
-                    variant="footer"
-                    isLast={index === socialLinks.length - 1}
-                />
-            </li>
-        ))
-    }
+  {
+    socialLinks.map((socialItem, index) => (
+      <li>
+        <NavLink
+          class="footer-link-spacing"
+          navItem={socialItem}
+          variant="footer"
+          isLast={index === socialLinks.length - 1}
+        />
+      </li>
+    ))
+  }
 </ul>

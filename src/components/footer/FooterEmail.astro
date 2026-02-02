@@ -2,11 +2,8 @@
 import { contactData } from "@config/contact";
 ---
 
-<p class="py-2 text-primaryMuted">
-    <a
-        class="text-foreground hover:text-foreground/80"
-        href={`mailto:${contactData.email}`}
-    >
-        {contactData.email}
-    </a>
+<p class="text-primaryMuted py-2">
+  <a class="text-foreground hover:text-foreground/80" href={`mailto:${contactData.email}`}>
+    {contactData.email}
+  </a>
 </p>

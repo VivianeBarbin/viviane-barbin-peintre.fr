@@ -3,27 +3,27 @@ import { themeConfig } from "@config/site.ts";
 const siteSlogan = themeConfig.site.slogan;
 ---
 
-<div class="flex flex-col items-center justify-center md:(mb-8 mt-30)">
-    <svg
-        class="block h-auto w-full max-w-full"
-        viewBox="0 0 1540 140"
-        preserveAspectRatio="xMidYMid meet"
+<div class="md:(mb-8 mt-30) flex flex-col items-center justify-center">
+  <svg
+    class="block h-auto w-full max-w-full"
+    viewBox="0 0 1540 140"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <text
+      x="50%"
+      y="70"
+      text-anchor="middle"
+      dominant-baseline="central"
+      class="slogan-svg fill-primary"
     >
-        <text
-            x="50%"
-            y="70"
-            text-anchor="middle"
-            dominant-baseline="central"
-            class="slogan-svg fill-primary"
-        >
-            {siteSlogan}
-        </text>
-    </svg>
+      {siteSlogan}
+    </text>
+  </svg>
 </div>
 
 <style>
-    .slogan-svg {
-        line-height: 1;
-        letter-spacing: 0;
-    }
+  .slogan-svg {
+    line-height: 1;
+    letter-spacing: 0;
+  }
 </style>

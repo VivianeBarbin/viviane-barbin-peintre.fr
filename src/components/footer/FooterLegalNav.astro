@@ -4,18 +4,18 @@ import { legalLinks } from "@config/navigation";
 ---
 
 <nav aria-label="Legal navigation">
-    <ul class="flex flex-wrap gap-0 p-0 lg:(gap-6)">
-        {
-            legalLinks.map((legalItem, index) => (
-                <li>
-                    <NavLink
-                        class="footer-link-spacing"
-                        navItem={legalItem}
-                        variant="footer"
-                        isLast={index === legalLinks.length - 1}
-                    />
-                </li>
-            ))
-        }
-    </ul>
+  <ul class="lg:(gap-6) flex flex-wrap gap-0 p-0">
+    {
+      legalLinks.map((legalItem, index) => (
+        <li>
+          <NavLink
+            class="footer-link-spacing"
+            navItem={legalItem}
+            variant="footer"
+            isLast={index === legalLinks.length - 1}
+          />
+        </li>
+      ))
+    }
+  </ul>
 </nav>

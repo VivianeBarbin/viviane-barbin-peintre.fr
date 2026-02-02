@@ -5,190 +5,158 @@ import { navigationLinks } from "@config/navigation";
 ---
 
 <div id="mobile-nav__container">
-    <!-- Burger Button -->
-    <div class="flex items-center justify-end pr-4">
-        <button
-            id="mobile-nav__burger"
-            aria-label="open navigation menu"
-            aria-haspopup="true"
-            aria-expanded="false"
-            class="icon-btn md:hidden"
-        >
-            <Icon
-                name="tabler/menu"
-                class="h-7 w-7 text-foreground"
-                aria-hidden="true"
-            />
-        </button>
-    </div>
-    <div
-        id="mobile-nav__content"
-        class="fixed top-0 -right-72 z-20 h-screen w-72 items-center overflow-x-hidden whitespace-nowrap bg-background text-lg font-normal transition-all duration-300"
-    >
-        <div class="w-full px-2 pb-6">
-            <!-- Header with Close Button -->
-            <div class="flex h-20 items-center justify-end px-4 pt-4">
-                <button
-                    id="mobile-nav__close"
-                    class="icon-btn"
-                    aria-label="close navigation menu"
-                >
-                    <Icon
-                        name="tabler/x"
-                        class="h-7 w-7 text-primaryMuted"
-                        aria-hidden="true"
-                    />
-                </button>
-            </div>
-
-            <nav>
-                <ul class="mx-1 mt-2">
-                    {
-                        navigationLinks.map((navItem) => (
-                            <li>
-                                <NavLink
-                                    navItem={navItem}
-                                    activeClass=""
-                                    class="nav__link--mobile"
-                                    noUnderline
-                                />
-                            </li>
-                        ))
-                    }
-                </ul>
-            </nav>
-        </div>
-    </div>
-
+  <!-- Burger Button -->
+  <div class="flex items-center justify-end pr-4">
     <button
-        id="mobile-nav__backdrop"
-        class="mobile-nav__backdrop--fade-out fixed top-0 left-0 z-10 h-screen bg-black"
-        aria-label="close navigation menu"></button>
-    <script>
-        let mobileNavContainer: HTMLElement | null;
-        let mobileNavBurger: HTMLElement | null;
-        let mobileNavContent: HTMLElement | null;
-        let mobileNavCloseBtn: HTMLElement | null;
-        let mobileNavBackdrop: HTMLElement | null;
+      id="mobile-nav__burger"
+      aria-label="open navigation menu"
+      aria-haspopup="true"
+      aria-expanded="false"
+      class="icon-btn md:hidden"
+    >
+      <Icon name="tabler/menu" class="text-foreground h-7 w-7" aria-hidden="true" />
+    </button>
+  </div>
+  <div
+    id="mobile-nav__content"
+    class="bg-background fixed top-0 -right-72 z-20 h-screen w-72 items-center overflow-x-hidden text-lg font-normal whitespace-nowrap transition-all duration-300"
+  >
+    <div class="w-full px-2 pb-6">
+      <!-- Header with Close Button -->
+      <div class="flex h-20 items-center justify-end px-4 pt-4">
+        <button id="mobile-nav__close" class="icon-btn" aria-label="close navigation menu">
+          <Icon name="tabler/x" class="text-primaryMuted h-7 w-7" aria-hidden="true" />
+        </button>
+      </div>
 
-        function toggleMobileNav(event: Event) {
-            if (
-                mobileNavBurger &&
-                mobileNavContent &&
-                mobileNavContainer &&
-                mobileNavBackdrop
-            )
-                if (!mobileNavContainer.classList.contains("open")) {
-                    // mobile nav is currently closed, so open it
-                    mobileNavContainer.classList.add("open");
-                    mobileNavBurger.setAttribute("aria-expanded", "true");
+      <nav>
+        <ul class="mx-1 mt-2">
+          {
+            navigationLinks.map((navItem) => (
+              <li>
+                <NavLink navItem={navItem} activeClass="" class="nav__link--mobile" noUnderline />
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
 
-                    // mobile nav content drawer
-                    mobileNavContent.classList.remove("hidden");
-                    mobileNavContent.classList.remove("mobile-nav--slide-out");
-                    mobileNavContent.classList.add("mobile-nav--slide-in");
+  <button
+    id="mobile-nav__backdrop"
+    class="mobile-nav__backdrop--fade-out fixed top-0 left-0 z-10 h-screen bg-black"
+    aria-label="close navigation menu"></button>
+  <script>
+    let mobileNavContainer: HTMLElement | null;
+    let mobileNavBurger: HTMLElement | null;
+    let mobileNavContent: HTMLElement | null;
+    let mobileNavCloseBtn: HTMLElement | null;
+    let mobileNavBackdrop: HTMLElement | null;
 
-                    // backdrop button
-                    mobileNavBackdrop.classList.remove("hidden");
-                    mobileNavBackdrop.classList.remove(
-                        "mobile-nav__backdrop--fade-out",
-                    );
-                    mobileNavBackdrop.classList.add(
-                        "mobile-nav__backdrop--fade-in",
-                    );
-                } else {
-                    // dropdown is currently open, so close it
-                    mobileNavContainer.classList.remove("open");
-                    mobileNavBurger.setAttribute("aria-expanded", "false");
+    function toggleMobileNav(event: Event) {
+      if (mobileNavBurger && mobileNavContent && mobileNavContainer && mobileNavBackdrop)
+        if (!mobileNavContainer.classList.contains("open")) {
+          // mobile nav is currently closed, so open it
+          mobileNavContainer.classList.add("open");
+          mobileNavBurger.setAttribute("aria-expanded", "true");
 
-                    // mobile nav content drawer
-                    mobileNavContent.classList.remove("mobile-nav--slide-in");
-                    mobileNavContent.classList.add("mobile-nav--slide-out");
-                    // make hidden after the slide out effect is done
-                    setTimeout(() => {
-                        mobileNavContent?.classList.add("hidden");
-                    }, 300);
+          // mobile nav content drawer
+          mobileNavContent.classList.remove("hidden");
+          mobileNavContent.classList.remove("mobile-nav--slide-out");
+          mobileNavContent.classList.add("mobile-nav--slide-in");
 
-                    // backdrop button
-                    mobileNavBackdrop.classList.remove(
-                        "mobile-nav__backdrop--fade-in",
-                    );
-                    mobileNavBackdrop.classList.add(
-                        "mobile-nav__backdrop--fade-out",
-                    );
-                }
-            event.preventDefault();
-            return false;
+          // backdrop button
+          mobileNavBackdrop.classList.remove("hidden");
+          mobileNavBackdrop.classList.remove("mobile-nav__backdrop--fade-out");
+          mobileNavBackdrop.classList.add("mobile-nav__backdrop--fade-in");
+        } else {
+          // dropdown is currently open, so close it
+          mobileNavContainer.classList.remove("open");
+          mobileNavBurger.setAttribute("aria-expanded", "false");
+
+          // mobile nav content drawer
+          mobileNavContent.classList.remove("mobile-nav--slide-in");
+          mobileNavContent.classList.add("mobile-nav--slide-out");
+          // make hidden after the slide out effect is done
+          setTimeout(() => {
+            mobileNavContent?.classList.add("hidden");
+          }, 300);
+
+          // backdrop button
+          mobileNavBackdrop.classList.remove("mobile-nav__backdrop--fade-in");
+          mobileNavBackdrop.classList.add("mobile-nav__backdrop--fade-out");
         }
+      event.preventDefault();
+      return false;
+    }
 
-        function initMobileNav() {
-            // every time a view transition or page load occurs, we need to init these variables
-            mobileNavContainer = document.getElementById(
-                "mobile-nav__container",
-            );
-            mobileNavBurger = document.getElementById("mobile-nav__burger");
-            mobileNavContent = document.getElementById("mobile-nav__content");
-            mobileNavCloseBtn = document.getElementById("mobile-nav__close");
-            mobileNavBackdrop = document.getElementById("mobile-nav__backdrop");
+    function initMobileNav() {
+      // every time a view transition or page load occurs, we need to init these variables
+      mobileNavContainer = document.getElementById("mobile-nav__container");
+      mobileNavBurger = document.getElementById("mobile-nav__burger");
+      mobileNavContent = document.getElementById("mobile-nav__content");
+      mobileNavCloseBtn = document.getElementById("mobile-nav__close");
+      mobileNavBackdrop = document.getElementById("mobile-nav__backdrop");
 
-            if (mobileNavBurger && mobileNavCloseBtn && mobileNavBackdrop) {
-                mobileNavBurger.addEventListener("click", toggleMobileNav);
-                mobileNavCloseBtn.addEventListener("click", toggleMobileNav);
-                mobileNavBackdrop.addEventListener("click", toggleMobileNav);
-            }
-        }
+      if (mobileNavBurger && mobileNavCloseBtn && mobileNavBackdrop) {
+        mobileNavBurger.addEventListener("click", toggleMobileNav);
+        mobileNavCloseBtn.addEventListener("click", toggleMobileNav);
+        mobileNavBackdrop.addEventListener("click", toggleMobileNav);
+      }
+    }
 
-        // runs on initial page load
-        initMobileNav();
+    // runs on initial page load
+    initMobileNav();
 
-        // runs on view transitions navigation
-        document.addEventListener("astro:after-swap", initMobileNav);
-    </script>
+    // runs on view transitions navigation
+    document.addEventListener("astro:after-swap", initMobileNav);
+  </script>
 
-    <style>
-        .mobile-nav__backdrop--fade-in {
-            animation: MobileNavFadeInAnimation ease-in-out 0.3s forwards;
-            @apply block w-screen;
-        }
+  <style>
+    .mobile-nav__backdrop--fade-in {
+      animation: MobileNavFadeInAnimation ease-in-out 0.3s forwards;
+      @apply block w-screen;
+    }
 
-        .mobile-nav__backdrop--fade-out {
-            @apply hidden w-0 opacity-0;
-        }
+    .mobile-nav__backdrop--fade-out {
+      @apply hidden w-0 opacity-0;
+    }
 
-        @keyframes MobileNavFadeInAnimation {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 0.4;
-            }
-        }
+    @keyframes MobileNavFadeInAnimation {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0.4;
+      }
+    }
 
-        /* mobile nav content drawer */
-        .mobile-nav--slide-in {
-            animation: mobileNavSlideInAnimation ease-in-out 0.3s forwards;
-        }
+    /* mobile nav content drawer */
+    .mobile-nav--slide-in {
+      animation: mobileNavSlideInAnimation ease-in-out 0.3s forwards;
+    }
 
-        .mobile-nav--slide-out {
-            animation: mobileNavSlideOutAnimation ease-in-out 0.3s forwards;
-        }
+    .mobile-nav--slide-out {
+      animation: mobileNavSlideOutAnimation ease-in-out 0.3s forwards;
+    }
 
-        @keyframes mobileNavSlideInAnimation {
-            0% {
-                right: calc(var(--spacing) * -72);
-            }
-            100% {
-                right: 0;
-            }
-        }
+    @keyframes mobileNavSlideInAnimation {
+      0% {
+        right: calc(var(--spacing) * -72);
+      }
+      100% {
+        right: 0;
+      }
+    }
 
-        @keyframes mobileNavSlideOutAnimation {
-            0% {
-                right: 0;
-            }
-            100% {
-                right: calc(var(--spacing) * -72);
-            }
-        }
-    </style>
+    @keyframes mobileNavSlideOutAnimation {
+      0% {
+        right: 0;
+      }
+      100% {
+        right: calc(var(--spacing) * -72);
+      }
+    }
+  </style>
 </div>

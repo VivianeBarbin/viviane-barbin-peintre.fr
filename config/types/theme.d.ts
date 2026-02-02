@@ -8,7 +8,7 @@ export interface ThemeConfig {
     author: string;
     url: string;
     base: string;
-    startYear: string,
+    startYear: string;
     faviconSvg: string;
     faviconPng96: string;
     faviconPng: string;

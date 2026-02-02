@@ -5,9 +5,9 @@ const siteTitle = themeConfig.site.title;
 const [firstName, lastName] = siteTitle.split(/\s+/);
 ---
 
-<a class="flex items-center rounded py-2 pr-2 text-foreground lg:pr-4 focus-ring" href="/">
-    <p class="logo-text">
-        <span class="text-primary">{firstName}</span>
-        <span class="text-secondary">{lastName}</span>
-    </p>
+<a class="text-foreground focus-ring flex items-center rounded py-2 pr-2 lg:pr-4" href="/">
+  <p class="logo-text">
+    <span class="text-primary">{firstName}</span>
+    <span class="text-secondary">{lastName}</span>
+  </p>
 </a>

@@ -64,11 +64,12 @@ function generateVarBlock(colors: ColorMap, keys: string[], indent = "    "): st
 }
 
 function assertConfigShape(
-  cfg: unknown,
+  cfg: unknown
 ): asserts cfg is { colors: { light: ColorMap; dark: ColorMap } } {
   const c: any = (cfg as any)?.colors;
   if (!c || typeof c !== "object") throw new Error("themeConfig.colors is missing");
-  if (!c.light || typeof c.light !== "object") throw new Error("themeConfig.colors.light is missing");
+  if (!c.light || typeof c.light !== "object")
+    throw new Error("themeConfig.colors.light is missing");
   if (!c.dark || typeof c.dark !== "object") throw new Error("themeConfig.colors.dark is missing");
 }
 
@@ -103,16 +104,15 @@ ${generateVarBlock(dark, keys, "    ")}
   const targetPath = join(__dirname, "..", "src/styles/global/color.css");
 
   writeFileSync(targetPath, cssContent, "utf-8");
-  // eslint-disable-next-line no-console
+
   console.log("Generated CSS variables successfully!");
-  // eslint-disable-next-line no-console
+
   console.log(`Output: ${targetPath}`);
 }
 
 try {
   main();
 } catch (err) {
-  // eslint-disable-next-line no-console
   console.error("Error generating CSS variables:", err);
   process.exit(1);
 }

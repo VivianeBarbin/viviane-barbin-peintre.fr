@@ -7,48 +7,42 @@ import Footer from "@/components/footer/Footer.astro";
 
 <!doctype html>
 <html lang="en">
-    <head>
-        <BaseHead />
-    </head>
-    <body id="body" class="bg-background flex flex-col min-h-dvh">
-        <Nav />
-        <main class="relative flex-1 overflow-x-clip pt-(--navbar-height,90px)">
-            <slot />
-        </main>
-        <Footer />
+  <head>
+    <BaseHead />
+  </head>
+  <body id="body" class="bg-background flex min-h-dvh flex-col">
+    <Nav />
+    <main class="relative flex-1 overflow-x-clip pt-(--navbar-height,90px)">
+      <slot />
+    </main>
+    <Footer />
 
-        <script>
-            import { watchElementHeight } from "@/utils/elementSizes";
+    <script>
+      import { watchElementHeight } from "@/utils/elementSizes";
 
-            function initNavbarHeightWatcher() {
-                // Watch navbar and sync its height to CSS variable
-                const cleanup = watchElementHeight(
-                    "#nav__container",
-                    "--navbar-height",
-                );
+      function initNavbarHeightWatcher() {
+        // Watch navbar and sync its height to CSS variable
+        const cleanup = watchElementHeight("#nav__container", "--navbar-height");
 
-                // Cleanup on view transitions
-                document.addEventListener("astro:before-swap", cleanup, {
-                    once: true,
-                });
-            }
+        // Cleanup on view transitions
+        document.addEventListener("astro:before-swap", cleanup, {
+          once: true,
+        });
+      }
 
-            // Initialize on page load
-            initNavbarHeightWatcher();
+      // Initialize on page load
+      initNavbarHeightWatcher();
 
-            // Re-initialize on view transitions
-            document.addEventListener(
-                "astro:after-swap",
-                initNavbarHeightWatcher,
-            );
-        </script>
-    </body>
+      // Re-initialize on view transitions
+      document.addEventListener("astro:after-swap", initNavbarHeightWatcher);
+    </script>
+  </body>
 </html>
 
 <style>
-    html,
-    body {
-        margin: 0;
-        width: 100%;
-    }
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+  }
 </style>

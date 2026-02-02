@@ -21,7 +21,7 @@ export const navigationLinks: NavLinkItem[] = [
   {
     text: "Contact",
     link: "/contact",
-  }
+  },
 ];
 
 export const legalLinks: LegalLinkItem[] = [
@@ -32,16 +32,16 @@ export const legalLinks: LegalLinkItem[] = [
   {
     text: "Confidentialité",
     link: "/politique-confidentialite",
-  }
+  },
 ];
 
 export const socialLinks: SocialLinkItem[] = [
   {
     text: "Facebook",
-    link: "https://www.facebook.com/viviane.barbin.9"
+    link: "https://www.facebook.com/viviane.barbin.9",
   },
   {
     text: "Bourgogne Tourisme",
-    link: "https://www.bourgogne-tourisme.com/locations-de-vacances/chez-viviani"
-  }
+    link: "https://www.bourgogne-tourisme.com/locations-de-vacances/chez-viviani",
+  },
 ];

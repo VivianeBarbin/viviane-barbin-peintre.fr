@@ -1,13 +1,12 @@
 ---
-import { themeConfig } from '@config/site'
-const {author, startYear } = themeConfig.site
+import { themeConfig } from "@config/site";
+const { author, startYear } = themeConfig.site;
 
-const currentYear = new Date().getFullYear()
-const year = Number(startYear) === currentYear
-  ? startYear
-  : `${startYear}-${currentYear}`
+const currentYear = new Date().getFullYear();
+const year = Number(startYear) === currentYear ? startYear : `${startYear}-${currentYear}`;
 ---
 
-<p class="py-2 text-primary">
-  © {year} {author}
+<p class="text-primary py-2">
+  © {year}
+  {author}
 </p>

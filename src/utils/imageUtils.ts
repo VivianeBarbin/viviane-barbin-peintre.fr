@@ -4,8 +4,8 @@
 
 // Use Vite's import.meta.glob to eagerly load all images
 const images = import.meta.glob<{ default: ImageMetadata }>(
-	"/src/assets/images/**/*.{jpg,jpeg,png,webp,avif,gif,svg}",
-	{ eager: true }
+  "/src/assets/images/**/*.{jpg,jpeg,png,webp,avif,gif,svg}",
+  { eager: true }
 );
 
 // Cache for resolved images to avoid repeated lookups
@@ -16,7 +16,7 @@ const imageCache = new Map<string, ImageMetadata | null>();
  * @internal
  */
 function normalizePath(imagePath: string): string {
-	return imagePath.replace(/^@images\//, "/src/assets/images/");
+  return imagePath.replace(/^@images\//, "/src/assets/images/");
 }
 
 /**
@@ -34,35 +34,33 @@ function normalizePath(imagePath: string): string {
  * }
  * ```
  */
-export function resolveImage(
-	imagePath: string | null | undefined
-): ImageMetadata | null {
-	if (!imagePath) return null;
+export function resolveImage(imagePath: string | null | undefined): ImageMetadata | null {
+  if (!imagePath) return null;
 
-	// Check cache first
-	if (imageCache.has(imagePath)) {
-		return imageCache.get(imagePath)!;
-	}
+  // Check cache first
+  if (imageCache.has(imagePath)) {
+    return imageCache.get(imagePath)!;
+  }
 
-	// Normalize the path
-	const normalizedPath = normalizePath(imagePath);
+  // Normalize the path
+  const normalizedPath = normalizePath(imagePath);
 
-	// Look up the image in our glob map
-	const imageModule = images[normalizedPath];
+  // Look up the image in our glob map
+  const imageModule = images[normalizedPath];
 
-	if (!imageModule?.default) {
-		console.warn(
-			`[resolveImage] Image not found: "${imagePath}"\n` +
-			`  Resolved to: "${normalizedPath}"\n` +
-			`  Available paths: ${Object.keys(images).length} images loaded`
-		);
-		imageCache.set(imagePath, null);
-		return null;
-	}
+  if (!imageModule?.default) {
+    console.warn(
+      `[resolveImage] Image not found: "${imagePath}"\n` +
+        `  Resolved to: "${normalizedPath}"\n` +
+        `  Available paths: ${Object.keys(images).length} images loaded`
+    );
+    imageCache.set(imagePath, null);
+    return null;
+  }
 
-	const metadata = imageModule.default;
-	imageCache.set(imagePath, metadata);
-	return metadata;
+  const metadata = imageModule.default;
+  imageCache.set(imagePath, metadata);
+  return metadata;
 }
 
 /**
@@ -79,10 +77,8 @@ export function resolveImage(
  * ]);
  * ```
  */
-export function resolveImages(
-	imagePaths: (string | null | undefined)[]
-): (ImageMetadata | null)[] {
-	return imagePaths.map(resolveImage);
+export function resolveImages(imagePaths: (string | null | undefined)[]): (ImageMetadata | null)[] {
+  return imagePaths.map(resolveImage);
 }
 
 /**
@@ -99,7 +95,7 @@ export function resolveImages(
  * ```
  */
 export function imageExists(imagePath: string | null | undefined): boolean {
-	return resolveImage(imagePath) !== null;
+  return resolveImage(imagePath) !== null;
 }
 
 /**
@@ -115,9 +111,7 @@ export function imageExists(imagePath: string | null | undefined): boolean {
  * ```
  */
 export function getAllImagePaths(): string[] {
-	return Object.keys(images).map((path) =>
-		path.replace(/^\/src\/assets\/images\//, "@images/")
-	);
+  return Object.keys(images).map((path) => path.replace(/^\/src\/assets\/images\//, "@images/"));
 }
 
 /**
@@ -136,10 +130,10 @@ export function getAllImagePaths(): string[] {
  * ```
  */
 export function resolveImageWithFallback(
-	imagePath: string | null | undefined,
-	fallbackPath: string
+  imagePath: string | null | undefined,
+  fallbackPath: string
 ): ImageMetadata | null {
-	return resolveImage(imagePath) ?? resolveImage(fallbackPath);
+  return resolveImage(imagePath) ?? resolveImage(fallbackPath);
 }
 
 /**
@@ -147,5 +141,5 @@ export function resolveImageWithFallback(
  * Useful in development if you're adding images dynamically
  */
 export function clearImageCache(): void {
-	imageCache.clear();
+  imageCache.clear();
 }

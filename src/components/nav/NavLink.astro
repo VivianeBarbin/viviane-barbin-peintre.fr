@@ -3,33 +3,29 @@
 import { Icon } from "astro-icon/components";
 import type { NavLinkItem } from "@config/types";
 
-const comparePathsWithTrailingSlash = (
-    path1: string,
-    path2: string,
-): boolean => {
-    const ensureTrailingSlash = (path: string): string =>
-        path.endsWith("/") ? path : `${path}/`;
-    return ensureTrailingSlash(path1) === ensureTrailingSlash(path2);
+const comparePathsWithTrailingSlash = (path1: string, path2: string): boolean => {
+  const ensureTrailingSlash = (path: string): string => (path.endsWith("/") ? path : `${path}/`);
+  return ensureTrailingSlash(path1) === ensureTrailingSlash(path2);
 };
 
 export interface Props {
-    navItem: NavLinkItem;
-    class?: string;
-    noIcon?: boolean;
-    noUnderline?: boolean;
-    activeClass?: string;
-    isLast?: boolean;
-    variant?: "header" | "footer";
+  navItem: NavLinkItem;
+  class?: string;
+  noIcon?: boolean;
+  noUnderline?: boolean;
+  activeClass?: string;
+  isLast?: boolean;
+  variant?: "header" | "footer";
 }
 
 const {
-    navItem,
-    class: className = "",
-    noIcon = false,
-    noUnderline = false,
-    activeClass = "text-primary font-semibold",
-    isLast = false,
-    variant = "header",
+  navItem,
+  class: className = "",
+  noIcon = false,
+  noUnderline = false,
+  activeClass = "text-primary font-semibold",
+  isLast = false,
+  variant = "header",
 } = Astro.props;
 
 const { text, link, newTab = false, icon } = navItem;
@@ -40,20 +36,20 @@ const opensNewTab = newTab || isExternal;
 
 // Variant-specific styles
 const variantStyles = {
-    header: {
-        base: "px-3 lg:px-4 py-2",
-        text: "text-foreground hover:text-foreground/80",
-        underline: true,
-        underlineClasses: "after:left-3.6 after:bottom-1 after:bg-primaryMuted/80",
-        activeClass: activeClass,
-    },
-    footer: {
-        base: "pr-4 py-[0.25rem] lg:(py-2 px-3)",
-        text: "text-sm text-foreground hover:text-foreground/80",
-        underline: false,
-        underlineClasses: "after:left-3.6 after:bottom-1 after:bg-primaryMuted/80",
-        activeClass: "text-foreground font-normal underline underline-offset-4",
-    },
+  header: {
+    base: "px-3 lg:px-4 py-2",
+    text: "text-foreground hover:text-foreground/80",
+    underline: true,
+    underlineClasses: "after:left-3.6 after:bottom-1 after:bg-primaryMuted/80",
+    activeClass: activeClass,
+  },
+  footer: {
+    base: "pr-4 py-[0.25rem] lg:(py-2 px-3)",
+    text: "text-sm text-foreground hover:text-foreground/80",
+    underline: false,
+    underlineClasses: "after:left-3.6 after:bottom-1 after:bg-primaryMuted/80",
+    activeClass: "text-foreground font-normal underline underline-offset-4",
+  },
 };
 
 const currentVariant = variantStyles[variant];
@@ -62,55 +58,52 @@ const finalActiveClass = isActive ? currentVariant.activeClass : "";
 ---
 
 <a
-    class:list={[
-        // Base styles - items-start keeps icons aligned to first line when text wraps
-        "nav__link--base relative inline-flex max-w-full items-start gap-2 rounded-md",
-        "transition-all duration-300",
-        currentVariant.base,
-        currentVariant.text,
-        
-        // Remove padding-right on desktop for last element
-        isLast && "lg:pr-0",
-        
-        // Underline animation (only for header variant or when explicitly enabled)
-        shouldShowUnderline && "after:content-[''] after:absolute after:h-1px after:origin-left",
-        shouldShowUnderline && currentVariant.underlineClasses,
-        shouldShowUnderline && !isLast && "after:right-3.6",
-        shouldShowUnderline && isLast && "after:right-3 lg:after:right-0",
-        shouldShowUnderline && "after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300",
-        
-        // Focus ring
-        "focus-ring",
-        
-        // Custom class overrides
-        className,
-        finalActiveClass,
-    ]}
-    href={link}
-    target={opensNewTab ? "_blank" : undefined}
-    rel={opensNewTab ? "noopener noreferrer" : undefined}
-    aria-current={isActive ? "page" : undefined}
+  class:list={[
+    // Base styles - items-start keeps icons aligned to first line when text wraps
+    "nav__link--base relative inline-flex max-w-full items-start gap-2 rounded-md",
+    "transition-all duration-300",
+    currentVariant.base,
+    currentVariant.text,
+
+    // Remove padding-right on desktop for last element
+    isLast && "lg:pr-0",
+
+    // Underline animation (only for header variant or when explicitly enabled)
+    shouldShowUnderline && "after:h-1px after:absolute after:origin-left after:content-['']",
+    shouldShowUnderline && currentVariant.underlineClasses,
+    shouldShowUnderline && !isLast && "after:right-3.6",
+    shouldShowUnderline && isLast && "after:right-3 lg:after:right-0",
+    shouldShowUnderline &&
+      "after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100",
+
+    // Focus ring
+    "focus-ring",
+
+    // Custom class overrides
+    className,
+    finalActiveClass,
+  ]}
+  href={link}
+  target={opensNewTab ? "_blank" : undefined}
+  rel={opensNewTab ? "noopener noreferrer" : undefined}
+  aria-current={isActive ? "page" : undefined}
 >
-    {
-        icon && !noIcon && (
-            <Icon 
-                name={icon} 
-                aria-hidden="true" 
-                class="size-5 shrink-0 translate-y-[0.125em]" 
-            />
-        )
-    }
-    <span class="min-w-0 truncate">{text}</span>
-    {
-        opensNewTab && (
-            <>
-                <Icon
-                    name="tabler/external-link"
-                    aria-hidden="true"
-                    class="size-3 shrink-0 translate-y-[0.25em] opacity-50"
-                />
-                <span class="sr-only">(ouvre dans un nouvel onglet)</span>
-            </>
-        )
-    }
+  {
+    icon && !noIcon && (
+      <Icon name={icon} aria-hidden="true" class="size-5 shrink-0 translate-y-[0.125em]" />
+    )
+  }
+  <span class="min-w-0 truncate">{text}</span>
+  {
+    opensNewTab && (
+      <>
+        <Icon
+          name="tabler/external-link"
+          aria-hidden="true"
+          class="size-3 shrink-0 translate-y-[0.25em] opacity-50"
+        />
+        <span class="sr-only">(ouvre dans un nouvel onglet)</span>
+      </>
+    )
+  }
 </a>

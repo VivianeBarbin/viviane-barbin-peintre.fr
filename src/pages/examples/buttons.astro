@@ -1,12 +1,13 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Button from '@/components/button/Button.astro';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Button from "@/components/button/Button.astro";
 ---
+
 <BaseLayout>
-  <main class="min-h-screen bg-background text-foreground p-8">
-    <div class="max-w-6xl mx-auto space-y-12">
+  <main class="bg-background text-foreground min-h-screen p-8">
+    <div class="mx-auto max-w-6xl space-y-12">
       <header>
-          <h1 class="heading-1">Button Component Examples</h1>
+        <h1 class="heading-1">Button Component Examples</h1>
         <p class="text-muted-foreground">
           Demonstrating button variants with the new color system using OKLCH colors
         </p>
@@ -14,7 +15,7 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Variants Section -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Variants</h2>
+        <h2 class="text-foreground text-2xl font-semibold">Variants</h2>
         <div class="flex flex-wrap gap-4">
           <Button variant="primary">Primary Button</Button>
           <Button variant="secondary">Secondary Button</Button>
@@ -27,7 +28,7 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Sizes Section -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Sizes</h2>
+        <h2 class="text-foreground text-2xl font-semibold">Sizes</h2>
         <div class="flex flex-wrap items-center gap-4">
           <Button variant="primary" size="sm">Small</Button>
           <Button variant="primary" size="default">Default</Button>
@@ -37,9 +38,10 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Link Buttons -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Link Buttons</h2>
-        <p class="text-sm text-muted-foreground">
-          Buttons can render as <code class="bg-muted px-1.5 py-0.5 rounded text-xs">&lt;a&gt;</code> tags when using the <code class="bg-muted px-1.5 py-0.5 rounded text-xs">href</code> prop
+        <h2 class="text-foreground text-2xl font-semibold">Link Buttons</h2>
+        <p class="text-muted-foreground text-sm">
+          Buttons can render as <code class="bg-muted rounded px-1.5 py-0.5 text-xs">&lt;a&gt;</code
+          > tags when using the <code class="bg-muted rounded px-1.5 py-0.5 text-xs">href</code> prop
         </p>
         <div class="flex flex-wrap gap-4">
           <Button variant="primary" href="/about">About Page</Button>
@@ -51,17 +53,19 @@ import Button from '@/components/button/Button.astro';
 
       <!-- External Links with Security -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">External Links (with Security)</h2>
-        <p class="text-sm text-muted-foreground">
-          External links with <code class="bg-muted px-1.5 py-0.5 rounded text-xs">target="_blank"</code> automatically get <code class="bg-muted px-1.5 py-0.5 rounded text-xs">rel="noopener noreferrer"</code>
+        <h2 class="text-foreground text-2xl font-semibold">External Links (with Security)</h2>
+        <p class="text-muted-foreground text-sm">
+          External links with <code class="bg-muted rounded px-1.5 py-0.5 text-xs"
+            >target="_blank"</code
+          > automatically get <code class="bg-muted rounded px-1.5 py-0.5 text-xs"
+            >rel="noopener noreferrer"</code
+          >
         </p>
         <div class="flex flex-wrap gap-4">
           <Button variant="primary" href="https://example.com" target="_blank">
             External Link
           </Button>
-          <Button variant="secondary" href="https://github.com" target="_blank">
-            GitHub
-          </Button>
+          <Button variant="secondary" href="https://github.com" target="_blank"> GitHub </Button>
           <Button variant="link" href="https://docs.astro.build" target="_blank">
             Documentation →
           </Button>
@@ -70,9 +74,11 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Disabled Links -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Disabled Links</h2>
-        <p class="text-sm text-muted-foreground">
-          Links with <code class="bg-muted px-1.5 py-0.5 rounded text-xs">disabled</code> prop use <code class="bg-muted px-1.5 py-0.5 rounded text-xs">aria-disabled</code> and <code class="bg-muted px-1.5 py-0.5 rounded text-xs">pointer-events-none</code>
+        <h2 class="text-foreground text-2xl font-semibold">Disabled Links</h2>
+        <p class="text-muted-foreground text-sm">
+          Links with <code class="bg-muted rounded px-1.5 py-0.5 text-xs">disabled</code> prop use <code
+            class="bg-muted rounded px-1.5 py-0.5 text-xs">aria-disabled</code
+          > and <code class="bg-muted rounded px-1.5 py-0.5 text-xs">pointer-events-none</code>
         </p>
         <div class="flex flex-wrap gap-4">
           <Button variant="primary" href="/page" disabled>Disabled Link</Button>
@@ -83,11 +89,11 @@ import Button from '@/components/button/Button.astro';
 
       <!-- All Variants with All Sizes -->
       <section class="space-y-6">
-        <h2 class="text-2xl font-semibold text-foreground">All Variants × All Sizes</h2>
-        
+        <h2 class="text-foreground text-2xl font-semibold">All Variants × All Sizes</h2>
+
         <div class="space-y-4">
           <div>
-            <h3 class="text-sm font-medium text-muted-foreground mb-2">Primary</h3>
+            <h3 class="text-muted-foreground mb-2 text-sm font-medium">Primary</h3>
             <div class="flex flex-wrap items-center gap-3">
               <Button variant="primary" size="sm">Small</Button>
               <Button variant="primary" size="default">Default</Button>
@@ -96,7 +102,7 @@ import Button from '@/components/button/Button.astro';
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-muted-foreground mb-2">Secondary</h3>
+            <h3 class="text-muted-foreground mb-2 text-sm font-medium">Secondary</h3>
             <div class="flex flex-wrap items-center gap-3">
               <Button variant="secondary" size="sm">Small</Button>
               <Button variant="secondary" size="default">Default</Button>
@@ -105,7 +111,7 @@ import Button from '@/components/button/Button.astro';
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-muted-foreground mb-2">Accent</h3>
+            <h3 class="text-muted-foreground mb-2 text-sm font-medium">Accent</h3>
             <div class="flex flex-wrap items-center gap-3">
               <Button variant="accent" size="sm">Small</Button>
               <Button variant="accent" size="default">Default</Button>
@@ -114,7 +120,7 @@ import Button from '@/components/button/Button.astro';
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-muted-foreground mb-2">Outline</h3>
+            <h3 class="text-muted-foreground mb-2 text-sm font-medium">Outline</h3>
             <div class="flex flex-wrap items-center gap-3">
               <Button variant="outline" size="sm">Small</Button>
               <Button variant="outline" size="default">Default</Button>
@@ -123,7 +129,7 @@ import Button from '@/components/button/Button.astro';
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-muted-foreground mb-2">Ghost</h3>
+            <h3 class="text-muted-foreground mb-2 text-sm font-medium">Ghost</h3>
             <div class="flex flex-wrap items-center gap-3">
               <Button variant="ghost" size="sm">Small</Button>
               <Button variant="ghost" size="default">Default</Button>
@@ -132,7 +138,7 @@ import Button from '@/components/button/Button.astro';
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-muted-foreground mb-2">Link</h3>
+            <h3 class="text-muted-foreground mb-2 text-sm font-medium">Link</h3>
             <div class="flex flex-wrap items-center gap-3">
               <Button variant="link" size="sm">Small</Button>
               <Button variant="link" size="default">Default</Button>
@@ -144,7 +150,7 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Disabled State -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Disabled State</h2>
+        <h2 class="text-foreground text-2xl font-semibold">Disabled State</h2>
         <div class="flex flex-wrap gap-4">
           <Button variant="primary" disabled>Disabled Primary</Button>
           <Button variant="secondary" disabled>Disabled Secondary</Button>
@@ -157,7 +163,7 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Button Types -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Button Types</h2>
+        <h2 class="text-foreground text-2xl font-semibold">Button Types</h2>
         <div class="flex flex-wrap gap-4">
           <Button variant="primary" type="button">Button</Button>
           <Button variant="secondary" type="submit">Submit</Button>
@@ -167,66 +173,68 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Custom Classes -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">With Custom Classes</h2>
+        <h2 class="text-foreground text-2xl font-semibold">With Custom Classes</h2>
         <div class="flex flex-wrap gap-4">
           <Button variant="primary" class="w-full md:w-auto">Full Width on Mobile</Button>
           <Button variant="secondary" class="shadow-xl">With Extra Shadow</Button>
-          <Button variant="accent" class="uppercase tracking-wide">Uppercase</Button>
+          <Button variant="accent" class="tracking-wide uppercase">Uppercase</Button>
           <Button variant="outline" class="min-w-32">Min Width</Button>
         </div>
       </section>
 
       <!-- Color System Reference -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Color System Reference</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 class="text-foreground text-2xl font-semibold">Color System Reference</h2>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <!-- Primary -->
-          <div class="border border-border rounded-lg p-4 space-y-2">
-            <div class="h-16 bg-primary rounded flex items-center justify-center">
+          <div class="border-border space-y-2 rounded-lg border p-4">
+            <div class="bg-primary flex h-16 items-center justify-center rounded">
               <span class="text-primary-foreground font-semibold">Primary</span>
             </div>
-            <div class="h-12 bg-primary-muted rounded flex items-center justify-center">
+            <div class="bg-primary-muted flex h-12 items-center justify-center rounded">
               <span class="text-primary-foreground text-sm">Primary Muted</span>
             </div>
           </div>
 
           <!-- Secondary -->
-          <div class="border border-border rounded-lg p-4 space-y-2">
-            <div class="h-16 bg-secondary rounded flex items-center justify-center">
+          <div class="border-border space-y-2 rounded-lg border p-4">
+            <div class="bg-secondary flex h-16 items-center justify-center rounded">
               <span class="text-secondary-foreground font-semibold">Secondary</span>
             </div>
-            <div class="h-12 bg-secondary-muted rounded flex items-center justify-center">
+            <div class="bg-secondary-muted flex h-12 items-center justify-center rounded">
               <span class="text-secondary-foreground text-sm">Secondary Muted</span>
             </div>
           </div>
 
           <!-- Accent -->
-          <div class="border border-border rounded-lg p-4 space-y-2">
-            <div class="h-16 bg-accent rounded flex items-center justify-center">
+          <div class="border-border space-y-2 rounded-lg border p-4">
+            <div class="bg-accent flex h-16 items-center justify-center rounded">
               <span class="text-accent-foreground font-semibold">Accent</span>
             </div>
           </div>
 
           <!-- Background -->
-          <div class="border border-border rounded-lg p-4 space-y-2">
-            <div class="h-16 bg-background rounded flex items-center justify-center border border-border">
+          <div class="border-border space-y-2 rounded-lg border p-4">
+            <div
+              class="bg-background border-border flex h-16 items-center justify-center rounded border"
+            >
               <span class="text-foreground font-semibold">Background</span>
             </div>
-            <div class="h-12 bg-background-bright rounded flex items-center justify-center">
+            <div class="bg-background-bright flex h-12 items-center justify-center rounded">
               <span class="text-foreground text-sm">Background Bright</span>
             </div>
           </div>
 
           <!-- Muted -->
-          <div class="border border-border rounded-lg p-4 space-y-2">
-            <div class="h-16 bg-muted rounded flex items-center justify-center">
+          <div class="border-border space-y-2 rounded-lg border p-4">
+            <div class="bg-muted flex h-16 items-center justify-center rounded">
               <span class="text-muted-foreground font-semibold">Muted</span>
             </div>
           </div>
 
           <!-- Link -->
-          <div class="border border-border rounded-lg p-4 space-y-2">
-            <div class="h-16 bg-link rounded flex items-center justify-center">
+          <div class="border-border space-y-2 rounded-lg border p-4">
+            <div class="bg-link flex h-16 items-center justify-center rounded">
               <span class="text-background font-semibold">Link Color</span>
             </div>
           </div>
@@ -235,9 +243,10 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Usage Examples -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">Usage Examples</h2>
-        <div class="bg-card text-card-foreground p-6 rounded-lg border border-border">
-          <pre class="text-sm overflow-x-auto"><code>{`<!-- Basic button -->
+        <h2 class="text-foreground text-2xl font-semibold">Usage Examples</h2>
+        <div class="bg-card text-card-foreground border-border rounded-lg border p-6">
+          <pre
+            class="overflow-x-auto text-sm"><code>{`<!-- Basic button -->
 <Button variant="primary">Click me</Button>
 
 <!-- Submit button -->
@@ -272,14 +281,17 @@ import Button from '@/components/button/Button.astro';
 
       <!-- Implementation Details -->
       <section class="space-y-4">
-        <h2 class="text-2xl font-semibold text-foreground">How It Works</h2>
-        <div class="bg-card text-card-foreground p-6 rounded-lg border border-border space-y-6">
+        <h2 class="text-foreground text-2xl font-semibold">How It Works</h2>
+        <div class="bg-card text-card-foreground border-border space-y-6 rounded-lg border p-6">
           <div>
-            <h3 class="font-semibold mb-2 text-lg">1. Polymorphic Component</h3>
-            <p class="text-sm text-muted-foreground mb-3">
-              Renders as <code class="bg-muted px-1 rounded">&lt;button&gt;</code> or <code class="bg-muted px-1 rounded">&lt;a&gt;</code> based on props
+            <h3 class="mb-2 text-lg font-semibold">1. Polymorphic Component</h3>
+            <p class="text-muted-foreground mb-3 text-sm">
+              Renders as <code class="bg-muted rounded px-1">&lt;button&gt;</code> or <code
+                class="bg-muted rounded px-1">&lt;a&gt;</code
+              > based on props
             </p>
-            <pre class="text-sm overflow-x-auto bg-muted p-4 rounded"><code>{`// Discriminated union types
+            <pre
+              class="bg-muted overflow-x-auto rounded p-4 text-sm"><code>{`// Discriminated union types
 type ButtonProps = BaseProps & {
   href?: never;
   type?: 'button' | 'submit' | 'reset';
@@ -299,11 +311,13 @@ const Component = href ? 'a' : 'button';`}</code></pre>
           </div>
 
           <div>
-            <h3 class="font-semibold mb-2 text-lg">2. Security Features</h3>
-            <p class="text-sm text-muted-foreground mb-3">
-              Auto-adds <code class="bg-muted px-1 rounded">rel="noopener noreferrer"</code> for external links
+            <h3 class="mb-2 text-lg font-semibold">2. Security Features</h3>
+            <p class="text-muted-foreground mb-3 text-sm">
+              Auto-adds <code class="bg-muted rounded px-1">rel="noopener noreferrer"</code> for external
+              links
             </p>
-            <pre class="text-sm overflow-x-auto bg-muted p-4 rounded"><code>{`// Security: Auto-add rel for target="_blank"
+            <pre
+              class="bg-muted overflow-x-auto rounded p-4 text-sm"><code>{`// Security: Auto-add rel for target="_blank"
 let finalRel = rel;
 if (isLink && target === '_blank' && !rel) {
   finalRel = 'noopener noreferrer';
@@ -311,11 +325,14 @@ if (isLink && target === '_blank' && !rel) {
           </div>
 
           <div>
-            <h3 class="font-semibold mb-2 text-lg">3. Accessibility</h3>
-            <p class="text-sm text-muted-foreground mb-3">
-              Disabled links use <code class="bg-muted px-1 rounded">aria-disabled</code> + <code class="bg-muted px-1 rounded">pointer-events-none</code>
+            <h3 class="mb-2 text-lg font-semibold">3. Accessibility</h3>
+            <p class="text-muted-foreground mb-3 text-sm">
+              Disabled links use <code class="bg-muted rounded px-1">aria-disabled</code> + <code
+                class="bg-muted rounded px-1">pointer-events-none</code
+              >
             </p>
-            <pre class="text-sm overflow-x-auto bg-muted p-4 rounded"><code>{`// Links don't have native disabled
+            <pre
+              class="bg-muted overflow-x-auto rounded p-4 text-sm"><code>{`// Links don't have native disabled
 const ariaDisabled = isLink && disabled ? 'true' : undefined;
 const tabIndex = isLink && disabled ? -1 : undefined;
 
@@ -324,25 +341,27 @@ a.button[aria-disabled="true"] {
   --at-apply: pointer-events-none opacity-50 cursor-not-allowed;
 }`}</code></pre>
           </div>
-          
+
           <div>
-            <h3 class="font-semibold mb-2 text-lg">4. Scoped Styles with --at-apply</h3>
-            <p class="text-sm text-muted-foreground mb-3">
+            <h3 class="mb-2 text-lg font-semibold">4. Scoped Styles with --at-apply</h3>
+            <p class="text-muted-foreground mb-3 text-sm">
               UnoCSS utilities are applied via --at-apply directive
             </p>
-            <pre class="text-sm overflow-x-auto bg-muted p-4 rounded"><code>{`.button--primary {
+            <pre
+              class="bg-muted overflow-x-auto rounded p-4 text-sm"><code>{`.button--primary {
   --at-apply: bg-primary text-primary-foreground
     hover:bg-primary-muted active:bg-primary
     shadow-sm;
 }`}</code></pre>
           </div>
-          
+
           <div>
-            <h3 class="font-semibold mb-2 text-lg">5. Color System (config.ts + uno.config.ts)</h3>
-            <p class="text-sm text-muted-foreground mb-3">
+            <h3 class="mb-2 text-lg font-semibold">5. Color System (config.ts + uno.config.ts)</h3>
+            <p class="text-muted-foreground mb-3 text-sm">
               Colors are defined in OKLCH format for better perceptual uniformity
             </p>
-            <pre class="text-sm overflow-x-auto bg-muted p-4 rounded"><code>{`colors: {
+            <pre
+              class="bg-muted overflow-x-auto rounded p-4 text-sm"><code>{`colors: {
   primary: "oklch(0.2489 0.0697 36.95)",
   "primary-foreground": "oklch(0.9896 0.0186 96.86)",
   "primary-muted": "oklch(0.4249 0.0627 50.47)",
@@ -351,11 +370,12 @@ a.button[aria-disabled="true"] {
           </div>
 
           <div>
-            <h3 class="font-semibold mb-2 text-lg">6. Dark Mode Support</h3>
-            <p class="text-sm text-muted-foreground mb-3">
+            <h3 class="mb-2 text-lg font-semibold">6. Dark Mode Support</h3>
+            <p class="text-muted-foreground mb-3 text-sm">
               Dark mode variants are configured via unocss-preset-theme
             </p>
-            <pre class="text-sm overflow-x-auto bg-muted p-4 rounded"><code>{`presetTheme({
+            <pre
+              class="bg-muted overflow-x-auto rounded p-4 text-sm"><code>{`presetTheme({
   theme: {
     dark: {
       colors: { ...dark }
