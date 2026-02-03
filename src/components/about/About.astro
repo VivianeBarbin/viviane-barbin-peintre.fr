@@ -1,0 +1,42 @@
+---
+import { Image } from "astro:assets";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+
+// Image paths using the @images alias
+const PORTRAIT_IMAGE_PATH = "@images/about/about-placeholder.jpg";
+const FALLBACK_IMAGE_PATH = "@images/about/about-placeholder.jpg";
+// Resolve images with fallback - support and caching (handled by imageUtils)
+const portraitImage = resolveImageWithFallback(
+    PORTRAIT_IMAGE_PATH,
+    FALLBACK_IMAGE_PATH,
+);
+
+const hasPortraitImage = portraitImage !== null;
+---
+
+
+<section class="homepage-about bg-backgroundAccent">
+ <div class="site-container">
+{
+
+    hasPortraitImage ? (
+// widths={[365, 548, 736]} 
+// sizes="(max-width: 768px) 100vw, 365px"
+// */ }
+        <Image
+        src={portraitImage}
+          alt="Portrait of Viviane Barbin"
+          width={365}
+          height={548}
+          densities={[1, 1.5, 2]}
+          loading="lazy"
+          decoding="async"
+        />
+    ) : (
+        <div class="feature-image-placeholder" aria-hidden="true">
+            <span>Image non disponible</span>
+        </div>
+    )
+}
+ </div>
+</section>

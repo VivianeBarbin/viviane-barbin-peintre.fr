@@ -34,7 +34,7 @@ export const themeConfig: ThemeConfig = {
 
       // Content/Surfaces
       background: "oklch(0.9896 0.0186 96.86)", // #fffcee
-      backgroundBright: "oklch(0.9309 0.036 51)", // #fde2d3
+      backgroundAccent: "oklch(0.4426 0.0788 126.34)",
       foreground: "oklch(0.2489 0.0697 36.95)", // #3c1206
       card: "oklch(0.98 0.01 96.86)", // Light card
       cardForeground: "oklch(0.2489 0.0697 36.95)", // Card text
@@ -56,7 +56,7 @@ export const themeConfig: ThemeConfig = {
 
       // Content/Surfaces
       background: "oklch(0.08 0 0)",
-      backgroundBright: "oklch(0.20 0 0)",
+      backgroundAccent: "oklch(0.20 0 0)",
       foreground: "oklch(0.95 0 0)",
       card: "oklch(0.12 0 0)",
       cardForeground: "oklch(0.95 0 0)",

@@ -29,7 +29,7 @@ export interface ThemeConfig {
       accentForeground: string;
       link: string;
       background: string;
-      backgroundBright: string;
+      backgroundAccent: string;
       foreground: string;
       card: string;
       cardForeground: string;
@@ -48,7 +48,7 @@ export interface ThemeConfig {
       accentForeground: string;
       link: string;
       background: string;
-      backgroundBright: string;
+      backgroundAccent: string;
       foreground: string;
       card: string;
       cardForeground: string;

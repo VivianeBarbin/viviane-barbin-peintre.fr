@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generate CSS variables from src/config.ts
+ * Generate CSS variables from config/site.ts
  *
  * - Emits ALL keys found in `themeConfig.colors.light` and `themeConfig.colors.dark`
  * - Converts config keys (camelCase or kebab-case) to kebab-case CSS vars:
@@ -19,7 +19,7 @@ import { writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
-import { themeConfig } from "../src/config.ts";
+import { themeConfig } from "../config/site.ts";
 
 type ColorMap = Record<string, string | undefined | null>;
 
