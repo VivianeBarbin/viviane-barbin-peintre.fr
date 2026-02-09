@@ -57,7 +57,7 @@ export default defineConfig({
           weights: [400, 700],
         },
       },
-      inlineImports: true,
+      inlineImports: false,
     }),
     presetTheme({
       theme: {
