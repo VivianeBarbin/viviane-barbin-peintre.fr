@@ -210,71 +210,53 @@ const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPainting
 
   <style>
     .features-grid {
-      --at-apply: grid gap-4 py-10 grid-cols-1 grid-rows-[auto_1fr_1fr] min-h-100lvh md: grid-cols-2
-        md: grid-rows-[auto_1fr] md: max-h-[calc(100dvh-var(--navbar-height, 90px))] md: min-h-0
-        md: box-border lg: gap-10 lg: grid-rows-2
-        lg: max-h-[calc(100dvh-var(--navbar-height, 90px))] lg: min-h-0 lg: box-border;
+      @apply grid gap-4 py-10 grid-cols-1 grid-rows-[auto_1fr_1fr] min-h-100lvh md:grid-cols-2
+        md:grid-rows-[auto_1fr] md:max-h-[calc(100dvh-var(--navbar-height, 90px))] md:min-h-0
+        md:box-border lg:gap-10 lg:grid-rows-2
+        lg:max-h-[calc(100dvh-var(--navbar-height, 90px))] lg:min-h-0 lg:box-border;
     }
 
     .feature-card-1 {
-      /* mobile */
-      --at-apply: grid-area-[1/1/2/2];
-
-      /* md: pleine largeur en haut */
-      --at-apply: md: grid-area-[1/1/2/3];
-
-      /* lg+: en haut à gauche */
-      --at-apply: lg: grid-area-[1/1/2/2];
+      /* mobile → md:pleine largeur en haut → lg:en haut à gauche */
+      @apply grid-area-[1/1/2/2] md:grid-area-[1/1/2/3] lg:grid-area-[1/1/2/2];
     }
 
     .feature-card-2 {
-      /* mobile */
-      --at-apply: grid-area-[2/1/3/2];
-
-      /* md: bas gauche */
-      --at-apply: md: grid-area-[2/1/3/2];
-
-      /* lg+: bas gauche */
-      --at-apply: lg: grid-area-[2/1/3/2];
+      /* mobile → md:bas gauche → lg:bas gauche */
+      @apply grid-area-[2/1/3/2] md:grid-area-[2/1/3/2] lg:grid-area-[2/1/3/2];
     }
 
     .feature-card-3 {
-      /* mobile */
-      --at-apply: grid-area-[3/1/4/2];
-
-      /* md: bas droite */
-      --at-apply: md: grid-area-[2/2/3/3];
-
-      /* lg+: span 2 rows à droite */
-      --at-apply: lg: grid-area-[1/2/3/3];
+      /* mobile → md:bas droite → lg:span 2 rows à droite */
+      @apply grid-area-[3/1/4/2] md:grid-area-[2/2/3/3] lg:grid-area-[1/2/3/3];
     }
 
     .feature-card-1,
     .feature-card-2,
     .feature-card-3 {
-      --at-apply: flex flex-col overflow-hidden;
+      @apply flex flex-col overflow-hidden;
     }
 
     .feature-card-1 {
-      --at-apply: justify-center items-start;
+      @apply justify-center items-start;
     }
 
     .feature-card-2,
     .feature-card-3 {
-      --at-apply: relative;
+      @apply relative;
     }
 
     .feature-image {
-      --at-apply: h-full w-full object-cover transition-transform duration-500;
+      @apply h-full w-full object-cover transition-transform duration-500;
     }
 
     .feature-card-2:hover .feature-image,
     .feature-card-3:hover .feature-image {
-      --at-apply: scale-105;
+      @apply scale-105;
     }
 
     .feature-image-placeholder {
-      --at-apply: flex h-full min-h-48 items-center justify-center rounded-lg bg-muted
+      @apply flex h-full min-h-48 items-center justify-center rounded-lg bg-muted
         text-mutedForeground;
     }
 
@@ -283,7 +265,7 @@ const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPainting
       @media (768px <= width <= 1023px) {
         white-space: normal;
       }
-      /*--at-apply: whitespace-normal lg:whitespace-pre-line;*/
+      /*@apply whitespace-normal lg:whitespace-pre-line;*/
     }
   </style>
 </section>

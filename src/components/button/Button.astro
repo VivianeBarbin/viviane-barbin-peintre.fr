@@ -96,54 +96,54 @@ const classList = ["button", `button--${variant}`, `button--${size}`, className]
    No colors here. Ever.
    ───────────────────────────── */
   .button {
-    --at-apply: inline-flex items-center justify-center font-sans rounded-md transition-colors
+    @apply inline-flex items-center justify-center font-sans rounded-md transition-colors
       duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
-      focus-visible:ring-offset-2 no-underline border-1 border-transparent;
+      focus-visible:ring-offset-2 no-underline border border-transparent;
   }
 
   /* Sizes */
   .button--sm {
-    --at-apply: text-base px-6 py-4 gap-1.5;
+    @apply text-base px-6 py-4 gap-1.5;
   }
 
   .button--default {
-    --at-apply: text-[1.31rem] px-8 py-6 gap-2;
+    @apply text-[1.31rem] px-8 py-6 gap-2;
   }
 
   .button--lg {
-    --at-apply: text-[1.5rem] px-10 py-8 gap-2.5;
+    @apply text-[1.5rem] px-10 py-8 gap-2.5;
   }
 
   /* ─────────────────────────────
    Variants (own ALL colors)
    ───────────────────────────── */
   .button--primary {
-    --at-apply: bg-primary text-primaryForeground shadow-sm hover:bg-transparent
+    @apply bg-primary text-primaryForeground shadow-sm hover:bg-transparent
       hover:text-primary hover:border-primary focus:bg-primaryMuted focus:text-primaryForeground
       active:bg-accent;
   }
 
   .button--secondary {
-    --at-apply: bg-secondary text-primaryForeground shadow-sm hover:bg-transparent
+    @apply bg-secondary text-primaryForeground shadow-sm hover:bg-transparent
       hover:text-secondary hover:border-secondary focus:bg-secondaryMuted
       focus:text-primaryForeground active:bg-accent;
   }
 
   .button--accent {
-    --at-apply: bg-accent text-accentForeground shadow-sm hover:opacity-90 active:opacity-100;
+    @apply bg-accent text-accentForeground shadow-sm hover:opacity-90 active:opacity-100;
   }
 
   .button--outline {
-    --at-apply: bg-transparent border-2 border-border text-foreground hover:bg-muted
+    @apply bg-transparent border-2 border-border text-foreground hover:bg-muted
       active:bg-background;
   }
 
   .button--ghost {
-    --at-apply: bg-transparent text-foreground hover:bg-muted active:bg-background;
+    @apply bg-transparent text-foreground hover:bg-muted active:bg-background;
   }
 
   .button--link {
-    --at-apply: bg-transparent text-link underline-offset-4 hover:underline px-0 shadow-none;
+    @apply bg-transparent text-link underline-offset-4 hover:underline px-0 shadow-none;
   }
 
   /* ─────────────────────────────
@@ -151,11 +151,11 @@ const classList = ["button", `button--${variant}`, `button--${size}`, className]
    ───────────────────────────── */
   .button:disabled,
   a.button[aria-disabled="true"] {
-    --at-apply: pointer-events-none cursor-not-allowed opacity-50 bg-muted text-mutedForeground
+    @apply pointer-events-none cursor-not-allowed opacity-50 bg-muted text-mutedForeground
       border-muted;
   }
 
   a.button[aria-disabled="true"]:hover {
-    --at-apply: opacity-50;
+    @apply opacity-50;
   }
 </style>

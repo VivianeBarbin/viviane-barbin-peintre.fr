@@ -338,7 +338,7 @@ const tabIndex = isLink && disabled ? -1 : undefined;
 
 /* CSS */
 a.button[aria-disabled="true"] {
-  --at-apply: pointer-events-none opacity-50 cursor-not-allowed;
+  @apply pointer-events-none opacity-50 cursor-not-allowed;
 }`}</code></pre>
           </div>
 
@@ -349,7 +349,7 @@ a.button[aria-disabled="true"] {
             </p>
             <pre
               class="bg-muted overflow-x-auto rounded p-4 text-sm"><code>{`.button--primary {
-  --at-apply: bg-primary text-primary-foreground
+  @apply bg-primary text-primary-foreground
     hover:bg-primary-muted active:bg-primary
     shadow-sm;
 }`}</code></pre>
