@@ -50,7 +50,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          environment: "" # target top-level env explicitly
+          env: "" # target top-level env explicitly
           packageManager: pnpm
 
       - name: Deploy to preview
@@ -61,7 +61,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          environment: preview
+          env: preview
           packageManager: pnpm
 
       - name: Print deployment URL
