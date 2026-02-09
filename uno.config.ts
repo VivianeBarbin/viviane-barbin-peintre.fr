@@ -17,6 +17,9 @@ export default defineConfig({
   content: {
     filesystem: ["src/**/*.{astro,html,js,jsx,ts,tsx,vue,svelte}", "src/**/*.css"],
   },
+  // Ensure presetWebFonts always emits --font-* CSS variable declarations
+  // and the Bunny font import, even if no template directly uses these classes.
+  safelist: ["font-sans", "font-display", "font-serif", "font-mono"],
   shortcuts: {
     // Typography shortcuts
     "heading-1":
@@ -57,7 +60,7 @@ export default defineConfig({
           weights: [400, 700],
         },
       },
-      inlineImports: false,
+      inlineImports: true,
     }),
     presetTheme({
       theme: {

@@ -2,6 +2,13 @@
 <meta name="viewport" content="width=device-width" />
 <link rel="dns-prefetch" href="https://fonts.bunny.net" />
 <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+<!-- Explicit Bunny font stylesheet — Vite strips UnoCSS's @import url(...) during
+     production CSS bundling, so the browser never fetches the @font-face declarations.
+     This <link> is the deterministic fallback that works in every environment. -->
+<link
+  rel="stylesheet"
+  href="https://fonts.bunny.net/css?family=yeseva-one:400|nunito-sans:400,600,700|jetbrains-mono:400,700|merriweather:400,700&display=swap"
+/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 <title>Astro Basics</title>
