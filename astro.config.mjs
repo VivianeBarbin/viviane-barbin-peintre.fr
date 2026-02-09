@@ -59,6 +59,8 @@ console.info(`[astro.config] Sanity dataset → "${sanityDataset}" (isProd=${isP
 // Astro config
 // ---------------------------------------------------------------------------
 export default defineConfig({
+  output: "server", // SSR mode: render pages on-demand, no static prerendering
+
   experimental: {
     svgo: true,
   },

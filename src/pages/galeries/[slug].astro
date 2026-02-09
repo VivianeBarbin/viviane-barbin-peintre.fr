@@ -24,21 +24,7 @@ import {
   type GalleryImageItem,
 } from "@/types/galleries";
 
-import type { GetStaticPaths } from "astro";
-
-// ── Static paths (build-time) ────────────────────────────────────────
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const slugs = (await fetchSanity<GallerySlug[]>(GALLERY_SLUGS_QUERY)) ?? [];
-
-  return slugs
-    .filter((s) => s.slug)
-    .map((s) => ({
-      params: { slug: s.slug },
-    }));
-};
-
-// ── Data fetching ────────────────────────────────────────────────────
+// ── Data fetching (on-demand SSR) ────────────────────────────────────────
 
 const { slug } = Astro.params;
 
