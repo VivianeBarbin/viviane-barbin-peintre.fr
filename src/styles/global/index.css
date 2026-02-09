@@ -72,23 +72,29 @@
 }
 
 .nav__link--base {
-  font-size: clamp(1rem, 0.875rem + 0.4vw, 1.3313rem);
   font-family: var(--font-sans);
-  font-weight: 500;
   line-height: 1.45;
-  color: hsl(var(--foreground) / 0.8);
   transition-property: color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
-.about-text {
-     font-size: clamp(1rem, 0.875rem + 0.4vw, 1.3313rem);
+/* Header-only typography: keep the clamp sizing there so footer can rely on UnoCSS utilities */
+.nav__link--header {
+  font-size: clamp(1rem, 0.875rem + 0.4vw, 1.3313rem);
+  font-weight: 500;
+  color: hsl(var(--foreground) / 0.8);
 }
 
-.nav__link--base:hover {
+.nav__link--header:hover {
   color: hsl(var(--foreground));
 }
+
+.about-text {
+  font-size: clamp(1rem, 0.875rem + 0.4vw, 1.3313rem);
+}
+
+/* hover handled by .nav__link--header:hover (header) or utilities (footer) */
 
 .nav__link--mobile {
   font-size: 1.25rem;

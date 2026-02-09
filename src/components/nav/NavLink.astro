@@ -55,12 +55,15 @@ const variantStyles = {
 const currentVariant = variantStyles[variant];
 const shouldShowUnderline = !noUnderline && currentVariant.underline;
 const finalActiveClass = isActive ? currentVariant.activeClass : "";
+const isHeaderVariant = variant === "header";
 ---
 
 <a
   class:list={[
     // Base styles - items-start keeps icons aligned to first line when text wraps
     "nav__link--base relative inline-flex max-w-full items-start gap-2 rounded-md",
+    // Hook for applying clamp typography in global CSS only on header links
+    isHeaderVariant && "nav__link--header",
     "transition-all duration-300",
     currentVariant.base,
     currentVariant.text,
