@@ -3,19 +3,27 @@
   "name": "viviane-barbin-peintre",
   "compatibility_date": "2026-02-09",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
+  "workers_dev": false,
+  "preview_urls": false,
+
+  "routes": [
+    { "pattern": "viviane-barbin-peintre.fr", "custom_domain": true },
+    { "pattern": "www.viviane-barbin-peintre.fr", "custom_domain": true },
+  ],
+
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist",
   },
-  "observability": {
-    "enabled": true,
-  },
-  // Preview environment: deployed via `wrangler deploy --env preview`
-  // Creates a separate Worker named "viviane-barbin-peintre-preview"
-  // with its own *.workers.dev URL.
+
+  "observability": { "enabled": true },
+
   "env": {
     "preview": {
       "name": "viviane-barbin-peintre-preview",
+      "workers_dev": true,
+      "preview_urls": true,
     },
   },
 }
