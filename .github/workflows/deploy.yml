@@ -10,6 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
+      # Used by Wrangler CLI (non-interactive) and also by wrangler-action via inputs below
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     permissions:
@@ -49,8 +50,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
-          env: "" # target top-level env explicitly
+          command: deploy --env=""
           packageManager: pnpm
 
       - name: Deploy to preview
@@ -60,8 +60,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
-          env: preview
+          command: deploy --env=preview
           packageManager: pnpm
 
       - name: Print deployment URL
