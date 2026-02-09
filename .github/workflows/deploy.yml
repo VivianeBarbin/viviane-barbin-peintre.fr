@@ -33,10 +33,12 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          SANITY_DATASET: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'production' || 'local_dev' }}
-          SANITY_STUDIO_DATASET: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'production' || 'local_dev' }}
+          # Production dataset only for push to main
+          SANITY_DATASET: ${{ (github.ref == 'refs/heads/main' && github.event_name == 'push') && 'production' || 'local_dev' }}
+          SANITY_STUDIO_DATASET: ${{ (github.ref == 'refs/heads/main' && github.event_name == 'push') && 'production' || 'local_dev' }}
+          # If your prod dataset is private, add the read token as a secret:
+          # SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
 
-      # Production: push to main → wrangler deploy
       - name: Deploy to production
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         id: deploy-production
@@ -45,8 +47,9 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+          environment: "" # target top-level env explicitly
+          packageManager: pnpm
 
-      # Preview: any other branch push or PR → wrangler deploy --env preview
       - name: Deploy to preview
         if: github.ref != 'refs/heads/main' || github.event_name == 'pull_request'
         id: deploy-preview
@@ -54,7 +57,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --env preview
+          command: deploy
+          environment: preview
+          packageManager: pnpm
 
       - name: Print deployment URL
         run: |
@@ -62,21 +67,21 @@ jobs:
           PREVIEW_URL="${{ steps.deploy-preview.outputs.deployment-url }}"
           URL="${PROD_URL:-$PREVIEW_URL}"
 
-          echo "## 🚀 Deployment URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Deployment URL" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ -n "$URL" ]; then
             echo "[$URL]($URL)" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "_URL not captured — check the deploy step logs above for the \`*.workers.dev\` link._" >> "$GITHUB_STEP_SUMMARY"
+            echo "_URL not captured — check the deploy step logs for the *.workers.dev link._" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "${{ github.ref_name }}" = "main" ] && [ "${{ github.event_name }}" = "push" ]; then
-            echo "**Environment:** Production" >> "$GITHUB_STEP_SUMMARY"
+            echo "Environment: Production" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "**Environment:** Preview (\`${{ github.head_ref || github.ref_name }}\`)" >> "$GITHUB_STEP_SUMMARY"
+            echo "Environment: Preview (${{ github.head_ref || github.ref_name }})" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Comment preview URL on PR
@@ -85,11 +90,11 @@ jobs:
         with:
           script: |
             const url = '${{ steps.deploy-preview.outputs.deployment-url }}';
-            const fallback = url || '`viviane-barbin-peintre-preview.<account>.workers.dev` _(check deploy logs for exact URL)_';
+            const fallback = url || '`viviane-barbin-peintre-preview.<account>.workers.dev` (check deploy logs)';
             const body = [
-              '## 🔍 Preview Deployment',
+              '## Preview Deployment',
               '',
-              `🌐 **URL:** ${url ? url : fallback}`,
+              `URL: ${url ? url : fallback}`,
               '',
               `_Deployed from commit \`${context.sha.substring(0, 7)}\` · env \`preview\`_`,
             ].join('\n');
