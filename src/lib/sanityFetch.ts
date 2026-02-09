@@ -11,8 +11,7 @@ import { SANITY_API_VERSION, SANITY_DATASET, SANITY_PROJECT_ID } from "../utils/
  * Notes:
  * - We intentionally set `useCdn: false` for SSR/build so published drafts / fresh content
  *   doesn't get stuck behind caching. (You can flip to true if you want faster + cached.)
- * - Token is optional: with a public dataset, no token is needed.
- *   With a private dataset, define SANITY_API_READ_TOKEN.
+ * - The dataset is public, so no token is needed for read access.
  */
 
 type FetchParams = Record<string, unknown> | undefined;
@@ -34,10 +33,7 @@ function resolveSanityConfig() {
   const dataset = readEnv("SANITY_DATASET") ?? SANITY_DATASET;
   const apiVersion = readEnv("SANITY_API_VERSION") ?? SANITY_API_VERSION;
 
-  // Optional: used for private datasets. Do not require it.
-  const token = readEnv("SANITY_API_READ_TOKEN");
-
-  return { projectId, dataset, apiVersion, token };
+  return { projectId, dataset, apiVersion };
 }
 
 let cachedClient: ReturnType<typeof createClient> | null = null;
@@ -45,14 +41,13 @@ let cachedClient: ReturnType<typeof createClient> | null = null;
 export function getSanityClient() {
   if (cachedClient) return cachedClient;
 
-  const { projectId, dataset, apiVersion, token } = resolveSanityConfig();
+  const { projectId, dataset, apiVersion } = resolveSanityConfig();
 
   cachedClient = createClient({
     projectId,
     dataset,
     apiVersion,
     useCdn: false,
-    token: token || undefined,
     // perspective is available in newer clients; leaving it undefined keeps compatibility
   });
 

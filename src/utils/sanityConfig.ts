@@ -5,10 +5,39 @@
  * Never put tokens or private keys in this file.
  *
  * These values are safe to import from both server and client code.
+ *
+ * ---------------------------------------------------------------------------
+ * Dataset resolution (priority order):
+ *   1. process.env.SANITY_DATASET        (build-time / SSR — set by dotenv-cli, CI, or shell)
+ *   2. import.meta.env.SANITY_DATASET    (Vite .env files — only if process.env is unavailable)
+ *   3. "local_dev"                        (safe default for local development)
+ *
+ * In production builds the env var MUST be set explicitly (see astro.config.mjs
+ * for the build-time guard that prevents silent fallback to "local_dev").
+ * ---------------------------------------------------------------------------
  */
 
+function readEnv(key: string): string | undefined {
+  // Prefer process.env (always available during SSR / build in Node).
+  if (typeof process !== "undefined" && process.env?.[key]) {
+    return process.env[key];
+  }
+  // Fallback: Vite-style import.meta.env (populated from .env files with KEY=VALUE syntax).
+  const metaEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
+  return metaEnv?.[key] || undefined;
+}
+
 export const SANITY_PROJECT_ID = "x31r8s87";
-export const SANITY_DATASET = "local_dev";
+
+/**
+ * Resolved dataset name.
+ *
+ * Reads from the environment so that production, preview, and local builds can
+ * each target the correct Sanity dataset without code changes.
+ *
+ * Defaults to "local_dev" when no env var is provided (i.e. local `pnpm dev`).
+ */
+export const SANITY_DATASET: string = readEnv("SANITY_DATASET") ?? "local_dev";
 
 /**
  * API version used for data queries (GROQ).

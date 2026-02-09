@@ -33,7 +33,8 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          SANITY_DATASET: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'production' || 'local_dev' }}
+          SANITY_STUDIO_DATASET: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && 'production' || 'local_dev' }}
 
       # Production: push to main → wrangler deploy
       - name: Deploy to production
