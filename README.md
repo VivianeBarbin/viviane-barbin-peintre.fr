@@ -1,5 +1,7 @@
 # viviane-barbin-peintre.fr
 
+# viviane-barbin-peintre.fr
+
 Astro site for Viviane Barbin Peintre, deployed on Cloudflare Workers with embedded Sanity Studio.
 
 ## Environment Variables & Dataset Configuration
