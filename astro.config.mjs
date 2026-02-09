@@ -5,6 +5,8 @@ import sanity from "@sanity/astro";
 import react from "@astrojs/react";
 import icon from "astro-icon";
 
+import cloudflare from "@astrojs/cloudflare";
+
 const isProd = import.meta.env.PROD;
 
 // IMPORTANT: `import.meta.env` is populated by Vite-style `.env` files (KEY=VALUE).
@@ -17,9 +19,11 @@ export default defineConfig({
   experimental: {
     svgo: true,
   },
+
   devToolbar: {
     enabled: false,
   },
+
   integrations: [
     UnoCSS({
       injectReset: true,
@@ -42,4 +46,6 @@ export default defineConfig({
       iconDir: "src/icons",
     }),
   ],
+
+  adapter: cloudflare(),
 });
