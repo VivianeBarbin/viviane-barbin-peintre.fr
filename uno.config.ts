@@ -19,7 +19,29 @@ export default defineConfig({
   },
   // Ensure presetWebFonts always emits --font-* CSS variable declarations
   // and the Bunny font import, even if no template directly uses these classes.
-  safelist: ["font-sans", "font-display", "font-serif", "font-mono"],
+  // NavLink variant classes (used in JS object values, not scanned by UnoCSS analyzer)
+  safelist: [
+    "font-sans",
+    "font-display",
+    "font-serif",
+    "font-mono",
+    // NavLink header variant
+    "px-3",
+    "lg:px-4",
+    "py-2",
+    // NavLink footer variant
+    "pr-4",
+    "py-[0.25rem]",
+    "lg:py-2",
+    "lg:px-3",
+    "text-sm",
+    "underline",
+    "underline-offset-4",
+    // Shared underline classes
+    "after:left-3.6",
+    "after:bottom-1",
+    "after:bg-primaryMuted/80",
+  ],
   shortcuts: {
     // Typography shortcuts
     "heading-1":
