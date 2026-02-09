@@ -1,0 +1,226 @@
+---
+/**
+ * GalleryCard.astro
+ *
+ * Renders a single gallery card for the `/galeries` index grid.
+ * Displays: cover image (Sanity CDN with local placeholder fallback),
+ * title, formatted date (MM/YY), year (YY), and medium label.
+ * The entire card links to `/galeries/{slug}`.
+ */
+import { Image } from "astro:assets";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityImageUrl, buildSanityDprSrcSet } from "@/utils/sanityImage";
+import {
+  formatGalleryDate,
+  formatGalleryYear,
+  formatMediumLabels,
+  type GalleryListItem,
+} from "@/types/galleries";
+
+export interface Props {
+  gallery: GalleryListItem;
+}
+
+const { gallery } = Astro.props;
+
+const { title, slug, date, medium, coverImage } = gallery;
+
+// ── Date formatting ────────────────────────────────────────────────
+const formattedDate = date ? formatGalleryDate(date) : "";
+const formattedYear = date ? formatGalleryYear(date) : "";
+
+// ── Medium labels (multi-select array) ─────────────────────────────
+const mediumLabel = formatMediumLabels(medium);
+
+// ── Image handling: Sanity CDN with local fallback ─────────────────
+const sanityImageSource = coverImage ?? null;
+const sanityImageAlt = coverImage?.alt ?? `${title} — image de couverture`;
+
+// Target display size (CSS pixels) for the card cover
+const coverWidth = 480;
+const coverHeight = 480;
+
+const sanitySrc = buildSanityImageUrl({
+  source: sanityImageSource,
+  width: coverWidth,
+  height: coverHeight,
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const sanitySrcSet = buildSanityDprSrcSet({
+  source: sanityImageSource,
+  width: coverWidth,
+  height: coverHeight,
+  dprs: [1, 1.5, 2],
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const shouldRenderSanityImage = !!sanitySrc;
+
+// Local placeholder fallback
+const PLACEHOLDER_PATH = "@images/galleries/galleries-placeholder.jpg";
+const placeholderImage = resolveImageWithFallback(PLACEHOLDER_PATH, PLACEHOLDER_PATH);
+const shouldRenderFallback = !shouldRenderSanityImage && placeholderImage !== null;
+
+const href = `/galeries/${slug}`;
+---
+
+<a href={href} class="gallery-card group" aria-label={`Voir la galerie : ${title}`}>
+  <div class="gallery-card__image-wrapper">
+    {
+      shouldRenderSanityImage ? (
+        <img
+          src={sanitySrc}
+          srcset={sanitySrcSet ?? undefined}
+          sizes={`(max-width: 640px) 100vw, (max-width: 1024px) 50vw, ${coverWidth}px`}
+          width={coverWidth}
+          height={coverHeight}
+          alt={sanityImageAlt}
+          class="gallery-card__image"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : shouldRenderFallback ? (
+        <Image
+          src={placeholderImage!}
+          alt={sanityImageAlt}
+          width={coverWidth}
+          height={coverHeight}
+          densities={[1, 1.5, 2]}
+          class="gallery-card__image"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="gallery-card__placeholder" aria-hidden="true">
+          <span>Image non disponible</span>
+        </div>
+      )
+    }
+
+    {/* Hover overlay */}
+    <div class="gallery-card__overlay" aria-hidden="true"></div>
+  </div>
+
+  <div class="gallery-card__content">
+    <h3 class="gallery-card__title">{title}</h3>
+
+    <div class="gallery-card__meta">
+      {
+        formattedDate && (
+          <span class="gallery-card__date">
+            <time datetime={date}>{formattedDate}</time>
+          </span>
+        )
+      }
+      {mediumLabel && <span class="gallery-card__medium">{mediumLabel}</span>}
+    </div>
+  </div>
+</a>
+
+<style>
+  .gallery-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .gallery-card__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: var(--color-muted, #f0f0f0);
+  }
+
+  .gallery-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .gallery-card:hover .gallery-card__image {
+    transform: scale(1.05);
+  }
+
+  .gallery-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .gallery-card:hover .gallery-card__overlay {
+    opacity: 1;
+  }
+
+  .gallery-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 12rem;
+    color: var(--color-muted-foreground, #999);
+    font-size: 0.875rem;
+  }
+
+  .gallery-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .gallery-card__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+    transition: color 0.2s ease;
+  }
+
+  .gallery-card:hover .gallery-card__title {
+    opacity: 0.8;
+  }
+
+  .gallery-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    opacity: 0.7;
+  }
+
+  .gallery-card__date {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .gallery-card__medium {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  /* Separator between date and medium */
+  .gallery-card__meta > :not(:first-child)::before {
+    content: "·";
+    margin-right: 0.5rem;
+  }
+</style>

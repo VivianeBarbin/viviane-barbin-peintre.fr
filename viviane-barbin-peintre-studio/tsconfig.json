@@ -13,9 +13,25 @@
     "incremental": true
   },
   "include": [
-    ".astro/types.d.ts",
     "sanity.config.ts",
-    "**/*.ts", 
-    "**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
+    "sanity.cli.ts",
+    "src/**/*",
+    "schemas/**/*",
+    "plugins/**/*",
+    "types/**/*",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".astro",
+    ".sanity",
+    ".cache",
+    ".turbo",
+    ".vercel",
+    ".netlify",
+    "coverage"
+  ]
 }

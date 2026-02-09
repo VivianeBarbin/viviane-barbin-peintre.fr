@@ -1,0 +1,80 @@
+{
+  "formatter": "prettier",
+  "format_on_save": "on",
+  "tab_size": 2,
+  "soft_wrap": "editor_width",
+  "preferred_line_length": 100,
+  "remove_trailing_whitespace_on_save": true,
+  "ensure_final_newline_on_save": true,
+  "file_types": {
+    "Astro": ["astro"],
+    "TypeScript": ["ts"],
+    "TSX": ["tsx"],
+    "JSON": ["json"]
+  },
+  "languages": {
+    "Astro": {
+      "formatter": "prettier",
+      "format_on_save": "on",
+      "tab_size": 2
+    },
+    "TypeScript": {
+      "formatter": "prettier",
+      "format_on_save": "on",
+      "tab_size": 2,
+      "code_actions_on_format": {
+        "source.organizeImports": true,
+        "source.fixAll": false
+      }
+    },
+    "TSX": {
+      "formatter": "prettier",
+      "format_on_save": "on",
+      "tab_size": 2
+    },
+    "JavaScript": {
+      "formatter": "prettier",
+      "format_on_save": "on",
+      "tab_size": 2
+    },
+    "JSON": {
+      "formatter": "prettier",
+      "format_on_save": "on",
+      "tab_size": 2
+    },
+    "CSS": {
+      "formatter": "prettier",
+      "format_on_save": "on",
+      "tab_size": 2
+    }
+  },
+  "lsp": {
+    "astro": {
+      "settings": {
+        "astro": {
+          "language-server": {
+            "runtime": "node"
+          }
+        }
+      }
+    },
+    "typescript-language-server": {
+      "initialization_options": {
+        "preferences": {
+          "includeInlayParameterNameHints": "none",
+          "includeInlayFunctionParameterTypeHints": false,
+          "includeInlayVariableTypeHints": false,
+          "includeInlayPropertyDeclarationTypeHints": false
+        }
+      }
+    }
+  },
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "es5"
+  }
+}

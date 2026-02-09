@@ -1,18 +1,14 @@
 // config/navigation.ts
-import type { NavLinkItem, LegalLinkItem, SocialLinkItem } from "./types";
+import type { LegalLinkItem, NavLinkItem, SocialLinkItem } from "./types";
 
 export const navigationLinks: NavLinkItem[] = [
   {
     text: "Galerie",
-    link: "/galerie",
+    link: "/galeries",
   },
   {
     text: "Mon livre",
     link: "/mon-livre",
-  },
-  {
-    text: "À propos",
-    link: "/a-propos",
   },
   {
     text: "L'atelier",

@@ -1,6 +1,7 @@
 ---
-import { themeConfig } from "@config/site";
-const { author, startYear } = themeConfig.site;
+import { getSiteSettings } from "@config/site";
+
+const { author, startYear } = await getSiteSettings();
 
 const currentYear = new Date().getFullYear();
 const year = Number(startYear) === currentYear ? startYear : `${startYear}-${currentYear}`;

@@ -1,4 +1,3 @@
-// tsconfig.json
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
@@ -11,6 +10,18 @@
     },
     "allowJs": true
   },
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "include": [
+    ".astro/types.d.ts",
+    "src/**/*",
+    "scripts/**/*",
+    "astro.config.mjs",
+    "uno.config.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    ".astro",
+    ".sanity",
+    "viviane-barbin-peintre-studio"
+  ]
 }

@@ -82,6 +82,10 @@
   transition-duration: 150ms;
 }
 
+.about-text {
+     font-size: clamp(1rem, 0.875rem + 0.4vw, 1.3313rem);
+}
+
 .nav__link--base:hover {
   color: hsl(var(--foreground));
 }

@@ -1,0 +1,149 @@
+---
+/**
+ * Galleries.astro
+ *
+ * Section component for the `/galeries` index page.
+ * Renders a section title, subtitle, and a responsive grid of GalleryCard components.
+ * Shows an empty state when no galleries are available.
+ *
+ * Props are passed down from the page — no data fetching happens here.
+ */
+import { Icon } from "astro-icon/components";
+import GalleryCard from "./GalleryCard.astro";
+import type { GalleryListItem } from "@/types/galleries";
+
+export interface Props {
+  /** Section heading (e.g. "Galeries") */
+  title?: string;
+  /** Section subtitle (e.g. "Le cœur de mon atelier") */
+  subtitle?: string;
+  /** Gallery items fetched from Sanity */
+  galleries: GalleryListItem[];
+}
+
+const { title = "Galeries", subtitle = "Le cœur de mon atelier", galleries = [] } = Astro.props;
+
+const hasGalleries = galleries.length > 0;
+---
+
+<section class="galleries-section bg-background text-primary">
+  <div class="site-container">
+    {/* ── Section header ──────────────────────────────────────────── */}
+    <div class="galleries-header">
+      <h2 class="galleries-header__title flex items-start gap-x-2 text-sm uppercase">
+        <span class="flex h-lh items-center">
+          <Icon name="tabler/square" aria-hidden="true" />
+        </span>
+        {title}
+      </h2>
+
+      {subtitle && <p class="galleries-header__subtitle">{subtitle}</p>}
+    </div>
+
+    {/* ── Grid or empty state ─────────────────────────────────────── */}
+    {
+      hasGalleries ? (
+        <div class="galleries-grid" role="list">
+          {galleries.map((gallery) => (
+            <div class="galleries-grid__item" role="listitem">
+              <GalleryCard gallery={gallery} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="galleries-empty">
+          <p class="galleries-empty__text">Aucune galerie disponible pour le moment.</p>
+          <p class="galleries-empty__hint">
+            Ajoutez des galeries dans Sanity Studio pour les voir apparaître ici.
+          </p>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .galleries-section {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+
+  /* ── Header ────────────────────────────────────────────────────── */
+
+  .galleries-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .galleries-header__title {
+    margin: 0 0 0.5rem;
+  }
+
+  .galleries-header__subtitle {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 300;
+    line-height: 1.3;
+    max-width: 36ch;
+  }
+
+  @media (min-width: 768px) {
+    .galleries-header__subtitle {
+      font-size: 2.25rem;
+    }
+  }
+
+  /* ── Grid ──────────────────────────────────────────────────────── */
+
+  .galleries-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 640px) {
+    .galleries-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .galleries-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .galleries-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ── Empty state ───────────────────────────────────────────────── */
+
+  .galleries-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 16rem;
+    padding: 3rem 1rem;
+    border: 1px dashed currentColor;
+    border-radius: 0.5rem;
+    opacity: 0.6;
+  }
+
+  .galleries-empty__text {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  .galleries-empty__hint {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.7;
+  }
+</style>

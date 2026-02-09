@@ -1,42 +1,201 @@
 ---
+import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
-// Image paths using the @images alias
+import { PortableText } from "astro-portabletext";
+import { fetchSanity } from "@/lib/sanityFetch";
+import { ABOUT_CONTENT_QUERY } from "@/lib/sanityQueries";
+
+const aboutData = await fetchSanity<Record<string, any>>(ABOUT_CONTENT_QUERY);
+
+// Handle case where no document exists in Sanity
+const hasData = aboutData !== null;
+const title = aboutData?.title ?? "Parcours";
+
+const topText = aboutData?.topText ?? [];
+const imageText = aboutData?.imageText ?? [];
+const bottomText = aboutData?.bottomText ?? [];
+
+// --- Image handling: Sanity optimized (remote pipeline) with local fallback ---
+const sanityImageSource = aboutData?.image ?? null;
+const sanityImageAlt = aboutData?.image?.alt ?? "Portrait de l'artiste Viviane Barbin";
+
+// target display size (CSS pixels)
+const targetWidth = 365;
+const targetHeight = 548;
+
+// Optimized Sanity URLs (webp, DPR srcset)
+const sanitySrc = buildSanityImageUrl({
+  source: sanityImageSource,
+  width: targetWidth,
+  height: targetHeight,
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const sanitySrcSet = buildSanityDprSrcSet({
+  source: sanityImageSource,
+  width: targetWidth,
+  height: targetHeight,
+  dprs: [1, 1.5, 2],
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const shouldRenderSanityImage = !!sanitySrc;
+
+// Local placeholder fallback (Astro-optimized)
 const PORTRAIT_IMAGE_PATH = "@images/about/about-placeholder.jpg";
 const FALLBACK_IMAGE_PATH = "@images/about/about-placeholder.jpg";
-// Resolve images with fallback - support and caching (handled by imageUtils)
-const portraitImage = resolveImageWithFallback(
-    PORTRAIT_IMAGE_PATH,
-    FALLBACK_IMAGE_PATH,
-);
-
-const hasPortraitImage = portraitImage !== null;
+const portraitImage = resolveImageWithFallback(PORTRAIT_IMAGE_PATH, FALLBACK_IMAGE_PATH);
+const shouldRenderFallbackImage = !shouldRenderSanityImage && portraitImage !== null;
 ---
 
-
-<section class="homepage-about bg-backgroundAccent">
- <div class="site-container">
 {
+  hasData ? (
+    <section class="homepage-about text-primaryForeground  bg-backgroundAccent pb-12">
+      <div class="site-container">
+        <h2 class="flex items-start pt-4 text-sm uppercase gap-x-2">
+          <span class="flex h-[1lh] items-center">
+            <Icon name="tabler/square" aria-hidden="true" />
+          </span>
+          {title}
+        </h2>
 
-    hasPortraitImage ? (
-// widths={[365, 548, 736]} 
-// sizes="(max-width: 768px) 100vw, 365px"
-// */ }
-        <Image
-        src={portraitImage}
-          alt="Portrait of Viviane Barbin"
-          width={365}
-          height={548}
-          densities={[1, 1.5, 2]}
-          loading="lazy"
-          decoding="async"
-        />
-    ) : (
-        <div class="feature-image-placeholder" aria-hidden="true">
-            <span>Image non disponible</span>
+        {topText.length > 0 && (
+          <div class="pt-8 about-text about-text--top">
+            <PortableText value={topText} />
+          </div>
+        )}
+
+        {/* Image with middle paragraph */}
+        <div class="about-image-section m-y-8 lg:m-y-30">
+          <div class="about-image">
+            {shouldRenderSanityImage ? (
+              <img
+                src={sanitySrc}
+                srcset={sanitySrcSet ?? undefined}
+                sizes={`${targetWidth}px`}
+                width={targetWidth}
+                height={targetHeight}
+                alt={sanityImageAlt}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : shouldRenderFallbackImage ? (
+              <Image
+                src={portraitImage}
+                alt={sanityImageAlt}
+                width={targetWidth}
+                height={targetHeight}
+                densities={[1, 1.5, 2]}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <div class="feature-image-placeholder" aria-hidden="true">
+                <span>Image non disponible</span>
+              </div>
+            )}
+          </div>
+
+          {imageText.length > 0 && (
+            <div class="about-text about-text--image">
+              <PortableText value={imageText} />
+            </div>
+          )}
         </div>
-    )
+
+        <div class="flex items-center gap-4 my-8 lg:hidden">
+          <div class="flex-1 border-t border-primaryForeground/60" />
+          <span class="text-sm font-medium text-primaryForeground uppercase">
+            <Icon name="tabler/square-rotated-filled" aria-hidden="true" />
+          </span>
+          <div class="flex-1 border-t border-primaryForeground/60" />
+        </div>
+
+        {bottomText.length > 0 && (
+          <div class="about-text about-text--bottom">
+            <PortableText value={bottomText} />
+          </div>
+        )}
+      </div>
+    </section>
+  ) : (
+    <section class="homepage-about bg-backgroundAccent">
+      <div class="site-container">
+        <p class="text-muted">
+          Contenu "À propos" non disponible. Veuillez créer un document dans Sanity Studio.
+        </p>
+      </div>
+    </section>
+  )
 }
- </div>
-</section>
+<style>
+  .about-image-section {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 0.5fr)
+      minmax(0, 365px)
+      minmax(0, 2fr)
+      minmax(0, 0.5fr);
+    column-gap: 2.5rem;
+    align-items: start;
+  }
+
+  /* Put content in the centered columns */
+  .about-image {
+    grid-column: 2;
+  }
+
+  .about-text--image {
+    grid-column: 3;
+  }
+
+  .about-text :global(p) {
+    --at-apply: leading-relaxed lg: -mt-[0.3em];
+  }
+  /* Image sizing */
+  .about-image img,
+  .about-image :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Collapse to one column at 1024px and below */
+  @media (max-width: 1024px) {
+    .about-image-section {
+      grid-template-columns: 1fr;
+      row-gap: 1.5rem;
+      column-gap: 0;
+    }
+
+    .about-image,
+    .about-text--image {
+      grid-column: auto;
+    }
+
+    /* Display-only change: cap the rendered image width to 640px */
+    .about-image {
+      margin-inline: auto;
+    }
+  }
+
+  /* Mobile: stack, gutters collapse */
+  @media (max-width: 768px) {
+    .about-image-section {
+      grid-template-columns: 1fr;
+      row-gap: 1.25rem;
+    }
+
+    .about-image,
+    .about-text--image {
+      grid-column: auto;
+    }
+  }
+</style>

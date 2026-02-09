@@ -1,5 +1,7 @@
 ---
-import { contactData } from "@config/contact";
+import { getContactData } from "@config/contact";
+
+const contactData = await getContactData();
 ---
 
 <p class="text-primaryMuted py-2">

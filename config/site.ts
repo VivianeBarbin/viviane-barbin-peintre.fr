@@ -1,4 +1,6 @@
 // config/site.ts
+import { devLog, fetchSanity } from "../src/lib/sanityFetch";
+import { SITE_SETTINGS_QUERY } from "../src/lib/sanityQueries";
 import type { ThemeConfig } from "./types";
 
 export const themeConfig: ThemeConfig = {
@@ -8,8 +10,8 @@ export const themeConfig: ThemeConfig = {
     subtitle: "Peinture &\nPartage d'atelier",
     description: "",
     author: "Viviane Barbin",
-    url: "",
-    base: "",
+    url: "https://viviane-barbin-peintre.fr",
+    base: "/",
     startYear: "2026",
     faviconSvg: "",
     faviconPng96: "",
@@ -67,4 +69,89 @@ export const themeConfig: ThemeConfig = {
   },
 };
 
-export const base = themeConfig.site.base === "/" ? "" : themeConfig.site.base.replace(/\/$/, "");
+type SiteSettingsProps = ThemeConfig["site"];
+type SiteSettingsCms = Partial<SiteSettingsProps> | null;
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function normalizeEscapedNewlines(value: string): string {
+  // Converts literal "\n" into an actual newline.
+  // Also supports Windows-style escaped newlines if they ever appear.
+  return value.replace(/\\r\\n/g, "\n").replace(/\\n/g, "\n");
+}
+
+function resolveTextWithFallback(fallback: string, cmsValue: unknown): string {
+  if (!isNonEmptyString(cmsValue)) return fallback;
+  return normalizeEscapedNewlines(cmsValue.trim());
+}
+
+function normalizeBase(baseValue: string): string {
+  // Preserve existing behavior:
+  // - treat "/" as empty
+  // - strip trailing slash
+  return baseValue === "/" ? "" : baseValue.replace(/\/$/, "");
+}
+
+function mergeSiteSettingsFallback(
+  fallback: SiteSettingsProps,
+  cms: SiteSettingsCms
+): SiteSettingsProps {
+  if (!cms) return fallback;
+
+  return {
+    title: resolveTextWithFallback(fallback.title, cms.title),
+    slogan: resolveTextWithFallback(fallback.slogan, cms.slogan),
+    subtitle: resolveTextWithFallback(fallback.subtitle, cms.subtitle),
+    description: resolveTextWithFallback(fallback.description, cms.description),
+    author: resolveTextWithFallback(fallback.author, cms.author),
+    url: resolveTextWithFallback(fallback.url, cms.url),
+    base: resolveTextWithFallback(fallback.base, cms.base),
+    startYear: resolveTextWithFallback(fallback.startYear, cms.startYear),
+
+    faviconSvg: resolveTextWithFallback(fallback.faviconSvg, cms.faviconSvg),
+    faviconPng96: resolveTextWithFallback(fallback.faviconPng96, cms.faviconPng96),
+    faviconPng: resolveTextWithFallback(fallback.faviconPng, cms.faviconPng),
+    faviconIco: resolveTextWithFallback(fallback.faviconIco, cms.faviconIco),
+    webManifest: resolveTextWithFallback(fallback.webManifest, cms.webManifest),
+    appleTouchIcon: resolveTextWithFallback(fallback.appleTouchIcon, cms.appleTouchIcon),
+  };
+}
+
+let siteSettingsCache: SiteSettingsProps | null = null;
+
+export async function getSiteSettings(): Promise<SiteSettingsProps> {
+  if (siteSettingsCache) return siteSettingsCache;
+
+  try {
+    const cms = await fetchSanity<SiteSettingsCms>(SITE_SETTINGS_QUERY);
+
+    const merged = mergeSiteSettingsFallback(themeConfig.site, cms);
+
+    siteSettingsCache = {
+      ...merged,
+      base: normalizeBase(merged.base),
+    };
+
+    if (!cms) devLog("[siteSettings] Using TS fallback (document missing or empty).");
+
+    return siteSettingsCache;
+  } catch (err) {
+    devLog("[siteSettings] Using TS fallback (Sanity fetch failed).", err);
+    siteSettingsCache = {
+      ...themeConfig.site,
+      base: normalizeBase(themeConfig.site.base),
+    };
+    return siteSettingsCache;
+  }
+}
+
+/**
+ * Compatibility export:
+ * - keeps existing import sites working (`import { base } from "@config/site"`)
+ * - stays synchronous (based on TS fallback only)
+ *
+ * For SSR/build pages/components, prefer `await getSiteSettings()` and compute base from that.
+ */
+export const base = normalizeBase(themeConfig.site.base);

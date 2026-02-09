@@ -2,21 +2,98 @@
 import { Image } from "astro:assets";
 import Button from "@/components/button/Button.astro";
 import { resolveImageWithFallback } from "@/utils/imageUtils";
-import { contactData } from "@config/contact";
-import { themeConfig } from "@config/site";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
+import { getContactData } from "@config/contact";
+import { getSiteSettings, themeConfig } from "@config/site";
+import { fetchSanity } from "@/lib/sanityFetch";
+import { HOME_CONTENT_QUERY } from "@/lib/sanityQueries";
 
-// Image paths using the @images alias
+// Fetch home content from Sanity (via shared fetch helper + named query)
+const homeData = await fetchSanity<Record<string, any>>(HOME_CONTENT_QUERY);
+
+// Resolve settings singletons (Sanity + fallback)
+const contactData = await getContactData();
+const siteSettings = await getSiteSettings();
+
+// Local fallback image paths
 const ATELIER_IMAGE_PATH = "@images/homepage/homepage-placeholder_01.jpg";
 const PAINTING_IMAGE_PATH = "@images/homepage/homepage-placeholder_02.jpg";
 const FALLBACK_IMAGE_PATH = "@images/homepage/homepage-placeholder_01.jpg";
 
-// Resolve images with fallback - support and caching (handled by imageUtils)
-const atelierImage = resolveImageWithFallback(ATELIER_IMAGE_PATH, FALLBACK_IMAGE_PATH);
-const paintingImage = resolveImageWithFallback(PAINTING_IMAGE_PATH, FALLBACK_IMAGE_PATH);
+// --- Atelier Image handling: Sanity optimized with local fallback ---
+// NOTE: mapping fix — the document fields were used inverted in the layout.
+// The "atelier" card must render the image stored in `paintingImage`.
+const sanityAtelierSource = homeData?.paintingImage ?? null;
+const sanityAtelierAlt =
+  homeData?.paintingImage?.alt ??
+  "L'atelier de Viviane Barbin, un espace de création baigné de lumière naturelle";
 
-// Check if images loaded successfully
-const hasAtelierImage = atelierImage !== null;
-const hasPaintingImage = paintingImage !== null;
+// Target display size for atelier image (CSS pixels)
+const atelierWidth = 702;
+const atelierHeight = 468;
+
+const sanitySrcAtelier = buildSanityImageUrl({
+  source: sanityAtelierSource,
+  width: atelierWidth,
+  height: atelierHeight,
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const sanitySrcSetAtelier = buildSanityDprSrcSet({
+  source: sanityAtelierSource,
+  width: atelierWidth,
+  height: atelierHeight,
+  dprs: [1, 1.5, 2],
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const shouldRenderSanityAtelierImage = !!sanitySrcAtelier;
+
+// Local fallback for atelier image
+const atelierImage = resolveImageWithFallback(ATELIER_IMAGE_PATH, FALLBACK_IMAGE_PATH);
+const shouldRenderAtelierFallback = !shouldRenderSanityAtelierImage && atelierImage !== null;
+const hasAtelierImage = shouldRenderSanityAtelierImage || shouldRenderAtelierFallback;
+
+// --- Painting Image handling: Sanity optimized with local fallback ---
+// NOTE: mapping fix — the "painting" card must render the image stored in `atelierImage`.
+const sanityPaintingSource = homeData?.atelierImage ?? null;
+const sanityPaintingAlt =
+  homeData?.atelierImage?.alt ??
+  "Peinture de paysage forestier avec rivière, œuvre de Viviane Barbin";
+
+// Target display size for painting image (CSS pixels)
+const paintingWidth = 702;
+const paintingHeight = 936;
+
+const sanitySrcPainting = buildSanityImageUrl({
+  source: sanityPaintingSource,
+  width: paintingWidth,
+  height: paintingHeight,
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const sanitySrcSetPainting = buildSanityDprSrcSet({
+  source: sanityPaintingSource,
+  width: paintingWidth,
+  height: paintingHeight,
+  dprs: [1, 1.5, 2],
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+});
+
+const shouldRenderSanityPaintingImage = !!sanitySrcPainting;
+
+// Local fallback for painting image
+const paintingImage = resolveImageWithFallback(PAINTING_IMAGE_PATH, FALLBACK_IMAGE_PATH);
+const shouldRenderPaintingFallback = !shouldRenderSanityPaintingImage && paintingImage !== null;
+const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPaintingFallback;
 ---
 
 <section class="homepage-features">
@@ -37,7 +114,7 @@ const hasPaintingImage = paintingImage !== null;
           </address>
           <div class="flex h-auto flex-col lg:col-span-1 lg:h-full lg:justify-center">
             <h1 class="heading-home">
-              {themeConfig.site.subtitle}
+              {siteSettings.subtitle}
             </h1>
           </div>
         </div>
@@ -48,15 +125,29 @@ const hasPaintingImage = paintingImage !== null;
         {
           hasAtelierImage ? (
             <div class="relative h-full w-full">
-              <Image
-                src={atelierImage}
-                alt="L'atelier de Viviane Barbin, un espace de création baigné de lumière naturelle"
-                class="feature-image"
-                widths={[320, 480, 702, 800]}
-                sizes="(max-width: 768px) 100vw, 702px"
-                loading="lazy"
-                decoding="async"
-              />
+              {shouldRenderSanityAtelierImage ? (
+                <img
+                  src={sanitySrcAtelier}
+                  srcset={sanitySrcSetAtelier ?? undefined}
+                  sizes={`(max-width: 768px) 100vw, ${atelierWidth}px`}
+                  width={atelierWidth}
+                  height={atelierHeight}
+                  alt={sanityAtelierAlt}
+                  class="feature-image"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : shouldRenderAtelierFallback ? (
+                <Image
+                  src={atelierImage}
+                  alt={sanityAtelierAlt}
+                  class="feature-image"
+                  widths={[320, 480, 702, 800]}
+                  sizes="(max-width: 768px) 100vw, 702px"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : null}
               <div class="from-background via-background/10 absolute inset-0 bg-linear-to-t to-transparent" />
               <div class="absolute inset-0 flex items-end p-4 pb-10 md:p-6">
                 <Button variant="secondary" size="sm" class="w-full md:w-auto">
@@ -77,15 +168,29 @@ const hasPaintingImage = paintingImage !== null;
         {
           hasPaintingImage ? (
             <div class="relative h-full w-full">
-              <Image
-                src={paintingImage}
-                alt="Peinture de paysage forestier avec rivière, œuvre de Viviane Barbin"
-                class="feature-image"
-                widths={[320, 480, 702, 800]}
-                sizes="(max-width: 768px) 100vw, 702px"
-                loading="lazy"
-                decoding="async"
-              />
+              {shouldRenderSanityPaintingImage ? (
+                <img
+                  src={sanitySrcPainting}
+                  srcset={sanitySrcSetPainting ?? undefined}
+                  sizes={`(max-width: 768px) 100vw, ${paintingWidth}px`}
+                  width={paintingWidth}
+                  height={paintingHeight}
+                  alt={sanityPaintingAlt}
+                  class="feature-image"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : shouldRenderPaintingFallback ? (
+                <Image
+                  src={paintingImage}
+                  alt={sanityPaintingAlt}
+                  class="feature-image"
+                  widths={[320, 480, 702, 800]}
+                  sizes="(max-width: 768px) 100vw, 702px"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : null}
               <div class="from-background via-background/10 absolute inset-0 bg-linear-to-t to-transparent" />
               <div class="absolute inset-0 flex items-end p-6">
                 <Button variant="secondary" size="sm" class="w-full md:w-auto">
@@ -105,10 +210,10 @@ const hasPaintingImage = paintingImage !== null;
 
   <style>
     .features-grid {
-      --at-apply: grid gap-4 py-10 grid-cols-1 grid-rows-[auto_1fr_1fr] min-h-100lvh md:grid-cols-2
-        md:grid-rows-[auto_1fr] md:max-h-[calc(100dvh-var(--navbar-height,90px))] md:min-h-0
-        md:box-border lg:gap-10 lg:grid-rows-2
-        lg:max-h-[calc(100dvh-var(--navbar-height,90px))] lg:min-h-0 lg:box-border;
+      --at-apply: grid gap-4 py-10 grid-cols-1 grid-rows-[auto_1fr_1fr] min-h-100lvh md: grid-cols-2
+        md: grid-rows-[auto_1fr] md: max-h-[calc(100dvh-var(--navbar-height, 90px))] md: min-h-0
+        md: box-border lg: gap-10 lg: grid-rows-2
+        lg: max-h-[calc(100dvh-var(--navbar-height, 90px))] lg: min-h-0 lg: box-border;
     }
 
     .feature-card-1 {
@@ -116,10 +221,10 @@ const hasPaintingImage = paintingImage !== null;
       --at-apply: grid-area-[1/1/2/2];
 
       /* md: pleine largeur en haut */
-      --at-apply: md:grid-area-[1/1/2/3];
+      --at-apply: md: grid-area-[1/1/2/3];
 
       /* lg+: en haut à gauche */
-      --at-apply: lg:grid-area-[1/1/2/2];
+      --at-apply: lg: grid-area-[1/1/2/2];
     }
 
     .feature-card-2 {
@@ -127,10 +232,10 @@ const hasPaintingImage = paintingImage !== null;
       --at-apply: grid-area-[2/1/3/2];
 
       /* md: bas gauche */
-      --at-apply: md:grid-area-[2/1/3/2];
+      --at-apply: md: grid-area-[2/1/3/2];
 
       /* lg+: bas gauche */
-      --at-apply: lg:grid-area-[2/1/3/2];
+      --at-apply: lg: grid-area-[2/1/3/2];
     }
 
     .feature-card-3 {
@@ -138,10 +243,10 @@ const hasPaintingImage = paintingImage !== null;
       --at-apply: grid-area-[3/1/4/2];
 
       /* md: bas droite */
-      --at-apply: md:grid-area-[2/2/3/3];
+      --at-apply: md: grid-area-[2/2/3/3];
 
       /* lg+: span 2 rows à droite */
-      --at-apply: lg:grid-area-[1/2/3/3];
+      --at-apply: lg: grid-area-[1/2/3/3];
     }
 
     .feature-card-1,

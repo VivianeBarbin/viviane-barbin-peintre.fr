@@ -1,7 +1,11 @@
 ---
-import { themeConfig } from "@config/site.ts";
+import { getSiteSettings, themeConfig } from "@config/site.ts";
 
-const siteTitle = themeConfig.site.title;
+// SSR/build-time: resolve from Sanity singleton with TS fallback.
+// If Sanity is empty/unreachable, `getSiteSettings()` returns fallback values.
+const siteSettings = await getSiteSettings();
+
+const siteTitle = siteSettings.title || themeConfig.site.title;
 const [firstName, lastName] = siteTitle.split(/\s+/);
 ---
 

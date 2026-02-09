@@ -1,0 +1,20 @@
+---
+/**
+ * /galeries – Gallery index page.
+ *
+ * Fetches all galleries from Sanity at build time (static output)
+ * and passes them to the <Galleries> section component.
+ */
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Galleries from "@/components/galleries/Galleries.astro";
+import { fetchSanity } from "@/lib/sanityFetch";
+import { GALLERIES_LIST_QUERY } from "@/lib/sanityQueries";
+import type { GalleryListItem } from "@/types/galleries";
+
+// ── Data fetching (build-time) ───────────────────────────────────────
+const galleries = (await fetchSanity<GalleryListItem[]>(GALLERIES_LIST_QUERY)) ?? [];
+---
+
+<BaseLayout>
+  <Galleries title="Galeries" subtitle="Le cœur de mon atelier" galleries={galleries} />
+</BaseLayout>

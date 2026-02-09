@@ -1,6 +1,8 @@
 ---
-import { themeConfig } from "@config/site.ts";
-const siteSlogan = themeConfig.site.slogan;
+import { getSiteSettings } from "@config/site.ts";
+
+const siteSettings = await getSiteSettings();
+const siteSlogan = siteSettings.slogan;
 ---
 
 <div class="md:(mb-8 mt-30) flex flex-col items-center justify-center">

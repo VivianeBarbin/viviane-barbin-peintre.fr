@@ -39,12 +39,21 @@ export default [
     },
   },
   {
-    ignores: [
-      "dist/",
-      ".astro/",
-      "node_modules/",
-      "viviane-barbin-peintre-studio/",
-      ".sanity/",
+    files: [
+      "**/*.config.{js,mjs,cjs,ts}",
+      "astro.config.{js,mjs,cjs,ts}",
+      "eslint.config.{js,mjs,cjs,ts}",
+      "uno.config.{js,mjs,cjs,ts}",
+      "sanity.config.{js,mjs,cjs,ts}",
+      "sanity.cli.{js,mjs,cjs,ts}",
     ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
+    ignores: ["dist/", ".astro/", "node_modules/", "viviane-barbin-peintre-studio/", ".sanity/"],
   },
 ];

@@ -1,0 +1,928 @@
+---
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
+import { getColorByCycle } from "@/utils/colorUtils";
+
+import { fetchSanity } from "@/lib/sanityFetch";
+import { NEWS_CONTENT_QUERY } from "@/lib/sanityQueries";
+
+const newsData = await fetchSanity<Record<string, any>>(NEWS_CONTENT_QUERY);
+
+const hasData = newsData !== null;
+const sectionTitle = newsData?.sectionTitle ?? "Actualités";
+const newsItems = newsData?.news ?? [];
+
+// Sort by date (most recent first)
+const sortedNews = newsItems.sort(
+  (a: any, b: any) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
+);
+
+// --- Image handling for news items ---
+// Target display size for news images (CSS pixels)
+const newsImageWidth = 460;
+const newsImageHeight = 460;
+const newsImageWideWidth = 920;
+const newsImageWideHeight = 460;
+
+// Process each news item to generate optimized Sanity image URLs
+const processedNews = sortedNews.map((item: any, index: number) => {
+  const sanityImageSource = item.eventImage ?? null;
+  const sanityImageAlt = item.eventImage?.alt ?? item.eventTitle ?? "Image événement";
+
+  // 8-item cycle: 0, 1, 2, 3, 4, 5, 1, 2, repeat
+  const cyclePatterns = [0, 1, 2, 3, 4, 5, 1, 2];
+  const rowPattern = cyclePatterns[index % 8];
+  const isWideCard = rowPattern === 0 || rowPattern === 3;
+
+  // Build optimized Sanity URLs for square images
+  const sanitySrc = buildSanityImageUrl({
+    source: sanityImageSource,
+    width: newsImageWidth,
+    height: newsImageHeight,
+    quality: 80,
+    format: "webp",
+    fit: "crop",
+  });
+
+  const sanitySrcSet = buildSanityDprSrcSet({
+    source: sanityImageSource,
+    width: newsImageWidth,
+    height: newsImageHeight,
+    dprs: [1, 1.5, 2],
+    quality: 80,
+    format: "webp",
+    fit: "crop",
+  });
+
+  // Build higher quality URLs for wide rectangle cards (rows 0 and 3)
+  const sanitySrcWide = isWideCard
+    ? buildSanityImageUrl({
+        source: sanityImageSource,
+        width: newsImageWideWidth,
+        height: newsImageWideHeight,
+        quality: 85,
+        format: "webp",
+        fit: "crop",
+      })
+    : null;
+
+  const sanitySrcSetWide = isWideCard
+    ? buildSanityDprSrcSet({
+        source: sanityImageSource,
+        width: newsImageWideWidth,
+        height: newsImageWideHeight,
+        dprs: [1, 1.5, 2],
+        quality: 85,
+        format: "webp",
+        fit: "crop",
+      })
+    : null;
+
+  // Get color theme for this item
+  const colorTheme = getColorByCycle(index);
+
+  return {
+    ...item,
+    index,
+    rowPattern,
+    colorTheme,
+    image: {
+      sanitySrc,
+      sanitySrcSet,
+      sanitySrcWide,
+      sanitySrcSetWide,
+      alt: sanityImageAlt,
+      hasImage: !!sanitySrc,
+    },
+  };
+});
+
+// Helper to format dates
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  });
+};
+
+const formatDateRange = (start: string, end?: string, time?: string) => {
+  if (!start) return "Date à confirmer";
+
+  // If both start and end dates exist: "Du [date] au [date]"
+  if (end && start !== end) {
+    return `du ${formatDate(start)} au ${formatDate(end)}`;
+  }
+
+  // If only start date and time: "Le [date] à [time]"
+  if (time) {
+    return `le ${formatDate(start)} à ${time}`;
+  }
+
+  // If only start date: "Le [date]"
+  return `le ${formatDate(start)}`;
+};
+---
+
+{
+  hasData ? (
+    <section class="homepage-news text-primary bg-background py-2">
+      <div class="site-container">
+        <h2 class="flex items-start pt-4 text-sm uppercase gap-x-2">
+          <span class="flex h-[1lh] items-center">
+            <Icon name="tabler/square" aria-hidden="true" />
+          </span>
+          {sectionTitle}
+        </h2>
+
+        {processedNews.length > 0 ? (
+          <div class="news-grid-masonry">
+            {processedNews.map((newsItem: any) => {
+              const rowPattern = newsItem.rowPattern;
+
+              return (
+                <>
+                  {/* Row pattern 0: square(text) | rectangle(image) */}
+                  {rowPattern === 0 && (
+                    <>
+                      {newsItem.eventLink ? (
+                        <a
+                          href={newsItem.eventLink}
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <article
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      )}
+                      {newsItem.image.hasImage && (
+                        <article class="news-card news-card--image news-card--wide">
+                          <div class="news-image">
+                            <img
+                              src={newsItem.image.sanitySrcWide!}
+                              srcset={newsItem.image.sanitySrcSetWide ?? undefined}
+                              sizes="(min-width: 1024px) 920px, 100vw"
+                              width={newsImageWideWidth}
+                              height={newsImageWideHeight}
+                              alt={newsItem.image.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                        </article>
+                      )}
+                    </>
+                  )}
+
+                  {/* Row pattern 1: empty | square(text) | square(image) */}
+                  {rowPattern === 1 && (
+                    <>
+                      <div class="news-card news-card--empty" aria-hidden="true" />
+                      {newsItem.eventLink ? (
+                        <a
+                          href={newsItem.eventLink}
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <article
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      )}
+                      {newsItem.image.hasImage && (
+                        <article class="news-card news-card--image">
+                          <div class="news-image">
+                            <img
+                              src={newsItem.image.sanitySrc!}
+                              srcset={newsItem.image.sanitySrcSet ?? undefined}
+                              sizes="(min-width: 1024px) 460px, 100vw"
+                              width={newsImageWidth}
+                              height={newsImageHeight}
+                              alt={newsItem.image.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                        </article>
+                      )}
+                    </>
+                  )}
+
+                  {/* Row pattern 2: square(text) | square(image) | empty */}
+                  {rowPattern === 2 && (
+                    <>
+                      {newsItem.eventLink ? (
+                        <a
+                          href={newsItem.eventLink}
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <article
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      )}
+                      {newsItem.image.hasImage && (
+                        <article class="news-card news-card--image">
+                          <div class="news-image">
+                            <img
+                              src={newsItem.image.sanitySrc!}
+                              srcset={newsItem.image.sanitySrcSet ?? undefined}
+                              sizes="(min-width: 1024px) 460px, 100vw"
+                              width={newsImageWidth}
+                              height={newsImageHeight}
+                              alt={newsItem.image.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                        </article>
+                      )}
+                      <div class="news-card news-card--empty" aria-hidden="true" />
+                    </>
+                  )}
+
+                  {/* Row pattern 3: rectangle(image) | square(text) */}
+                  {rowPattern === 3 && (
+                    <>
+                      {newsItem.image.hasImage && (
+                        <article class="news-card news-card--image news-card--wide">
+                          <div class="news-image">
+                            <img
+                              src={newsItem.image.sanitySrcWide!}
+                              srcset={newsItem.image.sanitySrcSetWide ?? undefined}
+                              sizes="(min-width: 1024px) 920px, 100vw"
+                              width={newsImageWideWidth}
+                              height={newsImageWideHeight}
+                              alt={newsItem.image.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                        </article>
+                      )}
+                      {newsItem.eventLink ? (
+                        <a
+                          href={newsItem.eventLink}
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <article
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      )}
+                    </>
+                  )}
+
+                  {/* Row pattern 4: square(image) | square(text) | empty */}
+                  {rowPattern === 4 && (
+                    <>
+                      {newsItem.image.hasImage && (
+                        <article class="news-card news-card--image">
+                          <div class="news-image">
+                            <img
+                              src={newsItem.image.sanitySrc!}
+                              srcset={newsItem.image.sanitySrcSet ?? undefined}
+                              sizes="(min-width: 1024px) 460px, 100vw"
+                              width={newsImageWidth}
+                              height={newsImageHeight}
+                              alt={newsItem.image.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                        </article>
+                      )}
+                      {newsItem.eventLink ? (
+                        <a
+                          href={newsItem.eventLink}
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <article
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      )}
+                      <div class="news-card news-card--empty" aria-hidden="true" />
+                    </>
+                  )}
+
+                  {/* Row pattern 5: empty | square(image) | square(text) */}
+                  {rowPattern === 5 && (
+                    <>
+                      <div class="news-card news-card--empty" aria-hidden="true" />
+                      {newsItem.image.hasImage && (
+                        <article class="news-card news-card--image">
+                          <div class="news-image">
+                            <img
+                              src={newsItem.image.sanitySrc!}
+                              srcset={newsItem.image.sanitySrcSet ?? undefined}
+                              sizes="(min-width: 1024px) 460px, 100vw"
+                              width={newsImageWidth}
+                              height={newsImageHeight}
+                              alt={newsItem.image.alt}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                        </article>
+                      )}
+                      {newsItem.eventLink ? (
+                        <a
+                          href={newsItem.eventLink}
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <article
+                          class="news-card news-card--text"
+                          style={`background-color: ${newsItem.colorTheme.bg}`}
+                        >
+                          <div class={`news-content ${newsItem.colorTheme.textClass}`}>
+                            <div class="news-content-inner">
+                              <div class="news-content-top">
+                                {newsItem.eventType && (
+                                  <span class="news-type">{newsItem.eventType}</span>
+                                )}
+                                <h3 class="news-title">{newsItem.eventTitle}</h3>
+                              </div>
+                              <div class="news-content-bottom">
+                                {newsItem.eventDescription && (
+                                  <p class="news-description">{newsItem.eventDescription}</p>
+                                )}
+                                <time class="news-date" datetime={newsItem.eventDate}>
+                                  {formatDateRange(
+                                    newsItem.eventDate,
+                                    newsItem.eventEndDate,
+                                    newsItem.eventTime
+                                  )}
+                                </time>
+                                {newsItem.eventLocation && (
+                                  <p class="news-location">{newsItem.eventLocation}</p>
+                                )}
+                                {newsItem.eventAddress && (
+                                  <p class="news-address">{newsItem.eventAddress}</p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      )}
+                    </>
+                  )}
+                </>
+              );
+            })}
+          </div>
+        ) : (
+          <p class="text-muted mt-8">Aucune actualité pour le moment.</p>
+        )}
+      </div>
+    </section>
+  ) : (
+    <section class="homepage-news bg-background py-12">
+      <div class="site-container">
+        <p class="text-muted">
+          Contenu "Actualités" non disponible. Veuillez créer un document dans Sanity Studio.
+        </p>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* Modern masonry grid with repeating pattern */
+  .news-grid-masonry {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin-block: 3rem;
+    /* Auto rows for infinite expansion */
+    grid-auto-rows: 460px;
+    grid-auto-flow: dense;
+  }
+
+  /* Base card styles */
+  .news-card {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    background: var(--color-background-accent);
+    /*border-radius: 0.5rem;*/
+    overflow: hidden;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    flex-grow: 1;
+  }
+
+  .news-card--text:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Empty cells */
+  .news-card--empty {
+    background: transparent;
+    pointer-events: none;
+  }
+
+  /* Wide cards (rectangles spanning 2 columns) */
+  .news-card--wide {
+    grid-column: span 2;
+  }
+
+  /* Image styles */
+  .news-image {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--color-muted);
+  }
+
+  .news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Content wrapper - takes full card space */
+  .news-content {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 1.5rem; /* 24px */
+    flex-grow: 1;
+  }
+
+  /* Inner container - vertical stretch layout */
+  .news-content-inner {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Key: pushes content to top and bottom */
+    align-items: start;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Top content group */
+  .news-content-top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Bottom content group */
+  .news-content-bottom {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .news-type {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.2;
+    text-transform: lowercase;
+    color: var(--color-primary);
+  }
+
+  .news-title {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--color-primary-foreground);
+  }
+
+  .news-description {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-primary-foreground);
+    margin: 0;
+  }
+
+  .news-date {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-muted-foreground);
+  }
+
+  .news-location {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-primary-foreground);
+    margin: 0;
+  }
+
+  .news-address {
+    font-size: 1rem;
+    color: var(--color-muted-foreground);
+    line-height: 1.4;
+    margin: 0;
+    white-space: pre-line;
+  }
+
+  /* Card link styles */
+  .news-card--text {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* @media (max-width: 1280px) */
+  @media (max-width: 1280px) {
+    .news-content-top {
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 0.5rem;
+    }
+  }
+  /* Tablet: 2 columns with alternating pattern */
+  @media (max-width: 1024px) {
+    .news-grid-masonry {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      grid-auto-rows: 380px;
+    }
+
+    .news-card--wide {
+      grid-column: span 1;
+    }
+
+    .news-card--empty {
+      display: none;
+    }
+  }
+
+  /* Mobile: 1 column stack */
+  @media (max-width: 640px) {
+    .news-grid-masonry {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      grid-auto-rows: auto;
+    }
+
+    .news-card {
+      grid-column: 1 !important;
+      min-height: 280px;
+    }
+
+    .news-card--wide {
+      grid-column: span 1;
+    }
+
+    .news-card--empty {
+      display: none;
+    }
+  }
+</style>
