@@ -10,7 +10,7 @@
     "moduleDetection": "force",
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
   },
   "include": [
     "sanity.config.ts",
@@ -20,7 +20,8 @@
     "plugins/**/*",
     "types/**/*",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "../config/**/*",
   ],
   "exclude": [
     "node_modules",
@@ -32,6 +33,6 @@
     ".turbo",
     ".vercel",
     ".netlify",
-    "coverage"
-  ]
+    "coverage",
+  ],
 }

@@ -50,8 +50,11 @@ export default defineConfig({
       "text-[clamp(1.875rem,1.6534rem+0.9848vw,2.4414rem)] font-sans font-semibold leading-[1.25] text-foreground max-w-full",
     "heading-3":
       "text-[clamp(1.5625rem,1.3996rem+0.7235vw,1.9531rem)] font-sans font-semibold leading-[1.33] text-foreground max-w-full",
+    "heading-4":
+      "text-[clamp(1rem,1.331rem+0.7235vw,1.331rem)] font-sans leading-[1.24] text-foreground max-w-full",
     "heading-home":
       "text-[clamp(1.5rem,3.5vw+0.5rem,3rem)] lg:text-[clamp(1.375rem,0.875rem+1.3vw,1.675rem)] font-display leading-[1.4] text-foreground",
+    body: "text-[clamp(1.0625rem,0.98rem + 0.35vw,1.331rem)] leading-[1.6] text-foreground",
   },
   presets: [
     presetWind4(),

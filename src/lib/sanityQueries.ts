@@ -153,6 +153,20 @@ export const GALLERY_SLUGS_QUERY = /* groq */ `
 `;
 
 /**
+ * Settings query for the `gallerySettings` singleton.
+ * Returns the optional custom medium labels array.
+ * Used by `config/galleryMediums.ts` → `getMediumLabels()`.
+ */
+export const GALLERY_SETTINGS_QUERY = /* groq */ `
+*[_type == "gallerySettings" && _id == "gallerySettings"][0]{
+  mediumLabels[]{
+    value,
+    label
+  }
+}
+`;
+
+/**
  * Detail query for `/galeries/:slug`.
  * Returns all fields needed for the gallery detail page,
  * including the full images array with dereferenced assets.

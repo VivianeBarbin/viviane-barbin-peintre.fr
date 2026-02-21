@@ -21,20 +21,21 @@
     "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/react": "^4.4.2",
     "@sanity/astro": "^3.2.11",
-    "@sanity/client": "^7.14.1",
+    "@sanity/client": "^7.15.0",
     "@sanity/image-url": "^2.0.3",
-    "@sanity/vision": "^5.8.1",
-    "@types/react": "^19.2.13",
+    "@sanity/vision": "^5.11.0",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "astro": "^5.17.1",
+    "astro": "^5.17.3",
     "astro-icon": "^1.1.5",
     "astro-portabletext": "^0.13.0",
+    "litelight-js": "^1.0.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-is": "^19.2.4",
-    "sanity": "^5.8.1",
+    "sanity": "^5.11.0",
     "sharp": "^0.34.5",
-    "styled-components": "^6.3.9"
+    "styled-components": "^6.3.11"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -43,7 +44,7 @@
     "@unocss/reset": "^66.6.0",
     "dotenv-cli": "^11.0.0",
     "eslint": "^10.0.0",
-    "eslint-plugin-astro": "^1.5.0",
+    "eslint-plugin-astro": "^1.6.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^17.3.0",
@@ -53,10 +54,10 @@
     "react-compiler-runtime": "^1.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.54.0",
+    "typescript-eslint": "^8.56.0",
     "unocss": "^66.6.0",
     "unocss-preset-theme": "^0.14.1",
-    "wrangler": "^4"
+    "wrangler": "^4.67.0"
   },
-  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"
+  "packageManager": "pnpm@10.30.1+sha512.3590e550d5384caa39bd5c7c739f72270234b2f6059e13018f975c313b1eb9fefcc09714048765d4d9efe961382c312e624572c0420762bdc5d5940cdf9be73a"
 }

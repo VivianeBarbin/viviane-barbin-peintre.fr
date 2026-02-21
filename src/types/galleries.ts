@@ -3,7 +3,23 @@
  *
  * These types mirror the GROQ query projections, NOT the full Sanity schema.
  * Keep them aligned with the queries in `src/lib/sanityQueries.ts`.
+ *
+ * GalleryMedium, DEFAULT_MEDIUM_LABELS, getMediumLabels (async) and
+ * formatMediumLabels live in `@config/galleryMediums` — single source of truth.
+ * Re-exported here for backward-compat with existing imports.
  */
+
+// Import into scope so the interfaces below can reference GalleryMedium directly.
+import type { GalleryMedium } from "@config/galleryMediums";
+
+export {
+  DEFAULT_MEDIUM_LABELS,
+  formatMediumLabels,
+  GALLERY_MEDIUMS,
+  getMediumLabels,
+  DEFAULT_MEDIUM_LABELS as MEDIUM_LABELS,
+} from "@config/galleryMediums";
+export type { GalleryMedium };
 
 // ── Shared sub-types ─────────────────────────────────────────────────
 
@@ -37,33 +53,6 @@ export interface SanityImageWithAlt {
     right: number;
   };
 }
-
-/** Allowed medium/technique values (matches Sanity schema enum) */
-export type GalleryMedium =
-  | "PASTEL"
-  | "AQUARELLE"
-  | "HUILE_SUR_TOILE"
-  | "HUILE_SUR_BOIS"
-  | "ACRYLIQUE"
-  | "ENCRE"
-  | "FUSAIN"
-  | "CRAYON"
-  | "TECHNIQUE_MIXTE"
-  | "AUTRE";
-
-/** Human-readable labels for each medium value */
-export const MEDIUM_LABELS: Record<GalleryMedium, string> = {
-  PASTEL: "Pastel",
-  AQUARELLE: "Aquarelle",
-  HUILE_SUR_TOILE: "Huile sur toile",
-  HUILE_SUR_BOIS: "Huile sur bois",
-  ACRYLIQUE: "Acrylique",
-  ENCRE: "Encre",
-  FUSAIN: "Fusain",
-  CRAYON: "Crayon",
-  TECHNIQUE_MIXTE: "Technique mixte",
-  AUTRE: "Autre",
-};
 
 // ── Index page (list) ────────────────────────────────────────────────
 
@@ -128,8 +117,8 @@ export function formatGalleryDate(dateStr: string): string {
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return "";
     return new Intl.DateTimeFormat("fr-FR", {
-      month: "2-digit",
-      year: "2-digit",
+      month: "long",
+      year: "numeric",
     }).format(date);
   } catch {
     return "";
@@ -142,27 +131,10 @@ export function formatGalleryDate(dateStr: string): string {
  * @example formatGalleryYear("2024-09-15") → "24"
  */
 export function formatGalleryYear(dateStr: string): string {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return "";
-    return String(date.getFullYear()).slice(-2);
-  } catch {
-    return "";
-  }
-}
-
-/**
- * Convert an array of medium values to their human-readable labels,
- * joined with a separator.
- *
- * @example formatMediumLabels(["PASTEL", "AQUARELLE"]) → "Pastel · Aquarelle"
- * @example formatMediumLabels(["HUILE_SUR_TOILE"])     → "Huile sur toile"
- * @example formatMediumLabels([])                       → ""
- */
-export function formatMediumLabels(
-  mediums: GalleryMedium[] | undefined | null,
-  separator = " · "
-): string {
-  if (!mediums || mediums.length === 0) return "";
-  return mediums.map((m) => MEDIUM_LABELS[m] ?? m).join(separator);
+  const date = new Date(dateStr);
+  return isNaN(date.getTime())
+    ? ""
+    : new Intl.DateTimeFormat("fr-FR", {
+        year: "2-digit",
+      }).format(date);
 }

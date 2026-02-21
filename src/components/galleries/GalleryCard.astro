@@ -30,7 +30,7 @@ const formattedDate = date ? formatGalleryDate(date) : "";
 const formattedYear = date ? formatGalleryYear(date) : "";
 
 // ── Medium labels (multi-select array) ─────────────────────────────
-const mediumLabel = formatMediumLabels(medium);
+const mediumItems = formatMediumLabels(medium);
 
 // ── Image handling: Sanity CDN with local fallback ─────────────────
 const sanityImageSource = coverImage ?? null;
@@ -107,8 +107,6 @@ const href = `/galeries/${slug}`;
   </div>
 
   <div class="gallery-card__content">
-    <h3 class="gallery-card__title">{title}</h3>
-
     <div class="gallery-card__meta">
       {
         formattedDate && (
@@ -117,8 +115,20 @@ const href = `/galeries/${slug}`;
           </span>
         )
       }
-      {mediumLabel && <span class="gallery-card__medium">{mediumLabel}</span>}
+      {
+        mediumItems.length > 0 && (
+          <span class="gallery-card__medium">
+            {mediumItems.map((item, i) => (
+              <>
+                {i > 0 && ""}
+                <span class="gallery-medium px-2 bg-accent">{item.label}</span>
+              </>
+            ))}
+          </span>
+        )
+      }
     </div>
+    <h3 class="gallery-card__title heading-4">{title}</h3>
   </div>
 </a>
 
@@ -188,14 +198,6 @@ const href = `/galeries/${slug}`;
     padding-bottom: 0.5rem;
   }
 
-  .gallery-card__title {
-    font-size: 1rem;
-    font-weight: 600;
-    line-height: 1.3;
-    margin: 0;
-    transition: color 0.2s ease;
-  }
-
   .gallery-card:hover .gallery-card__title {
     opacity: 0.8;
   }
@@ -204,23 +206,25 @@ const href = `/galeries/${slug}`;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.8125rem;
-    opacity: 0.7;
+    font-size: 0.875rem;
   }
 
   .gallery-card__date {
-    text-transform: uppercase;
+    text-transform: capitalize;
     letter-spacing: 0.03em;
+    opacity: 0.7;
   }
 
   .gallery-card__medium {
     text-transform: uppercase;
+
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.25rem;
     letter-spacing: 0.03em;
   }
 
-  /* Separator between date and medium */
-  .gallery-card__meta > :not(:first-child)::before {
+  .gallery-card__date > :after {
     content: "·";
-    margin-right: 0.5rem;
+    margin-left: 0.5rem;
   }
 </style>

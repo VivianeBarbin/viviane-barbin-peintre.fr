@@ -1,4 +1,4 @@
-import type { DocumentActionComponent, DocumentActionsResolver } from "sanity";
+import type {DocumentActionComponent, DocumentActionsResolver} from 'sanity'
 
 /**
  * Centralized singleton configuration.
@@ -6,7 +6,7 @@ import type { DocumentActionComponent, DocumentActionsResolver } from "sanity";
  * These schema types are intended to be edited as singletons (one document each),
  * opened via a fixed `documentId()` in the Studio structure.
  */
-export const singletonSchemaTypes = new Set(["contactSettings", "siteSettings"]);
+export const singletonSchemaTypes = new Set(['contactSettings', 'siteSettings', 'gallerySettings'])
 
 /**
  * Limit actions for singleton documents to "safe" actions only.
@@ -20,17 +20,17 @@ export const singletonSchemaTypes = new Set(["contactSettings", "siteSettings"])
  * - delete, duplicate, unpublish, etc.
  */
 export const singletonDocumentActions: DocumentActionsResolver = (prev, context) => {
-  const schemaType = context.schemaType;
+  const schemaType = context.schemaType
 
-  if (!singletonSchemaTypes.has(schemaType)) return prev;
+  if (!singletonSchemaTypes.has(schemaType)) return prev
 
-  const allowed = new Set(["publish", "discardChanges", "restore"]);
+  const allowed = new Set(['publish', 'discardChanges', 'restore'])
 
   return prev.filter((item) => {
     // Sanity actions can be either strings or action components depending on version/setup.
-    if (typeof item === "string") return allowed.has(item);
+    if (typeof item === 'string') return allowed.has(item)
 
-    const action = (item as DocumentActionComponent & { action?: string }).action;
-    return typeof action === "string" ? allowed.has(action) : true;
-  });
-};
+    const action = (item as DocumentActionComponent & {action?: string}).action
+    return typeof action === 'string' ? allowed.has(action) : true
+  })
+}

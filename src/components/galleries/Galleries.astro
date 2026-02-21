@@ -30,14 +30,14 @@ const hasGalleries = galleries.length > 0;
   <div class="site-container">
     {/* ── Section header ──────────────────────────────────────────── */}
     <div class="galleries-header">
-      <h2 class="galleries-header__title flex items-start gap-x-2 text-sm uppercase">
-        <span class="flex h-[1lh] items-center">
+      <h1 class="galleries-header__title flex items-start gap-x-2 text-sm uppercase">
+        <span class="flex h-1lh items-center">
           <Icon name="tabler/square" aria-hidden="true" />
         </span>
         {title}
-      </h2>
+      </h1>
 
-      {subtitle && <p class="galleries-header__subtitle">{subtitle}</p>}
+      {subtitle && <h2 class="heading-2">{subtitle}</h2>}
     </div>
 
     {/* ── Grid or empty state ─────────────────────────────────────── */}
@@ -71,11 +71,10 @@ const hasGalleries = galleries.length > 0;
   /* ── Header ────────────────────────────────────────────────────── */
 
   .galleries-header {
-    margin-bottom: 2.5rem;
-  }
-
-  .galleries-header__title {
-    margin: 0 0 0.5rem;
+    margin: 2.5rem 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.875rem;
   }
 
   .galleries-header__subtitle {
