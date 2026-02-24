@@ -1,0 +1,11 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Book from "@/components/book/Book.astro";
+
+// Pre-render this page at build time (PDF images are generated statically)
+export const prerender = true;
+---
+
+<BaseLayout>
+  <Book />
+</BaseLayout>

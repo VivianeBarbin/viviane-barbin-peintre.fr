@@ -1,8 +1,9 @@
 import {aboutContentType} from '../src/sanity/aboutContent'
+import {bookContentType} from '../src/sanity/bookContent'
 import {contactSettingsType} from '../src/sanity/contactSettings'
 import {galleriesContentType} from '../src/sanity/galleriesContent'
 import {gallerySettingsType} from '../src/sanity/gallerySettings'
-import {homeContent} from '../src/sanity/homeContent'
+import {homeContentType} from '../src/sanity/homeContent'
 import {newsContentType} from '../src/sanity/newsContent'
 import {siteSettingsType} from '../src/sanity/siteSettings'
 
@@ -10,9 +11,9 @@ export const schemaTypes = [
   aboutContentType,
   galleriesContentType,
   gallerySettingsType,
-  homeContent,
+  bookContentType,
+  homeContentType,
   newsContentType,
   contactSettingsType,
   siteSettingsType,
-  // Add other schema types here
 ]

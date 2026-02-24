@@ -2,6 +2,7 @@
 export interface NavLinkItem {
   text: string;
   link: string;
+  button?: string;
   newTab?: boolean;
   icon?: string;
 }

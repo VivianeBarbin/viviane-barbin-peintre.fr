@@ -29,15 +29,21 @@ const hasGalleries = galleries.length > 0;
 <section class="galleries-section bg-background text-primary">
   <div class="site-container">
     {/* ── Section header ──────────────────────────────────────────── */}
-    <div class="galleries-header">
-      <h1 class="galleries-header__title flex items-start gap-x-2 text-sm uppercase">
-        <span class="flex h-1lh items-center">
-          <Icon name="tabler/square" aria-hidden="true" />
+    <div class="my-10 flex flex-col gap-y-[1.875rem]">
+      <h1 class="flex items-baseline gap-x-2 text-sm uppercase tracking-wider">
+        <span class="inline-flex self-center">
+          <Icon name="tabler/square" class="size-3.5 translate-y-1px" aria-hidden="true" />
         </span>
         {title}
       </h1>
 
-      {subtitle && <h2 class="heading-2">{subtitle}</h2>}
+      {
+        subtitle && (
+          <h2 class="m-0 max-w-[36ch] text-[1.75rem] font-light leading-[1.3] md:text-[2.25rem]">
+            {subtitle}
+          </h2>
+        )
+      }
     </div>
 
     {/* ── Grid or empty state ─────────────────────────────────────── */}

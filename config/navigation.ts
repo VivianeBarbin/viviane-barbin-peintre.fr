@@ -4,6 +4,7 @@ import type { LegalLinkItem, NavLinkItem, SocialLinkItem } from "./types";
 export const navigationLinks: NavLinkItem[] = [
   {
     text: "Galerie",
+    button: "Parcourir mes créations",
     link: "/galeries",
   },
   {
@@ -12,6 +13,7 @@ export const navigationLinks: NavLinkItem[] = [
   },
   {
     text: "L'atelier",
+    button: "Découvrir l'atelier",
     link: "/atelier",
   },
   {

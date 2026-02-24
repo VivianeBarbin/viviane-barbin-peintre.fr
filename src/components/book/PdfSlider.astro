@@ -1,0 +1,282 @@
+---
+/**
+ * PdfSlider.astro
+ *
+ * Displays pre-rendered PDF pages (A4 format) as an image carousel using Splide.js.
+ *
+ * Features:
+ *   - Instant loading: images are pre-rendered at build time
+ *   - Smooth carousel with Splide.js
+ *   - A4 aspect ratio (1:1.414)
+ *   - Responsive design
+ *   - Keyboard navigation
+ *   - Screen reader support
+ */
+
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  /** Array of pre-rendered page image URLs */
+  pages: string[];
+  /** Width of the images */
+  width: number;
+  /** Height of the images */
+  height: number;
+}
+
+const { pages, width, height } = Astro.props;
+const totalPages = pages.length;
+const aspectRatio = height / width;
+---
+
+<div
+  class="pdf-slider"
+  data-total-pages={totalPages}
+  style={`--page-width: ${width}px; --page-height: ${height}px; --aspect-ratio: ${aspectRatio};`}
+>
+  <div class="pdf-slider__container">
+    <button
+      class="pdf-slider__nav pdf-slider__nav--prev"
+      type="button"
+      aria-label="Page précédente"
+    >
+      <Icon class="text-secondaryForeground" name="tabler/circle-arrow-left" aria-hidden="true" />
+    </button>
+
+    <div class="splide pdf-slider__splide">
+      <div class="splide__track">
+        <ul class="splide__list">
+          {
+            pages.map((pageUrl: string, index: number) => (
+              <li class="splide__slide">
+                <img
+                  src={pageUrl}
+                  alt={`Page ${index + 1} sur ${totalPages}`}
+                  width={width}
+                  height={height}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding={index === 0 ? "sync" : "async"}
+                />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <button class="pdf-slider__nav pdf-slider__nav--next" type="button" aria-label="Page suivante">
+      <Icon class="text-secondaryForeground" name="tabler/circle-arrow-right" aria-hidden="true" />
+    </button>
+  </div>
+
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+    <span class="pdf-slider__sr-info"></span>
+  </div>
+</div>
+
+<script>
+  import Splide from "@splidejs/splide";
+  import "@splidejs/splide/dist/css/splide-core.min.css";
+
+  function initSlider(wrapper: HTMLElement): void {
+    const splideEl = wrapper.querySelector<HTMLElement>(".splide");
+    const prevBtn = wrapper.querySelector<HTMLButtonElement>(".pdf-slider__nav--prev");
+    const nextBtn = wrapper.querySelector<HTMLButtonElement>(".pdf-slider__nav--next");
+    const srInfo = wrapper.querySelector<HTMLElement>(".pdf-slider__sr-info");
+    const totalPages = parseInt(wrapper.dataset.totalPages || "0", 10);
+
+    if (!splideEl || !prevBtn || !nextBtn || !srInfo || totalPages === 0) return;
+
+    const splide = new Splide(splideEl, {
+      type: "loop",
+      perPage: 1,
+      perMove: 1,
+      gap: 0,
+      pagination: true,
+      arrows: false,
+      lazyLoad: "nearby",
+      preloadPages: 1,
+    });
+
+    splide.mount();
+
+    prevBtn.addEventListener("click", () => splide.go("<"));
+    nextBtn.addEventListener("click", () => splide.go(">"));
+
+    const updateSrInfo = (index: number): void => {
+      srInfo.textContent = `Page ${index + 1} sur ${totalPages}`;
+    };
+
+    updateSrInfo(splide.index);
+    splide.on("moved", (newIndex: number) => updateSrInfo(newIndex));
+
+    splideEl.setAttribute("tabindex", "0");
+    splideEl.addEventListener("keydown", (e: KeyboardEvent) => {
+      switch (e.key) {
+        case "ArrowLeft":
+          e.preventDefault();
+          splide.go("<");
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          splide.go(">");
+          break;
+        case "Home":
+          e.preventDefault();
+          splide.go(0);
+          break;
+        case "End":
+          e.preventDefault();
+          splide.go(totalPages - 1);
+          break;
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>(".pdf-slider").forEach(initSlider);
+</script>
+
+<style>
+  .pdf-slider {
+    --nav-size: 3rem;
+    --nav-gap: 1.5rem;
+    width: 100%;
+    padding: 1.5rem 0;
+  }
+
+  .pdf-slider__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--nav-gap);
+    max-width: calc(var(--page-width) + (var(--nav-size) + var(--nav-gap)) * 2);
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .pdf-slider__nav {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--nav-size);
+    height: var(--nav-size);
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .pdf-slider__nav:hover {
+    opacity: 0.7;
+  }
+
+  .pdf-slider__nav:active {
+    opacity: 0.5;
+  }
+
+  .pdf-slider__nav :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .pdf-slider__splide {
+    flex: 1;
+    max-width: var(--page-width);
+  }
+
+  .pdf-slider__splide .splide__track {
+    overflow: hidden;
+  }
+
+  .pdf-slider__splide .splide__list {
+    display: flex;
+    align-items: center;
+  }
+
+  .pdf-slider__splide .splide__slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pdf-slider__splide .splide__slide img {
+    display: block;
+    max-width: 100%;
+    max-height: 70vh; /* au lieu de 85vh */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    background: white;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .pdf-slider__splide :global(.splide__pagination) {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pdf-slider__splide :global(.splide__pagination__page) {
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pdf-slider__splide :global(.splide__pagination__page:hover) {
+    background: rgba(0, 0, 0, 0.4);
+    transform: scale(1.2);
+  }
+
+  .pdf-slider__splide :global(.splide__pagination__page.is-active) {
+    width: 0.625rem;
+    height: 0.625rem;
+    background: oklch(0.9896 0.0186 96.86);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 768px) {
+    .pdf-slider {
+      --nav-size: 2.5rem;
+      --nav-gap: 0.75rem;
+      padding: 1rem 0;
+    }
+
+    .pdf-slider__splide .splide__slide img {
+      max-height: 75vh;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .pdf-slider {
+      --nav-size: 2rem;
+      --nav-gap: 0.5rem;
+    }
+
+    .pdf-slider__splide :global(.splide__pagination) {
+      margin-top: 1rem;
+    }
+  }
+</style>

@@ -2,6 +2,11 @@
   "name": "viviane-barbin-peintre-fr",
   "type": "module",
   "version": "0.0.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "puppeteer"
+    ]
+  },
   "scripts": {
     "dev": "dotenv -e .env -- astro dev",
     "prebuild": "tsx scripts/generate-css-vars.ts",
@@ -24,12 +29,14 @@
     "@sanity/client": "^7.15.0",
     "@sanity/image-url": "^2.0.3",
     "@sanity/vision": "^5.11.0",
+    "@splidejs/splide": "^4.1.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.17.3",
     "astro-icon": "^1.1.5",
     "astro-portabletext": "^0.13.0",
     "litelight-js": "^1.0.5",
+    "puppeteer": "^24.37.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-is": "^19.2.4",
@@ -43,7 +50,7 @@
     "@unocss/preset-wind4": "^66.6.0",
     "@unocss/reset": "^66.6.0",
     "dotenv-cli": "^11.0.0",
-    "eslint": "^10.0.0",
+    "eslint": "^10.0.1",
     "eslint-plugin-astro": "^1.6.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",

@@ -198,3 +198,29 @@ export const GALLERY_DETAIL_QUERY = /* groq */ `
   body
 }
 `;
+
+// ── Book ────────────────────────────────────────────────────────
+
+/**
+ * Query for the "Mon livre" (Book) page.
+ * Returns the singleton bookContent document.
+ * Crucially, it resolves the image assets embedded directly inside
+ * the Portable Text array so your Astro frontend can render them.
+ */
+export const BOOK_CONTENT_QUERY = /* groq */ `
+ *[_type == "bookContent"][0]{
+   subtitle,
+   "pdfUrl": pdfFile.asset->url,
+   content[]{
+     ...,
+     _type == "image" => {
+       ...,
+       asset->{
+         _id,
+         url,
+         metadata { dimensions }
+       }
+     }
+   }
+ }
+ `;

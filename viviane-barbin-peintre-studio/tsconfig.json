@@ -22,6 +22,8 @@
     "**/*.ts",
     "**/*.tsx",
     "../config/**/*",
+    "../src/sanity/bookContent.ts",
+    "../sanity.config.ts",
   ],
   "exclude": [
     "node_modules",

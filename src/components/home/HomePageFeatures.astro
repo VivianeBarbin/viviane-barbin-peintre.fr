@@ -5,6 +5,7 @@ import { resolveImageWithFallback } from "@/utils/imageUtils";
 import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 import { getContactData } from "@config/contact";
 import { getSiteSettings, themeConfig } from "@config/site";
+import { navigationLinks } from "@config/navigation";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { HOME_CONTENT_QUERY } from "@/lib/sanityQueries";
 
@@ -14,6 +15,7 @@ const homeData = await fetchSanity<Record<string, any>>(HOME_CONTENT_QUERY);
 // Resolve settings singletons (Sanity + fallback)
 const contactData = await getContactData();
 const siteSettings = await getSiteSettings();
+const galerieLink = navigationLinks.find((nav) => nav.link === "/galeries");
 
 // Local fallback image paths
 const ATELIER_IMAGE_PATH = "@images/homepage/homepage-placeholder_01.jpg";
@@ -151,7 +153,9 @@ const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPainting
               <div class="from-background via-background/10 absolute inset-0 bg-linear-to-t to-transparent" />
               <div class="absolute inset-0 flex items-end p-4 pb-10 md:p-6">
                 <Button variant="secondary" size="sm" class="w-full md:w-auto">
-                  Parcourir mes créations
+                  <a href={galerieLink?.link ?? "/galeries"}>
+                    {galerieLink?.button ?? "Parcourir mes créations"}
+                  </a>
                 </Button>
               </div>
             </div>
