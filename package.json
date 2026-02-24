@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "dotenv -e .env -- astro dev",
+    "postinstall": "pnpm exec puppeteer browsers install chrome",
     "prebuild": "tsx scripts/generate-css-vars.ts",
     "build": "dotenv -e .env -- astro build",
     "preview": "dotenv -e .env -- astro preview",

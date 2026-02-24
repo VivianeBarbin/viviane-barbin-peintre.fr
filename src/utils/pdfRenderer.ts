@@ -124,6 +124,7 @@ export async function renderPdfToImages(
 
   try {
     // Launch Puppeteer
+    console.log(`[pdfRenderer] Launching Chrome...`);
     browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -135,6 +136,7 @@ export async function renderPdfToImages(
         "--allow-file-access-from-files",
       ],
     });
+    console.log(`[pdfRenderer] Chrome launched successfully`);
 
     const page = await browser.newPage();
 
@@ -284,6 +286,21 @@ export async function renderPdfToImages(
       totalPages,
       width,
       height: finalHeight,
+    };
+  } catch (err) {
+    // If Puppeteer fails (e.g., Chrome not installed in CI), log error
+    // The caller will handle the empty results gracefully
+    console.error(`[pdfRenderer] Puppeteer rendering failed:`, err);
+    console.error(
+      `[pdfRenderer] If this is CI/CD, ensure Chrome is installed via: pnpm exec puppeteer browsers install chrome`
+    );
+
+    // Return empty result - the component will show fallback message
+    return {
+      pageUrls: [],
+      totalPages: 0,
+      width,
+      height: Math.round(width * 1.414), // A4 fallback
     };
   } finally {
     if (browser) {
