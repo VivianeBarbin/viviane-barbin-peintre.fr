@@ -1,8 +1,7 @@
 # build output
 dist/
 
-# generated PDF page images (built at compile time)
-public/pdf-pages/
+
 
 # generated types
 .astro/

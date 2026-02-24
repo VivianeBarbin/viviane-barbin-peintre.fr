@@ -5,21 +5,10 @@ import {schemaTypes} from './schemaTypes'
 import {singletonDocumentActions, singletonSchemaTypes} from './src/sanity/singletons'
 import {structure} from './src/sanity/structure'
 
-// Vite statically replaces `process.env.SANITY_STUDIO_*` at build time.
-// This declaration satisfies TypeScript without pulling in all of @types/node.
-declare const process: {env: Record<string, string | undefined>}
-
-// ─── Dataset resolution ───────────────────────────────────────────────
-// Sanity Studio (Vite) auto-exposes env vars prefixed with SANITY_STUDIO_
-// at build time via process.env replacement.
-//
-// Local dev  : no env var needed → defaults to "local_dev"
-// Production : set SANITY_STUDIO_DATASET=production in the build environment
-// Preview    : set SANITY_STUDIO_DATASET=staging (or whichever dataset you want)
-//
-// See .env.example for the full list of variables.
+// ─── Dataset configuration ────────────────────────────────────────────
+// Always use the production dataset
 // ──────────────────────────────────────────────────────────────────────
-const dataset = process.env.SANITY_STUDIO_DATASET ?? 'local_dev'
+const dataset = 'production'
 
 export default defineConfig({
   name: 'default',

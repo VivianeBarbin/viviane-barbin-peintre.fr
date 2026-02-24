@@ -39,9 +39,9 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          # Production dataset only for push to main
-          SANITY_DATASET: ${{ (github.ref == 'refs/heads/main' && github.event_name == 'push') && 'production' || 'local_dev' }}
-          SANITY_STUDIO_DATASET: ${{ (github.ref == 'refs/heads/main' && github.event_name == 'push') && 'production' || 'local_dev' }}
+          # Always use production dataset
+          SANITY_DATASET: production
+          SANITY_STUDIO_DATASET: production
           # If your prod dataset is private, add the read token as a secret:
           # SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
 

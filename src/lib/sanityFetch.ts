@@ -4,8 +4,7 @@ import { SANITY_API_VERSION, SANITY_DATASET, SANITY_PROJECT_ID } from "../utils/
 /**
  * Minimal fetch helper for Sanity (SSR/build friendly).
  *
- * - Uses env vars when available (no hardcode of projectId/dataset).
- * - Falls back to `src/utils/sanityConfig.ts` (keeps the app working if env is missing).
+ * - Uses constants from `src/utils/sanityConfig.ts`.
  * - Memoizes the client + dedupes identical in-flight queries during a single SSR/build run.
  *
  * Notes:
@@ -18,35 +17,15 @@ type FetchParams = Record<string, unknown> | undefined;
 
 const inFlight = new Map<string, Promise<unknown>>();
 
-function readEnv(key: string): string | undefined {
-  // In Astro SSR/build, `process.env` is available.
-  // `import.meta.env` is also available but depends on Vite env parsing (KEY=VALUE).
-  // We keep it defensive and do not assume a particular format.
-  const fromProcess = typeof process !== "undefined" ? process.env?.[key] : undefined;
-  const metaEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
-  const fromImportMeta = metaEnv?.[key];
-  return fromProcess ?? fromImportMeta;
-}
-
-function resolveSanityConfig() {
-  const projectId = readEnv("SANITY_PROJECT_ID") ?? SANITY_PROJECT_ID;
-  const dataset = readEnv("SANITY_DATASET") ?? SANITY_DATASET;
-  const apiVersion = readEnv("SANITY_API_VERSION") ?? SANITY_API_VERSION;
-
-  return { projectId, dataset, apiVersion };
-}
-
 let cachedClient: ReturnType<typeof createClient> | null = null;
 
 export function getSanityClient() {
   if (cachedClient) return cachedClient;
 
-  const { projectId, dataset, apiVersion } = resolveSanityConfig();
-
   cachedClient = createClient({
-    projectId,
-    dataset,
-    apiVersion,
+    projectId: SANITY_PROJECT_ID,
+    dataset: SANITY_DATASET,
+    apiVersion: SANITY_API_VERSION,
     useCdn: false,
     // perspective is available in newer clients; leaving it undefined keeps compatibility
   });

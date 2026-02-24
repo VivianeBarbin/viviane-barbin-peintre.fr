@@ -6,16 +6,14 @@ Astro site for Viviane Barbin Peintre, deployed on Cloudflare Workers with embed
 
 ## Environment Variables & Dataset Configuration
 
-The Sanity **dataset** is configured via environment variables so that local development, production, and preview deployments each target the correct data without code changes.
+This project is configured to **always use the `production` dataset** for all environments (local development, production, and preview deployments).
 
-### How dataset resolution works
+### Dataset configuration
 
-| Layer                                                                       | Variable                | Exposed to                                  | Fallback                                       |
-| --------------------------------------------------------------------------- | ----------------------- | ------------------------------------------- | ---------------------------------------------- |
-| **Astro frontend** (`astro.config.mjs`, `sanityFetch.ts`, `sanityImage.ts`) | `SANITY_DATASET`        | Server / build only                         | `"local_dev"` in dev; **error** in prod builds |
-| **Sanity Studio** (`sanity.config.ts`)                                      | `SANITY_STUDIO_DATASET` | Client bundle (Vite replaces at build time) | `"local_dev"`                                  |
-
-> **Production safety:** if `SANITY_DATASET` is not set during a production build (`astro build` with `import.meta.env.PROD === true`), the build will **fail** with a clear error message. This prevents accidentally shipping a build that points at `local_dev`.
+| Layer                                                                       | Variable                | Value        | Notes                            |
+| --------------------------------------------------------------------------- | ----------------------- | ------------ | -------------------------------- |
+| **Astro frontend** (`astro.config.mjs`, `sanityFetch.ts`, `sanityImage.ts`) | `SANITY_DATASET`        | `production` | Hardcoded in configuration files |
+| **Sanity Studio** (`sanity.config.ts`)                                      | `SANITY_STUDIO_DATASET` | `production` | Hardcoded in configuration files |
 
 > **Public dataset:** This project uses a public Sanity dataset — no API read token is needed for content fetching.
 
@@ -23,12 +21,11 @@ The Sanity **dataset** is configured via environment variables so that local dev
 
 #### Local development
 
-No env vars are required. Both the frontend and Studio default to `local_dev`.
+No environment variables are required. The dataset is hardcoded to `production` in all configuration files.
 
 ```sh
-# .env (optional — values shown are the defaults)
-SANITY_DATASET=local_dev
-SANITY_STUDIO_DATASET=local_dev
+# .env (optional — no dataset configuration needed)
+# Dataset is always "production"
 ```
 
 Run the dev server:
@@ -45,12 +42,7 @@ cd viviane-barbin-peintre-studio && pnpm dev
 
 #### Production (Cloudflare Workers)
 
-Set these **build-time** environment variables in your CI/CD pipeline or in the Cloudflare Dashboard under **Workers & Pages → Settings → Environment Variables (Production)**:
-
-| Variable                | Value        | Notes                                         |
-| ----------------------- | ------------ | --------------------------------------------- |
-| `SANITY_DATASET`        | `production` | Used by Astro (frontend queries + image URLs) |
-| `SANITY_STUDIO_DATASET` | `production` | Used by embedded Studio at `/admin`           |
+No dataset environment variables are required. The dataset is hardcoded to `production` in all configuration files.
 
 Deploy:
 
@@ -60,14 +52,7 @@ pnpm deploy       # builds + wrangler deploy
 
 #### Preview (Cloudflare)
 
-Preview deploys use the `wrangler.jsonc` → `env.preview` config (`--env preview`). You **must** set env vars explicitly for preview to avoid accidentally targeting production:
-
-| Variable                | Recommended value        | Notes                                             |
-| ----------------------- | ------------------------ | ------------------------------------------------- |
-| `SANITY_DATASET`        | `local_dev` or `staging` | Choose depending on what data you want to preview |
-| `SANITY_STUDIO_DATASET` | _(same as above)_        | Keep in sync with `SANITY_DATASET`                |
-
-Set these in the Cloudflare Dashboard under **Environment Variables (Preview)**, or in CI environment for the preview job.
+Preview deploys use the `wrangler.jsonc` → `env.preview` config (`--env preview`). The dataset is hardcoded to `production` for all environments.
 
 Deploy preview:
 
@@ -75,9 +60,9 @@ Deploy preview:
 pnpm deploy:preview   # builds + wrangler deploy --env preview
 ```
 
-### Where to configure Cloudflare env vars
+### Where to configure Cloudflare env vars (if needed for other purposes)
 
-These are **build-time** variables (they are read when `astro build` runs, not at Worker runtime). Set them in one of:
+Other **build-time** variables (not dataset-related) can be set in one of:
 
 1. **Cloudflare Dashboard** → Workers & Pages → your project → Settings → Variables and Secrets → select the environment (Production / Preview).
 2. **CI/CD secrets** (e.g. GitHub Actions `env:` block) — the build step must have them in the shell environment.
