@@ -1,8 +1,12 @@
 ---
 /**
  * Book.astro
+ *
+ * Section component for the `/mon-livre` index page.
+ * Renders a section title, subtitle, and an interactive PDF slider.
+ *
+ * At build time, the PDF is pre-rendered to WebP images for instant loading.
  */
-
 import { Icon } from "astro-icon/components";
 import PdfSlider from "@/components/book/PdfSlider.astro";
 import { PortableText } from "astro-portabletext";
@@ -11,18 +15,39 @@ import { BOOK_CONTENT_QUERY } from "@/lib/sanityQueries";
 import { renderPdfToImages } from "@/utils/pdfRenderer";
 
 interface Props {
+  /** Section heading (e.g. "Mon Livre") */
   title?: string;
+}
+
+interface BookData {
+  subtitle?: string;
+  pdfUrl?: string;
+  content?: any[];
 }
 
 const { title = "Livre de Viviane" } = Astro.props;
 
-const bookData = await fetchSanity<Record<string, any>>(BOOK_CONTENT_QUERY);
+// Fetch book data from Sanity
+const bookData = await fetchSanity<BookData>(BOOK_CONTENT_QUERY);
 
-const hasData = bookData !== null;
+// Debug logging for production issues
+console.log("[Book] Dataset:", import.meta.env.SANITY_DATASET || "local_dev");
+console.log("[Book] Book data received:", bookData ? "YES" : "NO");
+if (bookData) {
+  console.log("[Book] Has subtitle:", !!bookData.subtitle);
+  console.log("[Book] Has pdfUrl:", !!bookData.pdfUrl);
+  console.log(
+    "[Book] Has content:",
+    Array.isArray(bookData.content) && bookData.content.length > 0
+  );
+}
+
+const hasData = bookData !== null && bookData !== undefined;
 const subtitle = bookData?.subtitle ?? "Les mots qui racontent mes toiles";
 const content = bookData?.content ?? [];
 const pdfUrl = bookData?.pdfUrl ?? "";
 
+// Pre-render PDF pages to WebP images at build time
 let pdfPages: string[] = [];
 let pdfWidth = 0;
 let pdfHeight = 0;
@@ -33,11 +58,9 @@ if (pdfUrl) {
       width: 1200,
       quality: 80,
     });
-
     pdfPages = result.pageUrls;
     pdfWidth = result.width;
     pdfHeight = result.height;
-
     console.log(`[Book] PDF rendered: ${result.totalPages} pages`);
   } catch (error) {
     console.error("[Book] Failed to render PDF:", error);
@@ -65,8 +88,8 @@ if (pdfUrl) {
             )}
           </div>
 
-          {content.length > 0 && (
-            <div class="prose">
+          {content && content.length > 0 && (
+            <div class="prose prose-lg max-w-none mb-12">
               <PortableText value={content} />
             </div>
           )}
@@ -86,11 +109,22 @@ if (pdfUrl) {
       </section>
     </>
   ) : (
-    <section class="homepage-about bg-backgroundAccent">
+    <section class="book-section bg-background text-primary">
       <div class="site-container">
-        <p class="text-muted">
-          Contenu "Mon livre" non disponible. Veuillez créer un document dans Sanity Studio.
-        </p>
+        <div class="my-10 flex flex-col gap-y-[1.875rem]">
+          <h1 class="flex items-baseline gap-x-2 text-sm uppercase tracking-wider">
+            <span class="inline-flex self-center">
+              <Icon name="tabler/square" class="size-3.5 translate-y-1px" aria-hidden="true" />
+            </span>
+            {title}
+          </h1>
+        </div>
+        <div class="py-12">
+          <p class="text-muted text-center">
+            Contenu non disponible. Veuillez vérifier que le document "Mon livre" est publié dans
+            Sanity Studio (dataset: {import.meta.env.SANITY_DATASET || "local_dev"}).
+          </p>
+        </div>
       </div>
     </section>
   )
