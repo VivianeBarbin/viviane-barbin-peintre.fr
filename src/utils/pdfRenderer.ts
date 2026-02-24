@@ -82,14 +82,14 @@ export async function renderPdfToImages(
     const oldFiles = existingFiles.filter((f) => f.endsWith(".webp") && !f.startsWith(urlHash));
     for (const oldFile of oldFiles) {
       await rm(join(fullOutputDir, oldFile));
-      console.log(`[pdfRenderer] Removed old cached file: ${oldFile}`);
     }
   } catch {
     // Directory might not exist yet, that's fine
   }
 
   // Check if images already exist for this PDF
-  const existingFiles = existsSync(fullOutputDir) ? await readdir(fullOutputDir) : [];
+  await mkdir(fullOutputDir, { recursive: true });
+  const existingFiles = await readdir(fullOutputDir);
   const cachedPages = existingFiles
     .filter((f) => f.startsWith(urlHash) && f.endsWith(".webp"))
     .sort((a, b) => {
@@ -100,9 +100,6 @@ export async function renderPdfToImages(
 
   // If we have cached pages, return them
   if (cachedPages.length > 0) {
-    console.log(`[pdfRenderer] Using ${cachedPages.length} cached pages for ${urlHash}`);
-
-    // Get dimensions from first cached image
     const firstImagePath = join(fullOutputDir, cachedPages[0]);
     const metadata = await sharp(firstImagePath).metadata();
 
@@ -114,10 +111,7 @@ export async function renderPdfToImages(
     };
   }
 
-  console.log(`[pdfRenderer] Rendering PDF: ${pdfUrl.slice(0, 80)}...`);
-
   // First, download the PDF
-  console.log(`[pdfRenderer] Downloading PDF...`);
   const response = await fetch(pdfUrl);
   if (!response.ok) {
     throw new Error(`Failed to download PDF: ${response.status} ${response.statusText}`);
@@ -125,8 +119,6 @@ export async function renderPdfToImages(
   const pdfBuffer = Buffer.from(await response.arrayBuffer());
   const pdfBase64 = pdfBuffer.toString("base64");
   const pdfDataUrl = `data:application/pdf;base64,${pdfBase64}`;
-
-  console.log(`[pdfRenderer] PDF downloaded (${Math.round(pdfBuffer.length / 1024)}KB)`);
 
   let browser: Browser | null = null;
 
@@ -231,7 +223,6 @@ export async function renderPdfToImages(
     await page.waitForFunction("window.pdfReady === true", { timeout: 30000 });
 
     // Load the PDF from base64 data URL
-    console.log(`[pdfRenderer] Loading PDF in browser...`);
     const loadResult = await page.evaluate(async (dataUrl: string) => {
       // @ts-expect-error - loadPdf is defined in page context
       return await window.loadPdf(dataUrl);
@@ -242,7 +233,6 @@ export async function renderPdfToImages(
     }
 
     const totalPages = loadResult.totalPages;
-    console.log(`[pdfRenderer] PDF has ${totalPages} pages`);
 
     // Calculate scale to achieve target width
     const scale = devicePixelRatio;
@@ -255,8 +245,6 @@ export async function renderPdfToImages(
       const filename = `${urlHash}-${pageNum}.webp`;
       const filePath = join(fullOutputDir, filename);
 
-      console.log(`[pdfRenderer] Rendering page ${pageNum}/${totalPages}...`);
-
       // Render the page
       const result = await page.evaluate(
         async (pNum: number, s: number) => {
@@ -267,15 +255,9 @@ export async function renderPdfToImages(
         scale
       );
 
-      if (!result.success) {
-        console.error(`[pdfRenderer] Failed to render page ${pageNum}: ${result.error}`);
-        continue;
-      }
-
       // Take screenshot of the canvas
       const canvasElement = await page.$("#pdf-canvas");
       if (!canvasElement) {
-        console.error(`[pdfRenderer] Canvas not found for page ${pageNum}`);
         continue;
       }
 
@@ -296,8 +278,6 @@ export async function renderPdfToImages(
         finalHeight = meta.height || Math.round(width * 1.414);
       }
     }
-
-    console.log(`[pdfRenderer] ✓ Finished rendering ${totalPages} pages to WebP`);
 
     return {
       pageUrls,
@@ -323,7 +303,6 @@ export async function clearPdfCache(outputDir = DEFAULT_CONFIG.outputDir): Promi
     for (const file of webpFiles) {
       await rm(join(fullOutputDir, file));
     }
-    console.log(`[pdfRenderer] Cleared ${webpFiles.length} cached images`);
   }
 }
 
