@@ -5,14 +5,18 @@
  * Section component for the `/mon-livre` index page.
  * Renders a section title, subtitle, and an interactive PDF slider.
  *
- * At build time, the PDF is pre-rendered to WebP images for instant loading.
+ * PDF pages are pre-rendered at build time by scripts/render-pdf-pages.ts
+ * This component reads the pre-generated images from public/pdf-pages/
  */
 import { Icon } from "astro-icon/components";
 import PdfSlider from "@/components/book/PdfSlider.astro";
 import { PortableText } from "astro-portabletext";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { BOOK_CONTENT_QUERY } from "@/lib/sanityQueries";
-import { renderPdfToImages } from "@/utils/pdfRenderer";
+import { existsSync } from "node:fs";
+import { readdir } from "node:fs/promises";
+import { join } from "node:path";
+import sharp from "sharp";
 
 interface Props {
   /** Section heading (e.g. "Mon Livre") */
@@ -30,41 +34,44 @@ const { title = "Livre de Viviane" } = Astro.props;
 // Fetch book data from Sanity
 const bookData = await fetchSanity<BookData>(BOOK_CONTENT_QUERY);
 
-// Debug logging for production issues
-console.log("[Book] Dataset:", import.meta.env.SANITY_DATASET || "local_dev");
-console.log("[Book] Book data received:", bookData ? "YES" : "NO");
-if (bookData) {
-  console.log("[Book] Has subtitle:", !!bookData.subtitle);
-  console.log("[Book] Has pdfUrl:", !!bookData.pdfUrl);
-  console.log(
-    "[Book] Has content:",
-    Array.isArray(bookData.content) && bookData.content.length > 0
-  );
-}
-
 const hasData = bookData !== null && bookData !== undefined;
 const subtitle = bookData?.subtitle ?? "Les mots qui racontent mes toiles";
 const content = bookData?.content ?? [];
-const pdfUrl = bookData?.pdfUrl ?? "";
 
-// Pre-render PDF pages to WebP images at build time
+// Read pre-rendered PDF pages from public/pdf-pages/
 let pdfPages: string[] = [];
 let pdfWidth = 0;
 let pdfHeight = 0;
 
-if (pdfUrl) {
-  try {
-    const result = await renderPdfToImages(pdfUrl, {
-      width: 1200,
-      quality: 80,
-    });
-    pdfPages = result.pageUrls;
-    pdfWidth = result.width;
-    pdfHeight = result.height;
-    console.log(`[Book] PDF rendered: ${result.totalPages} pages`);
-  } catch (error) {
-    console.error("[Book] Failed to render PDF:", error);
+try {
+  const pdfPagesDir = join(process.cwd(), "public/pdf-pages");
+
+  if (existsSync(pdfPagesDir)) {
+    const files = await readdir(pdfPagesDir);
+    const webpFiles = files
+      .filter((f) => f.endsWith(".webp"))
+      .sort((a, b) => {
+        const numA = parseInt(a.match(/-(\d+)\.webp$/)?.[1] || "0");
+        const numB = parseInt(b.match(/-(\d+)\.webp$/)?.[1] || "0");
+        return numA - numB;
+      });
+
+    if (webpFiles.length > 0) {
+      pdfPages = webpFiles.map((f) => `/pdf-pages/${f}`);
+
+      // Get dimensions from first image
+      const firstImagePath = join(pdfPagesDir, webpFiles[0]);
+      const metadata = await sharp(firstImagePath).metadata();
+      pdfWidth = metadata.width || 1200;
+      pdfHeight = metadata.height || Math.round(pdfWidth * 1.414);
+
+      console.log(`[Book] Loaded ${pdfPages.length} pre-rendered PDF pages`);
+    }
+  } else {
+    console.warn("[Book] No PDF pages directory found. Run: pnpm tsx scripts/render-pdf-pages.ts");
   }
+} catch (error) {
+  console.error("[Book] Failed to read pre-rendered PDF pages:", error);
 }
 ---
 
@@ -101,9 +108,17 @@ if (pdfUrl) {
           {pdfPages.length > 0 ? (
             <PdfSlider pages={pdfPages} width={pdfWidth} height={pdfHeight} />
           ) : (
-            <p class="py-12 text-center opacity-60">
-              Le livre n'est pas disponible pour le moment.
-            </p>
+            <div class="py-12">
+              <p class="text-center opacity-60 mb-4">
+                Les pages du livre n'ont pas encore été générées.
+              </p>
+              <p class="text-center text-sm opacity-40">
+                Exécutez:{" "}
+                <code class="bg-black/5 px-2 py-1 rounded">
+                  pnpm tsx scripts/render-pdf-pages.ts
+                </code>
+              </p>
+            </div>
           )}
         </div>
       </section>
