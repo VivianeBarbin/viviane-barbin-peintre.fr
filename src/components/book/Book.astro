@@ -15,10 +15,16 @@ import RichText from "@/components/portable-text/RichText.astro";
 
 import { fetchSanity } from "@/lib/sanityFetch";
 import { BOOK_CONTENT_QUERY } from "@/lib/sanityQueries";
-import { existsSync } from "node:fs";
-import { readdir } from "node:fs/promises";
-import { join } from "node:path";
-import sharp from "sharp";
+
+// ── PDF pages — resolved statically at build time by Vite ────────────────────
+// The render-pdf-pages.ts prebuild script writes files to public/pdf-pages/.
+// import.meta.glob runs at build time (no Node.js APIs needed at runtime),
+// which makes this compatible with the Cloudflare Workers runtime.
+const pdfPageModules = import.meta.glob<string>("/public/pdf-pages/*.webp", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
 
 interface Props {
   /** Section heading (e.g. "Mon Livre") */
@@ -50,41 +56,23 @@ const resellerLink = bookData?.resellerLink ?? {
   openInNewTab: true,
 };
 
-// Read pre-rendered PDF pages from public/pdf-pages/
-let pdfPages: string[] = [];
-let pdfWidth = 0;
-let pdfHeight = 0;
+// ── PDF page list — sorted by page number ────────────────────────────────────
+// Dimensions are fixed constants matching the render-pdf-pages.ts output
+// (width: 1800, A4 ratio 1:√2). No runtime file I/O needed.
+const PDF_WIDTH = 1800;
+const PDF_HEIGHT = Math.round(PDF_WIDTH * 1.4142);
 
-try {
-  const pdfPagesDir = join(process.cwd(), "public/pdf-pages");
+const pdfPages: string[] = Object.keys(pdfPageModules)
+  .sort((a, b) => {
+    const numA = parseInt(a.match(/-(\d+)\.webp$/)?.[1] ?? "0");
+    const numB = parseInt(b.match(/-(\d+)\.webp$/)?.[1] ?? "0");
+    return numA - numB;
+  })
+  // Strip the /public prefix — files in public/ are served from the root
+  .map((path) => path.replace(/^\/public/, ""));
 
-  if (existsSync(pdfPagesDir)) {
-    const files = await readdir(pdfPagesDir);
-    const webpFiles = files
-      .filter((f) => f.endsWith(".webp"))
-      .sort((a, b) => {
-        const numA = parseInt(a.match(/-(\d+)\.webp$/)?.[1] || "0");
-        const numB = parseInt(b.match(/-(\d+)\.webp$/)?.[1] || "0");
-        return numA - numB;
-      });
-
-    if (webpFiles.length > 0) {
-      pdfPages = webpFiles.map((f) => `/pdf-pages/${f}`);
-
-      // Get dimensions from first image
-      const firstImagePath = join(pdfPagesDir, webpFiles[0]);
-      const metadata = await sharp(firstImagePath).metadata();
-      pdfWidth = metadata.width || 1200;
-      pdfHeight = metadata.height || Math.round(pdfWidth * 1.414);
-
-      console.log(`[Book] Loaded ${pdfPages.length} pre-rendered PDF pages`);
-    }
-  } else {
-    console.warn("[Book] No PDF pages directory found. Run: pnpm tsx scripts/render-pdf-pages.ts");
-  }
-} catch (error) {
-  console.error("[Book] Failed to read pre-rendered PDF pages:", error);
-}
+const pdfWidth = PDF_WIDTH;
+const pdfHeight = PDF_HEIGHT;
 ---
 
 {
