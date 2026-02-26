@@ -5,21 +5,13 @@ import SiteLogo from "@/components/site-logo/SiteLogo.astro";
 import { navigationLinks } from "@config/navigation";
 ---
 
-<div
-  id="nav__container"
-  class:list={[
-    "navbar--initial fixed top-0 left-0 z-1000 flex w-full flex-col transition-all duration-300",
-  ]}
->
+<div id="navbar--initial" class="fixed top-0 left-0 z-1000 flex w-full flex-col">
   <div class="site-container md:(h-22.5 pt-0) flex h-auto w-full items-center pt-3">
     <header class="relative flex w-full items-center gap-2">
-      <!-- home button / image -->
-
       <div class="flex flex-auto justify-start">
         <SiteLogo />
       </div>
 
-      <!-- desktop nav menu -->
       <div class="flex flex-auto justify-end">
         <nav id="desktop-nav" class="my-auto hidden md:block">
           <ul class="flex h-fit items-center gap-[clamp(0rem,calc((100vw-1024px)*0.15),3rem)] pl-4">
@@ -37,9 +29,86 @@ import { navigationLinks } from "@config/navigation";
           </ul>
         </nav>
       </div>
+
       <div class="md:hidden">
         <MobileNav />
       </div>
     </header>
   </div>
 </div>
+
+<script>
+  import { watchElementHeight } from "@/utils/elementSizes";
+
+  let lastScrollY = 0;
+  let handleScroll: any;
+
+  const initNavbar = () => {
+    const navbar = document.getElementById("navbar--initial");
+    if (!navbar) return;
+
+    // Sync height to CSS var (if used elsewhere in layout)
+    watchElementHeight("#navbar--initial", "--navbar-height");
+
+    // Reset transform state
+    navbar.style.transform = "translateY(0)";
+    navbar.setAttribute("aria-hidden", "false");
+
+    // Remove previous listener (important for Astro view transitions)
+    if (handleScroll) {
+      window.removeEventListener("scroll", handleScroll);
+    }
+
+    lastScrollY = window.scrollY;
+
+    const hideNav = () => {
+      navbar.style.transform = "translateY(-100%)";
+      navbar.setAttribute("aria-hidden", "true");
+    };
+
+    const showNav = () => {
+      navbar.style.transform = "translateY(0)";
+      navbar.setAttribute("aria-hidden", "false");
+    };
+    const SCROLL_THRESHOLD = 10;
+
+    handleScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY;
+
+      if (Math.abs(delta) < SCROLL_THRESHOLD) return;
+
+      // 🔒 Disable scroll behavior when mobile nav is open
+      const mobileNavOpen = document
+        .getElementById("mobile-nav__container")
+        ?.classList.contains("open");
+      if (mobileNavOpen) return;
+
+      if (currentY <= navbar.offsetHeight) {
+        showNav();
+      } else if (delta > 0) {
+        hideNav();
+      } else {
+        showNav();
+      }
+
+      lastScrollY = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+  };
+
+  // Initial load
+  initNavbar();
+
+  // Re-init after Astro view transitions
+  document.addEventListener("astro:after-swap", initNavbar);
+</script>
+
+<style>
+  #navbar--initial {
+    transform: translateY(0);
+    transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+</style>

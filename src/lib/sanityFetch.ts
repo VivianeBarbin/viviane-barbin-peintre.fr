@@ -27,7 +27,7 @@ export function getSanityClient() {
     dataset: SANITY_DATASET,
     apiVersion: SANITY_API_VERSION,
     useCdn: false,
-    // perspective is available in newer clients; leaving it undefined keeps compatibility
+    perspective: "published", // Only fetch published documents (not drafts)
   });
 
   return cachedClient;

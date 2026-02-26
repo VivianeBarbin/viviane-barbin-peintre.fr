@@ -109,11 +109,41 @@ export const bookContentType = defineType({
         accept: 'application/pdf',
       },
     }),
+    defineField({
+      name: 'resellerLink',
+      title: 'Lien vers un revendeur',
+      type: 'object',
+      description: 'Lien externe vers une plateforme où acheter le livre.',
+      fields: [
+        {
+          name: 'label',
+          type: 'string',
+          title: 'Texte du bouton',
+          description: 'Ex: "leslibraires.fr" ou "Disponible sur Amazon"',
+          validation: (Rule) => Rule.required().max(60),
+        },
+        {
+          name: 'url',
+          type: 'url',
+          title: 'URL',
+          validation: (Rule) =>
+            Rule.required().uri({
+              scheme: ['http', 'https'],
+            }),
+        },
+        {
+          name: 'openInNewTab',
+          type: 'boolean',
+          title: 'Ouvrir dans un nouvel onglet',
+          initialValue: true,
+        },
+      ],
+    }),
   ],
 
   preview: {
     select: {
-      title: 'title',
+      title: 'subtitle',
     },
     prepare({title}) {
       return {

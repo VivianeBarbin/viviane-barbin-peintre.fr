@@ -6,6 +6,7 @@ import {gallerySettingsType} from '../src/sanity/gallerySettings'
 import {homeContentType} from '../src/sanity/homeContent'
 import {newsContentType} from '../src/sanity/newsContent'
 import {siteSettingsType} from '../src/sanity/siteSettings'
+import {workshopContentType} from '../src/sanity/workshopContent'
 
 export const schemaTypes = [
   aboutContentType,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   newsContentType,
   contactSettingsType,
   siteSettingsType,
+  workshopContentType,
 ]

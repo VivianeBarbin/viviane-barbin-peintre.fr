@@ -1,0 +1,157 @@
+---
+/**
+ * RichText.astro
+ * Wrapper component for PortableText with proper styling
+ */
+import { PortableText } from "astro-portabletext";
+
+interface Props {
+  value: any;
+  class?: string;
+}
+
+const { value, class: className = "" } = Astro.props;
+---
+
+<div class:list={["rich-text", className]}>
+  <PortableText value={value} />
+</div>
+
+<style>
+  .rich-text {
+    color: hsl(var(--foreground));
+    line-height: 1.5;
+  }
+
+  /* Headings */
+  .rich-text :global(h3) {
+    font-size: clamp(1.5625rem, 1.3996rem + 0.7235vw, 1.9531rem);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 1em 0 0.5em;
+    font-family: var(--font-sans);
+  }
+
+  .rich-text :global(h4) {
+    font-size: clamp(1rem, 1.331rem + 0.7235vw, 1.331rem);
+    font-weight: 600;
+    line-height: 1.33;
+    margin: 1em 0 0.5em;
+    font-family: var(--font-sans);
+    color: oklch(0.2636 0.0296 308.67);
+  }
+
+  /* Paragraphs */
+  .rich-text :global(p) {
+    font-size: clamp(1.0625rem, 0.98rem + 0.35vw, 1.331rem);
+    line-height: 1.6;
+    margin: 1em 0;
+  }
+
+  /* Lists */
+  .rich-text :global(ul),
+  .rich-text :global(ol) {
+    margin: 1.5em 0;
+    padding-left: 2em;
+    line-height: 1.7;
+  }
+
+  .rich-text :global(ul) {
+    list-style-type: disc;
+  }
+
+  .rich-text :global(ol) {
+    list-style-type: decimal;
+  }
+
+  .rich-text :global(li) {
+    margin: 0.5em 0;
+    padding-left: 0.5em;
+  }
+
+  .rich-text :global(li::marker) {
+    color: hsl(var(--accentForeground));
+    font-weight: 600;
+  }
+
+  /* Nested lists */
+  .rich-text :global(ul ul),
+  .rich-text :global(ol ol),
+  .rich-text :global(ul ol),
+  .rich-text :global(ol ul) {
+    margin: 0.5em 0;
+  }
+
+  .rich-text :global(ul ul) {
+    list-style-type: circle;
+  }
+
+  .rich-text :global(ul ul ul) {
+    list-style-type: square;
+  }
+
+  /* Links */
+  .rich-text :global(a) {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+
+  .rich-text :global(a:hover) {
+    color: hsl(var(--primary) / 0.8);
+    text-decoration-thickness: 2px;
+  }
+
+  .rich-text :global(a:focus-visible) {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Text formatting */
+  .rich-text :global(strong) {
+    font-weight: 700;
+  }
+
+  .rich-text :global(em) {
+    font-style: italic;
+  }
+
+  .rich-text :global(code) {
+    background-color: hsl(var(--muted));
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: var(--font-mono), monospace;
+    font-size: 0.9em;
+  }
+
+  .rich-text :global(u) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .rich-text :global(s) {
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+
+  /* Blockquotes */
+  .rich-text :global(blockquote) {
+    border-left: 4px solid hsl(var(--primary));
+    padding-left: 1.5em;
+    margin: 1.5em 0;
+    font-style: italic;
+    color: hsl(var(--foreground) / 0.9);
+  }
+
+  /* First/Last element margins */
+  .rich-text > :global(*:first-child) {
+    margin-top: 0;
+  }
+
+  .rich-text > :global(*:last-child) {
+    margin-bottom: 0;
+  }
+</style>

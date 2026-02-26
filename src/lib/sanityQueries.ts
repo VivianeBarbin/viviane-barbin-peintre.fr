@@ -211,6 +211,13 @@ export const BOOK_CONTENT_QUERY = /* groq */ `
  *[_type == "bookContent"][0]{
    subtitle,
    "pdfUrl": pdfFile.asset->url,
+
+   resellerLink{
+     label,
+     url,
+     openInNewTab
+   },
+
    content[]{
      ...,
      _type == "image" => {
@@ -218,9 +225,66 @@ export const BOOK_CONTENT_QUERY = /* groq */ `
        asset->{
          _id,
          url,
-         metadata { dimensions }
+         metadata {
+           dimensions
+         }
        }
      }
    }
  }
  `;
+
+export const WORKSHOP_CONTENT_QUERY = /* groq */ `
+  *[_type == "workshopContent"][0]{
+    subtitle,
+
+    introSection[]{
+      image{
+        alt,
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        }
+      },
+      text,
+      cta{
+        label,
+        url,
+        openInNewTab
+      }
+    },
+
+    testimonialsSection{
+      sectionTitle,
+      sectionIntro,
+      cta{
+        label,
+        url,
+        openInNewTab
+      },
+      testimonials[]{
+        image{
+          alt,
+          asset->{
+            _id,
+            url,
+            metadata {
+              dimensions { width, height, aspectRatio }
+            }
+          }
+        },
+        quote,
+        firstName,
+        lastName,
+        profession
+      }
+    }
+  }
+`;

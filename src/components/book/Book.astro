@@ -9,8 +9,10 @@
  * This component reads the pre-generated images from public/pdf-pages/
  */
 import { Icon } from "astro-icon/components";
+import Button from "@/components/button/Button.astro";
 import PdfSlider from "@/components/book/PdfSlider.astro";
-import { PortableText } from "astro-portabletext";
+import RichText from "@/components/portable-text/RichText.astro";
+
 import { fetchSanity } from "@/lib/sanityFetch";
 import { BOOK_CONTENT_QUERY } from "@/lib/sanityQueries";
 import { existsSync } from "node:fs";
@@ -27,6 +29,11 @@ interface BookData {
   subtitle?: string;
   pdfUrl?: string;
   content?: any[];
+  resellerLink?: {
+    label: string;
+    url: string;
+    openInNewTab: boolean;
+  };
 }
 
 const { title = "Livre de Viviane" } = Astro.props;
@@ -37,6 +44,11 @@ const bookData = await fetchSanity<BookData>(BOOK_CONTENT_QUERY);
 const hasData = bookData !== null && bookData !== undefined;
 const subtitle = bookData?.subtitle ?? "Les mots qui racontent mes toiles";
 const content = bookData?.content ?? [];
+const resellerLink = bookData?.resellerLink ?? {
+  label: "Acheter le livre",
+  url: "#",
+  openInNewTab: true,
+};
 
 // Read pre-rendered PDF pages from public/pdf-pages/
 let pdfPages: string[] = [];
@@ -78,7 +90,7 @@ try {
 {
   hasData ? (
     <>
-      <section class="book-section bg-background text-primary">
+      <section class="book-section bg-background text-primary pt-8 pb-16">
         <div class="site-container">
           <div class="my-10 flex flex-col gap-y-[1.875rem]">
             <h1 class="flex items-baseline gap-x-2 text-sm uppercase tracking-wider">
@@ -96,14 +108,14 @@ try {
           </div>
 
           {content && content.length > 0 && (
-            <div class="prose prose-lg max-w-none mb-12">
-              <PortableText value={content} />
+            <div class="mb-12">
+              <RichText value={content} />
             </div>
           )}
         </div>
       </section>
 
-      <section class="pdf-section bg-backgroundAccent text-primary">
+      <section class="pdf-section bg-backgroundAccent text-primary  pb-4">
         <div class="site-container">
           {pdfPages.length > 0 ? (
             <PdfSlider pages={pdfPages} width={pdfWidth} height={pdfHeight} />
@@ -112,12 +124,19 @@ try {
               <p class="text-center opacity-60 mb-4">
                 Les pages du livre n'ont pas encore été générées.
               </p>
-              <p class="text-center text-sm opacity-40">
-                Exécutez:{" "}
-                <code class="bg-black/5 px-2 py-1 rounded">
-                  pnpm tsx scripts/render-pdf-pages.ts
-                </code>
-              </p>
+            </div>
+          )}
+          {resellerLink?.url && (
+            <div class="py-12 flex justify-end">
+              <Button
+                variant="secondary"
+                size="sm"
+                class="w-full md:w-auto !hover:text-primaryForeground/80 !hover:border-primaryForeground/60"
+                href={resellerLink.url}
+                target={resellerLink.openInNewTab ? "_blank" : "_self"}
+              >
+                {resellerLink.label}
+              </Button>
             </div>
           )}
         </div>

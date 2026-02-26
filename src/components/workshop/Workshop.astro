@@ -1,0 +1,468 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import Button from "@/components/button/Button.astro";
+import RichText from "@/components/portable-text/RichText.astro";
+import { fetchSanity } from "@/lib/sanityFetch";
+import { WORKSHOP_CONTENT_QUERY } from "@/lib/sanityQueries";
+import { buildSanityImageUrl, buildSanityDprSrcSet } from "@/utils/sanityImage";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { getColorByCycle } from "@/utils/colorUtils";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+interface Props {
+  /** Section heading displayed above the subtitle */
+  title?: string;
+}
+
+interface SanityImage {
+  asset?: {
+    _id: string;
+    url: string;
+    metadata?: {
+      dimensions?: {
+        width: number;
+        height: number;
+        aspectRatio: number;
+      };
+    };
+  };
+  alt?: string;
+}
+
+interface Cta {
+  label: string;
+  url: string;
+  openInNewTab?: boolean;
+}
+
+interface IntroItem {
+  image?: SanityImage;
+  text?: any[];
+  cta?: Cta;
+}
+
+interface Testimonial {
+  image?: SanityImage;
+  quote?: string;
+  firstName?: string;
+  lastName?: string;
+  profession?: string;
+}
+
+interface TestimonialsSection {
+  sectionTitle?: string;
+  sectionIntro?: string;
+  testimonials?: Testimonial[];
+  cta?: Cta;
+}
+
+interface WorkshopData {
+  subtitle?: string;
+  introSection?: IntroItem[];
+  testimonialsSection?: TestimonialsSection;
+}
+
+// ── Image config — single source of truth, frozen ────────────────────────────
+// Square ratio (1:1) matches the "Carré" hotspot preset defined in the schema.
+
+const IMG = Object.freeze({
+  width: 720,
+  height: 720,
+  quality: 82,
+  format: "webp" as const,
+  fit: "crop" as const,
+  dprs: [1, 1.5, 2],
+  widths: [320, 480, 720],
+  sizes: "(max-width: 768px) 100vw, 720px",
+});
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/**
+ * Resolve a Sanity image into { src, srcset, alt }.
+ * Returns null when the asset reference is absent — no URL is built blindly.
+ */
+function resolveSanityImage(image: SanityImage | undefined) {
+  if (!image?.asset) return null;
+
+  const src = buildSanityImageUrl({
+    source: image,
+    width: IMG.width,
+    height: IMG.height,
+    quality: IMG.quality,
+    format: IMG.format,
+    fit: IMG.fit,
+  });
+
+  if (!src) return null;
+
+  const srcset = buildSanityDprSrcSet({
+    source: image,
+    width: IMG.width,
+    height: IMG.height,
+    dprs: IMG.dprs,
+    quality: IMG.quality,
+    format: IMG.format,
+    fit: IMG.fit,
+  });
+
+  return { src, srcset, alt: image.alt ?? "" };
+}
+
+// ── Data fetching ─────────────────────────────────────────────────────────────
+
+const { title = "L'atelier" } = Astro.props;
+
+const workshopData = await fetchSanity<WorkshopData>(WORKSHOP_CONTENT_QUERY);
+
+const hasData = !!workshopData;
+const subtitle = workshopData?.subtitle ?? "Un lieu de partage et de création";
+
+// Guard against schema shape mismatch: the CMS may still hold the old single-object
+// shape while the query migrates to an array. Array.isArray ensures we never .map()
+// over a plain object or undefined.
+const introSection: IntroItem[] = Array.isArray(workshopData?.introSection)
+  ? workshopData.introSection
+  : [];
+
+// Fallback image resolved once — shared by every item that has no Sanity asset.
+const WORKSHOP_FALLBACK_PATH = "@images/homepage/homepage-placeholder_01.jpg";
+const workshopFallback = resolveImageWithFallback(null, WORKSHOP_FALLBACK_PATH);
+
+// ── Testimonials image config — portrait 390×603 ──────────────────────────────
+const TIMG = Object.freeze({
+  width: 390,
+  height: 603,
+  quality: 82,
+  format: "webp" as const,
+  fit: "crop" as const,
+  dprs: [1, 1.5, 2],
+});
+
+const testimonialsSection = workshopData?.testimonialsSection;
+const sectionTitle = testimonialsSection?.sectionTitle;
+const sectionIntro = testimonialsSection?.sectionIntro;
+const sectionCta = testimonialsSection?.cta;
+
+const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) => {
+  const initials = [t.firstName, t.lastName]
+    .filter(Boolean)
+    .map((n) => n!.charAt(0).toUpperCase())
+    .join("");
+
+  const colorTheme = getColorByCycle(index);
+
+  return {
+    ...t,
+    initials,
+    colorTheme,
+    imageSrc: t.image?.asset
+      ? buildSanityImageUrl({
+          source: t.image,
+          width: TIMG.width,
+          height: TIMG.height,
+          quality: TIMG.quality,
+          format: TIMG.format,
+          fit: TIMG.fit,
+        })
+      : null,
+    imageSrcSet: t.image?.asset
+      ? buildSanityDprSrcSet({
+          source: t.image,
+          width: TIMG.width,
+          height: TIMG.height,
+          dprs: TIMG.dprs,
+          quality: TIMG.quality,
+          format: TIMG.format,
+          fit: TIMG.fit,
+        })
+      : null,
+    imageAlt: t.image?.alt ?? "",
+  };
+});
+---
+
+{
+  hasData ? (
+    <section class="workshop-section bg-background pt-8 pb-16 text-primary">
+      <div class="site-container">
+        {/* ── Header ─────────────────────────────────────────────────────── */}
+        <div class="my-10 flex flex-col gap-y-[1.875rem]">
+          <h1 class="flex items-baseline gap-x-2 text-sm font-medium uppercase tracking-wider">
+            <span class="inline-flex self-center">
+              <Icon name="tabler/square" class="size-3.5 translate-y-1px" aria-hidden="true" />
+            </span>
+            {title}
+          </h1>
+
+          {subtitle && (
+            <h2 class="m-0 max-w-[36ch] text-[1.75rem] font-light leading-[1.3] md:text-[2.25rem]">
+              {subtitle}
+            </h2>
+          )}
+        </div>
+
+        {/*
+          ── Intro items loop ──────────────────────────────────────────────
+          Even index (0, 2, 4…): image LEFT  — text RIGHT
+          Odd  index (1, 3, 5…): text  LEFT  — image RIGHT
+          DOM order stays image-first; Tailwind `order-*` handles the visual
+          swap on md+ screens so keyboard/screen-reader order is consistent.
+        */}
+        {introSection.map((item, index) => {
+          const isOdd = index % 2 !== 0;
+          const sanityImg = resolveSanityImage(item.image);
+          const hasSanity = sanityImg !== null;
+          const hasFallback = !hasSanity && workshopFallback !== null;
+
+          return (
+            <div class="grid gap-16 lg:grid-cols-2 py-10 mb-16">
+              {/* Image column */}
+              <div class={`overflow-hidden ${isOdd ? "order-1 md:order-2" : ""}`}>
+                {hasSanity ? (
+                  <img
+                    src={sanityImg.src}
+                    srcset={sanityImg.srcset ?? undefined}
+                    sizes={IMG.sizes}
+                    alt={sanityImg.alt}
+                    width={IMG.width}
+                    height={IMG.height}
+                    loading="lazy"
+                    decoding="async"
+                    class="workshop-image w-full h-full object-cover"
+                  />
+                ) : hasFallback ? (
+                  <Image
+                    src={workshopFallback!}
+                    alt={item.image?.alt ?? ""}
+                    widths={IMG.widths}
+                    sizes={IMG.sizes}
+                    loading="lazy"
+                    decoding="async"
+                    class="workshop-image w-full h-full object-cover"
+                  />
+                ) : (
+                  <div class="workshop-image-placeholder w-full aspect-square bg-muted" />
+                )}
+              </div>
+
+              {/* Text column */}
+              <div class={`w-full flex items-start ${isOdd ? "order-2 md:order-1" : ""}`}>
+                <div class="w-full h-full flex flex-col justify-between">
+                  {item.text && item.text.length > 0 && (
+                    <div class="flex flex-col gap-8">
+                      <RichText value={item.text} />
+                    </div>
+                  )}
+
+                  {/* CTA — only rendered when cta.url is present */}
+                  {item.cta?.url && (
+                    <div class="mt-8 lg:mt-0">
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        href={item.cta.url}
+                        target={item.cta.openInNewTab ? "_blank" : "_self"}
+                      >
+                        {item.cta.label}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Testimonials marquee ─────────────────────────────────────────── */}
+      {testimonials.length > 0 && (
+        <div class="relative bg-backgroundAccent overflow-hidden py-16">
+          {/* Section header */}
+          {(sectionTitle || sectionIntro) && (
+            <div class="site-container text-primaryForeground mb-10">
+              {sectionTitle && (
+                <h2 class="m-0 max-w-[36ch] text-[1.75rem] font-light leading-[1.3] md:text-[2.25rem]">
+                  {sectionTitle}
+                </h2>
+              )}
+              {sectionIntro && (
+                <p class="my-7 max-w-[70ch] text-body leading-relaxed">{sectionIntro}</p>
+              )}
+            </div>
+          )}
+
+          {/* Track wrapper — two identical tracks side-by-side create the infinite loop.
+              Each testimonial renders as TWO sibling columns: portrait image + quote card. */}
+          <div class="flex gap-5">
+            {/* Track 1 */}
+            <div class="animate-marquee flex min-w-full shrink-0 gap-5">
+              {testimonials.map((t) => (
+                <>
+                  {/* Column A — portrait photograph */}
+                  <div
+                    class="shrink-0 overflow-hidden"
+                    style={`width:${TIMG.width}px;height:${TIMG.height}px`}
+                  >
+                    {t.imageSrc ? (
+                      <img
+                        src={t.imageSrc}
+                        srcset={t.imageSrcSet ?? undefined}
+                        alt={t.imageAlt}
+                        width={TIMG.width}
+                        height={TIMG.height}
+                        loading="lazy"
+                        decoding="async"
+                        class="block h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div class="flex h-full w-full items-center justify-center bg-muted text-2xl font-medium text-mutedForeground">
+                        {t.initials}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Column B — quote card, same size as the image */}
+                  <div
+                    class={`shrink-0 flex flex-col justify-between p-5 ${t.colorTheme.textClass}`}
+                    style={`width:${TIMG.width}px;height:${TIMG.height}px;background:${t.colorTheme.bg}`}
+                  >
+                    {t.quote && (
+                      <p class="mb-8 text-body leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
+                    )}
+                    <div class="flex items-center gap-3">
+                      {t.initials && (
+                        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold font-serif text-primaryForeground">
+                          {t.initials}
+                        </div>
+                      )}
+                      <div>
+                        {(t.firstName || t.lastName) && (
+                          <p class="text-sm font-medium">
+                            {[t.firstName, t.lastName].filter(Boolean).join(" ")}
+                          </p>
+                        )}
+                        {t.profession && <p class="text-sm opacity-90">{t.profession}</p>}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ))}
+            </div>
+
+            {/* Track 2 — visually identical, aria-hidden so screen readers skip it */}
+            <div class="animate-marquee flex min-w-full shrink-0 gap-5" aria-hidden="true" inert>
+              {testimonials.map((t) => (
+                <>
+                  {/* Column A — portrait photograph */}
+                  <div
+                    class="shrink-0 overflow-hidden"
+                    style={`width:${TIMG.width}px;height:${TIMG.height}px`}
+                  >
+                    {t.imageSrc ? (
+                      <img
+                        src={t.imageSrc}
+                        srcset={t.imageSrcSet ?? undefined}
+                        alt=""
+                        width={TIMG.width}
+                        height={TIMG.height}
+                        loading="lazy"
+                        decoding="async"
+                        class="block h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div class="flex h-full w-full items-center justify-center bg-muted text-2xl font-medium text-mutedForeground">
+                        {t.initials}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Column B — quote card */}
+                  <div
+                    class={`shrink-0 flex flex-col justify-between p-5 ${t.colorTheme.textClass}`}
+                    style={`width:${TIMG.width}px;height:${TIMG.height}px;background:${t.colorTheme.bg}`}
+                  >
+                    {t.quote && (
+                      <p class="mb-8 text-body leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
+                    )}
+                    <div class="flex items-center gap-3">
+                      {t.initials && (
+                        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold font-serif text-primaryForeground">
+                          {t.initials}
+                        </div>
+                      )}
+                      <div>
+                        {(t.firstName || t.lastName) && (
+                          <p class="text-sm font-medium">
+                            {[t.firstName, t.lastName].filter(Boolean).join(" ")}
+                          </p>
+                        )}
+                        {t.profession && <p class="text-sm opacity-90">{t.profession}</p>}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA — only rendered when sectionCta.url is present */}
+          {sectionCta?.url && (
+            <div class="site-container mt-16">
+              <Button
+                variant="secondary"
+                size="sm"
+                class="w-full md:w-auto
+                !hover:text-primaryForeground/80 !hover:border-primaryForeground/60"
+                href={sectionCta.url}
+                target={sectionCta.openInNewTab ? "_blank" : "_self"}
+              >
+                {sectionCta.label}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  ) : (
+    <div class="py-20 text-center opacity-50">
+      <p>Informations sur l'atelier bientôt disponibles.</p>
+    </div>
+  )
+}
+
+<style>
+  .workshop-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .workshop-image-placeholder {
+    aspect-ratio: 1 / 1;
+  }
+
+  /* ── Testimonials marquee animation ──────────────────────────────────────── */
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    } /* no gap on track wrapper — items are flush */
+  }
+
+  .animate-marquee {
+    animation: marquee 70s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+      animation: none;
+    }
+  }
+</style>

@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import { resolveImageWithFallback } from "@/utils/imageUtils";
 import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
-import { PortableText } from "astro-portabletext";
+import RichText from "@/components/portable-text/RichText.astro";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { ABOUT_CONTENT_QUERY } from "@/lib/sanityQueries";
 
@@ -68,7 +68,7 @@ const shouldRenderFallbackImage = !shouldRenderSanityImage && portraitImage !== 
 
         {topText.length > 0 && (
           <div class="pt-8 about-text about-text--top">
-            <PortableText value={topText} />
+            <RichText value={topText} />
           </div>
         )}
 
@@ -105,7 +105,7 @@ const shouldRenderFallbackImage = !shouldRenderSanityImage && portraitImage !== 
 
           {imageText.length > 0 && (
             <div class="about-text about-text--image">
-              <PortableText value={imageText} />
+              <RichText value={imageText} />
             </div>
           )}
         </div>
@@ -120,7 +120,7 @@ const shouldRenderFallbackImage = !shouldRenderSanityImage && portraitImage !== 
 
         {bottomText.length > 0 && (
           <div class="about-text about-text--bottom">
-            <PortableText value={bottomText} />
+            <RichText value={bottomText} />
           </div>
         )}
       </div>
