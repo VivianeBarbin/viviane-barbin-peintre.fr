@@ -43,6 +43,12 @@ export const themeConfig: ThemeConfig = {
       muted: "oklch(0.95 0.02 96.86)", // Muted background
       mutedForeground: "oklch(0.45 0.04 36.95)", // Muted text
       border: "oklch(0.88 0.03 96.86)", // Border
+
+      // Semantic colors
+      info: "oklch(0.35 0.06 216.34)",
+      success: "oklch(0.35 0.08 145)",
+      warning: "oklch(0.75 0.12 80)",
+      danger: "oklch(0.45 0.15 25)",
     },
     dark: {
       // Brand colors
@@ -65,6 +71,12 @@ export const themeConfig: ThemeConfig = {
       muted: "oklch(0.40 0.01 0)",
       mutedForeground: "oklch(0.70 0.01 0)",
       border: "oklch(0.20 0.01 0)",
+
+      // Semantic colors
+      info: "oklch(0.35 0.06 216.34)",
+      success: "oklch(0.35 0.08 145)",
+      warning: "oklch(0.75 0.12 80)",
+      danger: "oklch(0.45 0.15 25)",
     },
   },
 };

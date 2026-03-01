@@ -218,9 +218,9 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
           const hasFallback = !hasSanity && workshopFallback !== null;
 
           return (
-            <div class="grid gap-16 lg:grid-cols-2 py-10 mb-16">
+            <div class="grid gap-16 lg:grid-cols-2 md:py-10 mb-8 md:mb-16">
               {/* Image column */}
-              <div class={`overflow-hidden ${isOdd ? "order-1 md:order-2" : ""}`}>
+              <div class={`overflow-hidden ${isOdd ? "order-1 lg:order-2" : ""}`}>
                 {hasSanity ? (
                   <img
                     src={sanityImg.src}
@@ -249,7 +249,7 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
               </div>
 
               {/* Text column */}
-              <div class={`w-full flex items-start ${isOdd ? "order-2 md:order-1" : ""}`}>
+              <div class={`w-full flex items-start ${isOdd ? "order-2 lg:order-1" : ""}`}>
                 <div class="w-full h-full flex flex-col justify-between">
                   {item.text && item.text.length > 0 && (
                     <div class="flex flex-col gap-8">
@@ -259,9 +259,10 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
 
                   {/* CTA — only rendered when cta.url is present */}
                   {item.cta?.url && (
-                    <div class="mt-8 lg:mt-0">
+                    <div class="mt-8 flex justify-center md:justify-start lg:mt-0">
                       <Button
                         variant="primary"
+                        class="w-full md:w-auto"
                         size="sm"
                         href={item.cta.url}
                         target={item.cta.openInNewTab ? "_blank" : "_self"}
@@ -271,7 +272,15 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
                     </div>
                   )}
                 </div>
+
               </div>
+            </div>
+            <div class="flex items-center gap-4 my-8 lg:hidden last:hidden">
+              <div class="flex-1 border-t border-primary/60" />
+              <span class="text-sm font-medium text-primary uppercase">
+                <Icon name="tabler/square-rotated-filled" aria-hidden="true" />
+              </span>
+              <div class="flex-1 border-t border-primary/60" />
             </div>
           );
         })}
@@ -294,117 +303,142 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
             </div>
           )}
 
-          {/* Track wrapper — two identical tracks side-by-side create the infinite loop.
-              Each testimonial renders as TWO sibling columns: portrait image + quote card. */}
-          <div class="flex gap-5">
-            {/* Track 1 */}
-            <div class="animate-marquee flex min-w-full shrink-0 gap-5">
-              {testimonials.map((t) => (
-                <>
-                  {/* Column A — portrait photograph */}
-                  <div
-                    class="shrink-0 overflow-hidden"
-                    style={`width:${TIMG.width}px;height:${TIMG.height}px`}
-                  >
-                    {t.imageSrc ? (
-                      <img
-                        src={t.imageSrc}
-                        srcset={t.imageSrcSet ?? undefined}
-                        alt={t.imageAlt}
-                        width={TIMG.width}
-                        height={TIMG.height}
-                        loading="lazy"
-                        decoding="async"
-                        class="block h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div class="flex h-full w-full items-center justify-center bg-muted text-2xl font-medium text-mutedForeground">
-                        {t.initials}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Column B — quote card, same size as the image */}
-                  <div
-                    class={`shrink-0 flex flex-col justify-between p-5 ${t.colorTheme.textClass}`}
-                    style={`width:${TIMG.width}px;height:${TIMG.height}px;background:${t.colorTheme.bg}`}
-                  >
-                    {t.quote && (
-                      <p class="mb-8 text-body leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
-                    )}
-                    <div class="flex items-center gap-3">
-                      {t.initials && (
-                        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold font-serif text-primaryForeground">
-                          {t.initials}
-                        </div>
-                      )}
-                      <div>
-                        {(t.firstName || t.lastName) && (
-                          <p class="text-sm font-medium">
-                            {[t.firstName, t.lastName].filter(Boolean).join(" ")}
-                          </p>
-                        )}
-                        {t.profession && <p class="text-sm opacity-90">{t.profession}</p>}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ))}
+          {/* Track wrapper
+              Mobile (< sm): horizontal scroll-snap scroller (no animation)
+              sm and up: two-track infinite marquee animation */}
+          <div class="relative">
+            {/* Scroll hint - only visible on mobile (< sm) when horizontal scroll is available */}
+            <div
+              id="scroll-hint"
+              class="flex sm:hidden absolute right-5 top-1/2 -translate-y-1/2 z-10 pointer-events-none transition-opacity duration-500"
+            >
+              <div class="flex items-center gap-2 bg-background/90 backdrop-blur-sm px-4 py-2 rounded-md shadow-lg border border-primaryForeground/20">
+                <span class="text-sm text-primary/90 font-medium">Dérouler</span>
+                <Icon
+                  name="tabler/circle-arrow-right"
+                  class="size-5 text-primary animate-pulse-subtle"
+                  aria-hidden="true"
+                />
+              </div>
             </div>
 
-            {/* Track 2 — visually identical, aria-hidden so screen readers skip it */}
-            <div class="animate-marquee flex min-w-full shrink-0 gap-5" aria-hidden="true" inert>
-              {testimonials.map((t) => (
-                <>
-                  {/* Column A — portrait photograph */}
-                  <div
-                    class="shrink-0 overflow-hidden"
-                    style={`width:${TIMG.width}px;height:${TIMG.height}px`}
-                  >
-                    {t.imageSrc ? (
-                      <img
-                        src={t.imageSrc}
-                        srcset={t.imageSrcSet ?? undefined}
-                        alt=""
-                        width={TIMG.width}
-                        height={TIMG.height}
-                        loading="lazy"
-                        decoding="async"
-                        class="block h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div class="flex h-full w-full items-center justify-center bg-muted text-2xl font-medium text-mutedForeground">
-                        {t.initials}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Column B — quote card */}
-                  <div
-                    class={`shrink-0 flex flex-col justify-between p-5 ${t.colorTheme.textClass}`}
-                    style={`width:${TIMG.width}px;height:${TIMG.height}px;background:${t.colorTheme.bg}`}
-                  >
-                    {t.quote && (
-                      <p class="mb-8 text-body leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
-                    )}
-                    <div class="flex items-center gap-3">
-                      {t.initials && (
-                        <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold font-serif text-primaryForeground">
+            <div
+              id="testimonials-scroller"
+              class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-px-5 px-5 sm:overflow-hidden sm:snap-none sm:scroll-px-0 sm:px-0"
+            >
+              {/* Track 1 */}
+              <div class="animate-marquee flex min-w-full shrink-0 gap-5">
+                {testimonials.map((t) => (
+                  <>
+                    {/* Column A — portrait photograph */}
+                    <div
+                      class="shrink-0 overflow-hidden snap-start"
+                      style={`width:${TIMG.width}px;height:${TIMG.height}px`}
+                    >
+                      {t.imageSrc ? (
+                        <img
+                          src={t.imageSrc}
+                          srcset={t.imageSrcSet ?? undefined}
+                          alt={t.imageAlt}
+                          width={TIMG.width}
+                          height={TIMG.height}
+                          loading="lazy"
+                          decoding="async"
+                          class="block h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div class="flex h-full w-full items-center justify-center bg-muted text-2xl font-medium text-mutedForeground">
                           {t.initials}
                         </div>
                       )}
-                      <div>
-                        {(t.firstName || t.lastName) && (
-                          <p class="text-sm font-medium">
-                            {[t.firstName, t.lastName].filter(Boolean).join(" ")}
-                          </p>
+                    </div>
+
+                    {/* Column B — quote card, same size as the image */}
+                    <div
+                      class={`shrink-0 flex flex-col justify-between p-5 snap-start ${t.colorTheme.textClass}`}
+                      style={`width:${TIMG.width}px;height:${TIMG.height}px;background:${t.colorTheme.bg}`}
+                    >
+                      {t.quote && (
+                        <p class="mb-8 text-body leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
+                      )}
+                      <div class="flex items-center gap-3">
+                        {t.initials && (
+                          <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold font-serif text-primaryForeground">
+                            {t.initials}
+                          </div>
                         )}
-                        {t.profession && <p class="text-sm opacity-90">{t.profession}</p>}
+                        <div>
+                          {(t.firstName || t.lastName) && (
+                            <p class="text-sm font-medium">
+                              {[t.firstName, t.lastName].filter(Boolean).join(" ")}
+                            </p>
+                          )}
+                          {t.profession && <p class="text-sm opacity-90">{t.profession}</p>}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              ))}
+                  </>
+                ))}
+              </div>
+
+              {/* Track 2 — visually identical, aria-hidden so screen readers skip it. Hidden on mobile, visible on sm+ for marquee */}
+              <div
+                class="hidden sm:flex animate-marquee min-w-full shrink-0 gap-5"
+                aria-hidden="true"
+                inert
+              >
+                {testimonials.map((t) => (
+                  <>
+                    {/* Column A — portrait photograph */}
+                    <div
+                      class="shrink-0 overflow-hidden snap-start"
+                      style={`width:${TIMG.width}px;height:${TIMG.height}px`}
+                    >
+                      {t.imageSrc ? (
+                        <img
+                          src={t.imageSrc}
+                          srcset={t.imageSrcSet ?? undefined}
+                          alt=""
+                          width={TIMG.width}
+                          height={TIMG.height}
+                          loading="lazy"
+                          decoding="async"
+                          class="block h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div class="flex h-full w-full items-center justify-center bg-muted text-2xl font-medium text-mutedForeground">
+                          {t.initials}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Column B — quote card */}
+                    <div
+                      class={`shrink-0 flex flex-col justify-between p-5 snap-start ${t.colorTheme.textClass}`}
+                      style={`width:${TIMG.width}px;height:${TIMG.height}px;background:${t.colorTheme.bg}`}
+                    >
+                      {t.quote && (
+                        <p class="mb-8 text-body leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
+                      )}
+                      <div class="flex items-center gap-3">
+                        {t.initials && (
+                          <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold font-serif text-primaryForeground">
+                            {t.initials}
+                          </div>
+                        )}
+                        <div>
+                          {(t.firstName || t.lastName) && (
+                            <p class="text-sm font-medium">
+                              {[t.firstName, t.lastName].filter(Boolean).join(" ")}
+                            </p>
+                          )}
+                          {t.profession && <p class="text-sm opacity-90">{t.profession}</p>}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -433,6 +467,27 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
   )
 }
 
+<script>
+  // Hide scroll hint after user starts scrolling on mobile
+  const scroller = document.getElementById("testimonials-scroller");
+  const hint = document.getElementById("scroll-hint");
+
+  if (scroller && hint) {
+    let hasScrolled = false;
+    scroller.addEventListener(
+      "scroll",
+      () => {
+        if (!hasScrolled && scroller.scrollLeft > 20) {
+          hasScrolled = true;
+          hint.style.opacity = "0";
+          setTimeout(() => (hint.style.display = "none"), 500);
+        }
+      },
+      { once: false }
+    );
+  }
+</script>
+
 <style>
   .workshop-image {
     display: block;
@@ -446,6 +501,23 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
     aspect-ratio: 1 / 1;
   }
 
+  /* ── Scroll hint animation ──────────────────────────────────────────────── */
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(4px);
+    }
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
   /* ── Testimonials marquee animation ──────────────────────────────────────── */
   @keyframes marquee {
     from {
@@ -456,8 +528,15 @@ const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) =>
     } /* no gap on track wrapper — items are flush */
   }
 
+  /* Default: no animation (mobile scroller). Enable animation from sm and up. */
   .animate-marquee {
-    animation: marquee 70s linear infinite;
+    animation: none;
+  }
+
+  @media (min-width: 640px) {
+    .animate-marquee {
+      animation: marquee 70s linear infinite;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

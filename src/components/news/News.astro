@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import { resolveImageWithFallback } from "@/utils/imageUtils";
 import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 import { getColorByCycle } from "@/utils/colorUtils";
+import { getEventTypeLabel } from "@config/eventTypes";
 
 import { fetchSanity } from "@/lib/sanityFetch";
 import { NEWS_CONTENT_QUERY } from "@/lib/sanityQueries";
@@ -161,7 +162,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -195,7 +198,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -256,7 +261,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -290,7 +297,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -350,7 +359,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -384,7 +395,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -461,7 +474,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -495,7 +510,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -555,7 +572,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -589,7 +608,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -651,7 +672,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -685,7 +708,9 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
                             <div class="news-content-inner">
                               <div class="news-content-top">
                                 {newsItem.eventType && (
-                                  <span class="news-type">{newsItem.eventType}</span>
+                                  <span class="news-type">
+                                    {getEventTypeLabel(newsItem.eventType)}
+                                  </span>
                                 )}
                                 <h3 class="news-title">{newsItem.eventTitle}</h3>
                               </div>
@@ -837,6 +862,7 @@ const formatDateRange = (start: string, end?: string, time?: string) => {
   }
 
   .news-title {
+    text-align: end;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.2;

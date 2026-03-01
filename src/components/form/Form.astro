@@ -1,0 +1,111 @@
+---
+import Button from "@/components/button/Button.astro";
+---
+
+<div class="max-w-prose">
+  <form id="contact-form" action="/api/contact/" novalidate>
+    <!-- Name + Email: two-column grid on md+ -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="mb-4">
+        <label for="full-name" class="mb-2 block font-form">
+          Nom <span class="text-warning">*</span>
+        </label>
+        <input
+          class="form-input w-full py-2 pr-3 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
+          id="full-name"
+          type="text"
+          name="fullName"
+          placeholder="Kahlo Frida"
+          required
+        />
+        <span class="mt-1 hidden text-sm text-warning" data-error="full-name"></span>
+      </div>
+
+      <div class="mb-4">
+        <label for="email" class="mb-2 block font-form">
+          E-mail <span class="text-warning">*</span>
+        </label>
+        <input
+          class="form-input w-full py-2 pr-3 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
+          id="email"
+          type="email"
+          name="email"
+          placeholder="fkahlo@peinture.mx"
+          required
+        />
+        <span class="mt-1 hidden text-sm text-warning" data-error="email"></span>
+      </div>
+    </div>
+
+    <!-- Message: full width -->
+    <div class="mb-4">
+      <label for="message" class="mb-2 block font-form"> Message </label>
+      <textarea
+        class="form-input w-full resize-none py-2 pr-3 transition-colors disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
+        id="message"
+        name="message"
+        rows="4"
+        placeholder="Dites-moi ce qui vous inspire..."></textarea>
+      <span class="mt-1 hidden text-sm text-warning" data-error="message"></span>
+    </div>
+
+    <!-- Consent: full width -->
+    <div class="mb-4">
+      <label for="consent" class="flex cursor-pointer items-center gap-2 pb-3">
+        <input class="form-checkbox" id="consent" type="checkbox" name="consent" required />
+        <span class="align-text-bottom text-xs font-form">
+          J'accepte que mes données soient conservées pour traiter ma demande <span
+            class="text-warning">*</span
+          >
+        </span>
+      </label>
+      <span class="mt-1 hidden text-sm text-warning" data-error="consent"></span>
+    </div>
+
+    <!-- Submit button -->
+    <div class="mt-8">
+      <Button variant="primary" size="sm" type="submit"> Envoyer </Button>
+    </div>
+
+    <!-- Error feedback -->
+    <div
+      id="form-error"
+      class="mt-4 hidden rounded-md border border-border bg-muted p-4 text-danger"
+      role="alert"
+    >
+      <p class="font-semibold">⚠ Une erreur est survenue</p>
+      <p class="text-sm" id="error-message">Veuillez réessayer plus tard.</p>
+    </div>
+
+    <!-- Success feedback -->
+    <div
+      id="form-success"
+      class="mt-4 hidden rounded-md border border-border bg-muted p-4 text-foreground"
+      role="alert"
+    >
+      <p class="font-semibold">✓ Message envoyé avec succès</p>
+      <p class="text-sm">Nous vous répondrons dans les plus brefs délais.</p>
+    </div>
+  </form>
+</div>
+
+<style>
+  /* ─────────────────────────────
+   Form Input
+   ───────────────────────────── */
+  .form-input {
+    @apply rounded-md border border-border bg-background px-3 text-foreground
+      placeholder:text-mutedForeground hover:border-primary
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+      focus-visible:ring-offset-2;
+  }
+
+  /* ─────────────────────────────
+   Form Checkbox
+   ───────────────────────────── */
+  .form-checkbox {
+    @apply size-4 cursor-pointer rounded border-border accent-primary
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+      focus-visible:ring-offset-2;
+  }
+</style>

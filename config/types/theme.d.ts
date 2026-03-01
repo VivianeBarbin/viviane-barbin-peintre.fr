@@ -36,6 +36,10 @@ export interface ThemeConfig {
       muted: string;
       mutedForeground: string;
       border: string;
+      info: string;
+      success: string;
+      warning: string;
+      danger: string;
     };
     dark: {
       primary: string;
@@ -55,6 +59,10 @@ export interface ThemeConfig {
       muted: string;
       mutedForeground: string;
       border: string;
+      info: string;
+      success: string;
+      warning: string;
+      danger: string;
     };
   };
 }
