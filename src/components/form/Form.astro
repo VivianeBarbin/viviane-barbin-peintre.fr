@@ -109,3 +109,161 @@ import Button from "@/components/button/Button.astro";
       focus-visible:ring-offset-2;
   }
 </style>
+
+<script>
+  import { getBotpoisonSolution } from "@/utils/botpoisonUtils";
+
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+  const formError = document.getElementById("form-error") as HTMLDivElement;
+  const errorMessage = document.getElementById("error-message") as HTMLParagraphElement;
+  const formSuccess = document.getElementById("form-success") as HTMLDivElement;
+  const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+  // Validation helper functions
+  function validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  function showError(fieldId: string, message: string) {
+    const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement;
+    if (errorSpan) {
+      errorSpan.textContent = message;
+      errorSpan.classList.remove("hidden");
+    }
+  }
+
+  function hideError(fieldId: string) {
+    const errorSpan = form.querySelector(`[data-error="${fieldId}"]`) as HTMLSpanElement;
+    if (errorSpan) {
+      errorSpan.classList.add("hidden");
+    }
+  }
+
+  function hideAllErrors() {
+    const errorSpans = form.querySelectorAll("[data-error]");
+    errorSpans.forEach((span) => span.classList.add("hidden"));
+  }
+
+  function showFormError(message: string) {
+    errorMessage.textContent = message;
+    formError.classList.remove("hidden");
+    formSuccess.classList.add("hidden");
+  }
+
+  function showFormSuccess() {
+    formSuccess.classList.remove("hidden");
+    formError.classList.add("hidden");
+  }
+
+  function hideFormMessages() {
+    formError.classList.add("hidden");
+    formSuccess.classList.add("hidden");
+  }
+
+  function validateForm(): boolean {
+    hideAllErrors();
+    hideFormMessages();
+    let isValid = true;
+
+    // Validate full name
+    const fullName = (form.querySelector("#full-name") as HTMLInputElement).value.trim();
+    if (!fullName) {
+      showError("full-name", "Le nom est requis");
+      isValid = false;
+    }
+
+    // Validate email
+    const email = (form.querySelector("#email") as HTMLInputElement).value.trim();
+    if (!email) {
+      showError("email", "L'email est requis");
+      isValid = false;
+    } else if (!validateEmail(email)) {
+      showError("email", "L'email n'est pas valide");
+      isValid = false;
+    }
+
+    // Validate consent
+    const consent = (form.querySelector("#consent") as HTMLInputElement).checked;
+    if (!consent) {
+      showError("consent", "Vous devez accepter la conservation de vos données");
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  // Handle form submission
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    // Disable submit button and show loading state
+    submitButton.disabled = true;
+    const originalText = submitButton.textContent;
+    submitButton.textContent = "Envoi en cours...";
+
+    try {
+      // Prepare form data
+      const formData = new FormData(form);
+      const data: Record<string, any> = {};
+
+      formData.forEach((value, key) => {
+        if (key === "consent") {
+          data[key] = value === "on";
+        } else {
+          data[key] = value;
+        }
+      });
+
+      // Try to get Botpoison solution with graceful fallback
+      try {
+        const solution = await getBotpoisonSolution();
+        data._botpoison = solution;
+      } catch (error) {
+        // Graceful fallback - allow submission without Botpoison
+        data._botpoison = "SERVICE_UNAVAILABLE";
+        data._botpoison_error = error instanceof Error ? error.message : "Unknown error";
+      }
+
+      // Submit form
+      const response = await fetch(form.action, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      // Show success message and reset form
+      showFormSuccess();
+      form.reset();
+    } catch {
+      showFormError("Une erreur est survenue lors de l'envoi. Veuillez réessayer plus tard.");
+    } finally {
+      // Re-enable submit button
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+    }
+  });
+
+  // Add real-time validation for email
+  form.querySelector("#email")?.addEventListener("blur", (e) => {
+    const email = (e.target as HTMLInputElement).value.trim();
+    if (email && !validateEmail(email)) {
+      showError("email", "L'email n'est pas valide");
+    } else {
+      hideError("email");
+    }
+  });
+</script>

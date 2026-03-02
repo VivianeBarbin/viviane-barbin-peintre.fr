@@ -1,9 +1,87 @@
 ---
+import { Icon } from "astro-icon/components";
 import Form from "@/components/form/Form.astro";
+import { getContactData } from "@config/contact";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+interface Props {
+  /** Section heading displayed above the subtitle */
+  title?: string;
+  /** Section subtitle displayed below the title */
+  subtitle?: string;
+}
+
+// ── Data fetching ─────────────────────────────────────────────────────────────
+
+const { title = "Contact", subtitle = "Parlons art" } = Astro.props;
+const contactData = await getContactData();
 ---
 
 <section class="workshop-section bg-background pt-8 pb-16 text-primary">
   <div class="site-container">
-    <Form />
+    {/* ── Header ─────────────────────────────────────────────────────── */}
+    <div class="my-10 flex flex-col gap-y-[1.875rem]">
+      <h1 class="flex items-baseline gap-x-2 text-sm font-medium uppercase tracking-wider">
+        <span class="inline-flex self-center">
+          <Icon name="tabler/square" class="size-3.5 translate-y-1px" aria-hidden="true" />
+        </span>
+        {title}
+      </h1>
+
+      {
+        subtitle && (
+          <h2 class="m-0 max-w-[36ch] text-[1.75rem] font-light leading-[1.3] md:text-[2.25rem]">
+            {subtitle}
+          </h2>
+        )
+      }
+    </div>
+    <div class="grid gap-16 lg:grid-cols-2 md:py-10 mb-8 md:mb-16">
+      <div class="w-max-full h-max-full">
+        <article class="flex flex-col gap-8">
+          <p class="text-body leading-relaxed max-w-[65ch]">
+            Mon atelier vous accueille à Talon, en Bourgogne, pour découvrir mes peintures, suivre
+            un atelier ou simplement échanger autour de l'art.
+          </p>
+
+          {/* ── Contact ──────────────────────────────────────────────────── */}
+          <section aria-labelledby="contact-heading">
+            <h3 id="contact-heading" class="heading-4 mb-4">Contact</h3>
+            <ul class="flex flex-col gap-1 not-italic">
+              <li>
+                <span class="font-semibold">Téléphone : </span>
+                <a href={contactData.phone_link}>{contactData.phone}</a>
+              </li>
+              <li>
+                <span class="font-semibold">E-mail : </span>
+                <a href={`mailto:${contactData.email}`}>{contactData.email}</a>
+              </li>
+            </ul>
+          </section>
+
+          {/* ── Adresse ──────────────────────────────────────────────────── */}
+          <section aria-labelledby="address-heading">
+            <h3 id="address-heading" class="heading-4 mb-4">Où me trouver</h3>
+            <address class="not-italic flex flex-col gap-4">
+              <p>
+                {contactData.address.street}<br />
+                {contactData.address.postalCode}
+                {contactData.address.city}
+                {contactData.address.regionLong} —{" "}
+                {contactData.address.country}
+              </p>
+              <p class="text-md italic text-mutedForeground max-w-[65ch]">
+                Vous séjournez dans la région ? L'atelier dispose d'un <a
+                  href={`${contactData.websiteBnB}`}
+                  class="text-secondary semi-bold">hébergement</a
+                > pour prolonger votre immersion au cœur de la Bourgogne nivernaise.
+              </p>
+            </address>
+          </section>
+        </article>
+      </div>
+      <Form />
+    </div>
   </div>
 </section>

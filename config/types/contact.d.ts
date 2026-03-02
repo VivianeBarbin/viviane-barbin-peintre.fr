@@ -7,7 +7,8 @@ export interface ContactDataProps {
     street: string;
     city: string;
     postalCode: string;
-    region: string;
+    regionNum: string;
+    regionLong: string;
     country: string;
   };
   businessHours: {
@@ -16,4 +17,5 @@ export interface ContactDataProps {
     sunday: string;
   };
   website: string;
+  websiteBnB: string;
 }

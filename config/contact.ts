@@ -18,7 +18,8 @@ export const contactData: ContactDataProps = {
     street: "4 Rue de la Foire",
     city: "TALON",
     postalCode: "58190",
-    region: "58",
+    regionNum: "58",
+    regionLong: "Bourgogne",
     country: "FRANCE",
   },
 
@@ -29,6 +30,7 @@ export const contactData: ContactDataProps = {
   },
 
   website: "https://viviane-barbin-peintre.fr",
+  websiteBnB: "https://www.bourgogne-tourisme.com/locations-de-vacances/chez-viviani",
 };
 
 type ContactSettingsCMS = Partial<{
@@ -36,11 +38,14 @@ type ContactSettingsCMS = Partial<{
   phone_link: string;
   email: string;
   website: string;
+  websiteBnB: string;
   address: Partial<{
     street: string;
     city: string;
     postalCode: string;
     region: string;
+    regionNum: string;
+    regionLong: string;
     country: string;
   }>;
   businessHours: Partial<{
@@ -64,12 +69,17 @@ function mergeContactData(fallback: ContactDataProps, cms: ContactSettingsCMS): 
     phone_link: preferNonEmptyString(fallback.phone_link, cms.phone_link),
     email: preferNonEmptyString(fallback.email, cms.email),
     website: preferNonEmptyString(fallback.website, cms.website),
+    websiteBnB: preferNonEmptyString(fallback.websiteBnB, cms.websiteBnB),
 
     address: {
       street: preferNonEmptyString(fallback.address.street, cms.address?.street),
       city: preferNonEmptyString(fallback.address.city, cms.address?.city),
       postalCode: preferNonEmptyString(fallback.address.postalCode, cms.address?.postalCode),
-      region: preferNonEmptyString(fallback.address.region, cms.address?.region),
+      regionNum: preferNonEmptyString(
+        fallback.address.regionNum,
+        cms.address?.regionNum ?? cms.address?.region
+      ),
+      regionLong: preferNonEmptyString(fallback.address.regionLong, cms.address?.regionLong),
       country: preferNonEmptyString(fallback.address.country, cms.address?.country),
     },
 

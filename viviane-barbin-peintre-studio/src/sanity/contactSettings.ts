@@ -1,82 +1,96 @@
-import { defineField, defineType } from "sanity";
+import {defineField, defineType} from 'sanity'
 
 export const contactSettingsType = defineType({
-  name: "contactSettings",
-  title: "Contact",
-  type: "document",
+  name: 'contactSettings',
+  title: 'Contact',
+  type: 'document',
   fields: [
     defineField({
-      name: "phone",
-      title: "Téléphone",
-      type: "string",
+      name: 'phone',
+      title: 'Téléphone',
+      type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "phone_link",
-      title: "Lien téléphone (tel:...)",
-      type: "string",
-      description: "Ex: tel:+33643826269",
+      name: 'phone_link',
+      title: 'Lien téléphone (tel:...)',
+      type: 'string',
+      description: 'Ex: tel:+33643826269',
       validation: (Rule) =>
         Rule.required().custom((value) => {
-          if (!value) return true;
-          if (typeof value !== "string") return "Doit être une chaîne de caractères.";
-          if (!value.startsWith("tel:")) return "Doit commencer par 'tel:'.";
-          return true;
+          if (!value) return true
+          if (typeof value !== 'string') return 'Doit être une chaîne de caractères.'
+          if (!value.startsWith('tel:')) return "Doit commencer par 'tel:'."
+          return true
         }),
     }),
     defineField({
-      name: "email",
-      title: "Email",
-      type: "string",
+      name: 'email',
+      title: 'Email',
+      type: 'string',
       validation: (Rule) =>
         Rule.required().custom((value) => {
-          if (!value) return true;
-          if (typeof value !== "string") return "Doit être une chaîne de caractères.";
+          if (!value) return true
+          if (typeof value !== 'string') return 'Doit être une chaîne de caractères.'
           // validation légère (la validation stricte d'email peut être trop restrictive)
-          if (!value.includes("@")) return "Doit contenir '@'.";
-          return true;
+          if (!value.includes('@')) return "Doit contenir '@'."
+          return true
         }),
     }),
     defineField({
-      name: "website",
-      title: "Site web",
-      type: "url",
+      name: 'website',
+      title: 'Site web',
+      type: 'url',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'websiteBnB',
+      title: 'Site web BnB',
+      type: 'url',
+      description: 'Lien vers la location Bourgogne Tourisme',
     }),
 
     defineField({
-      name: "address",
-      title: "Adresse",
-      type: "object",
+      name: 'address',
+      title: 'Adresse',
+      type: 'object',
       fields: [
         defineField({
-          name: "street",
-          title: "Rue",
-          type: "string",
+          name: 'street',
+          title: 'Rue',
+          type: 'string',
           validation: (Rule) => Rule.required(),
         }),
         defineField({
-          name: "city",
-          title: "Ville",
-          type: "string",
+          name: 'city',
+          title: 'Ville',
+          type: 'string',
           validation: (Rule) => Rule.required(),
         }),
         defineField({
-          name: "postalCode",
-          title: "Code postal",
-          type: "string",
+          name: 'postalCode',
+          title: 'Code postal',
+          type: 'string',
           validation: (Rule) => Rule.required(),
         }),
         defineField({
-          name: "region",
-          title: "Région / Département",
-          type: "string",
+          name: 'region',
+          title: 'Région / Département (numéro)',
+          type: 'string',
+          description: 'Ex: 58',
           validation: (Rule) => Rule.required(),
+          // TODO: migrate existing 'region' documents to 'regionNum' if renaming
         }),
         defineField({
-          name: "country",
-          title: "Pays",
-          type: "string",
+          name: 'regionLong',
+          title: 'Région (nom complet)',
+          type: 'string',
+          description: 'Ex: Bourgogne',
+        }),
+        defineField({
+          name: 'country',
+          title: 'Pays',
+          type: 'string',
           validation: (Rule) => Rule.required(),
         }),
       ],
@@ -84,26 +98,26 @@ export const contactSettingsType = defineType({
     }),
 
     defineField({
-      name: "businessHours",
-      title: "Horaires",
-      type: "object",
+      name: 'businessHours',
+      title: 'Horaires',
+      type: 'object',
       fields: [
         defineField({
-          name: "weekdays",
-          title: "Semaine",
-          type: "string",
+          name: 'weekdays',
+          title: 'Semaine',
+          type: 'string',
           validation: (Rule) => Rule.required(),
         }),
         defineField({
-          name: "saturday",
-          title: "Samedi",
-          type: "string",
+          name: 'saturday',
+          title: 'Samedi',
+          type: 'string',
           validation: (Rule) => Rule.required(),
         }),
         defineField({
-          name: "sunday",
-          title: "Dimanche",
-          type: "string",
+          name: 'sunday',
+          title: 'Dimanche',
+          type: 'string',
           validation: (Rule) => Rule.required(),
         }),
       ],
@@ -113,9 +127,9 @@ export const contactSettingsType = defineType({
   preview: {
     prepare() {
       return {
-        title: "Contact",
-        subtitle: "Réglages (singleton)",
-      };
+        title: 'Contact',
+        subtitle: 'Réglages (singleton)',
+      }
     },
   },
-});
+})
