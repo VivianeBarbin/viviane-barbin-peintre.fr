@@ -44,6 +44,9 @@ jobs:
           SANITY_STUDIO_DATASET: production
           # If your prod dataset is private, add the read token as a secret:
           # SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+          # Public environment variables (bundled into client-side code at build time)
+          PUBLIC_BOTPOISON_PUBLIC_KEY: ${{ secrets.PUBLIC_BOTPOISON_PUBLIC_KEY }}
+          PUBLIC_FORMSPARK_FORM_ID: ${{ secrets.PUBLIC_FORMSPARK_FORM_ID }}
 
       - name: Deploy to production
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
