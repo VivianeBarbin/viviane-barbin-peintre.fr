@@ -3,6 +3,11 @@ import type { LegalLinkItem, NavLinkItem, SocialLinkItem } from "./types";
 
 export const navigationLinks: NavLinkItem[] = [
   {
+    text: "Accueil",
+    link: "/",
+    showInDesktopNav: false,
+  },
+  {
     text: "Galerie",
     button: "Parcourir mes créations",
     link: "/galeries",

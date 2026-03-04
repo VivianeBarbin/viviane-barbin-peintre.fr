@@ -1,106 +1,145 @@
 # viviane-barbin-peintre.fr
 
-# viviane-barbin-peintre.fr
+**Custom [Astro](https://astro.build/) site for [Viviane Barbin](https://viviane-barbin-peintre.fr), painter — deployed on Cloudflare Workers with an embedded Sanity Studio.**
 
-Astro site for Viviane Barbin Peintre, deployed on Cloudflare Workers with embedded Sanity Studio.
+The source code of this site is purpose-built (not a theme fork) and includes a headless CMS integration, a server-side contact form pipeline, PDF page generation, and a full custom component library.
 
-## Environment Variables & Dataset Configuration
+---
 
-This project is configured to **always use the `production` dataset** for all environments (local development, production, and preview deployments).
+### Visit the site
 
-### Dataset configuration
+- [viviane-barbin-peintre.fr](https://viviane-barbin-peintre.fr)
 
-| Layer                                                                       | Variable                | Value        | Notes                            |
-| --------------------------------------------------------------------------- | ----------------------- | ------------ | -------------------------------- |
-| **Astro frontend** (`astro.config.mjs`, `sanityFetch.ts`, `sanityImage.ts`) | `SANITY_DATASET`        | `production` | Hardcoded in configuration files |
-| **Sanity Studio** (`sanity.config.ts`)                                      | `SANITY_STUDIO_DATASET` | `production` | Hardcoded in configuration files |
+---
 
-> **Public dataset:** This project uses a public Sanity dataset — no API read token is needed for content fetching.
+### Features
 
-### Per-environment settings
+- Full SSR via `@astrojs/cloudflare` (Cloudflare Workers)
+- Content management via [Sanity](https://www.sanity.io/) (headless CMS) — embedded Studio at `/admin` in production
+- [UnoCSS](https://unocss.dev/) utility-first styling with custom design tokens, typography shortcuts, and dark-mode support
+- Fonts served via [Bunny Fonts](https://fonts.bunny.net/) (no Google Fonts, privacy-respecting)
+- Contact form with [Formspark](https://formspark.io/) submission and [Botpoison](https://botpoison.com/) anti-spam verification
+- PDF page pre-rendering via Puppeteer (book preview feature)
+- Image gallery with [Splide](https://splidejs.com/) slider
+- Accessible custom component library (Button, Nav, Footer, Gallery, Workshop, Book, Contact, 404…)
+- Legal pages: Mentions légales, Politique de confidentialité
+- Custom 404 page with viewport-fit layout
+- Responsive layout, auto dark mode
 
-#### Local development
+---
 
-No environment variables are required. The dataset is hardcoded to `production` in all configuration files.
+### What have been done
 
-```sh
-# .env (optional — no dataset configuration needed)
-# Dataset is always "production"
-```
+- Custom Astro project configured for SSR (`output: "server"`) with the `@astrojs/cloudflare` adapter
+- Wrangler configuration (`wrangler.jsonc`) for production and preview Cloudflare Worker deployments
+- Sanity CMS integration (`@sanity/astro`) with embedded Studio mounted at `/admin` (production only); standalone Studio lives under `viviane-barbin-peintre-studio/`
+- UnoCSS setup with `presetWind4`, `presetAttributify`, `presetWebFonts`, and a custom dark-mode theme preset
+- Pre-build scripts (`tsx`): CSS variable generation and PDF page rendering via Puppeteer
+- Custom config layer (`config/`) for site settings, contact data, navigation, and legals — all with Sanity CMS fallback/merge
+- Shared spacing token exports in `src/utils/elementSizes.ts` consumed by components
+- Full component library built from scratch under `src/components/`
+- Contact form API endpoint (`src/pages/api/contact.ts`, Cloudflare Workers–compatible):
+  - Botpoison server-side verification
+  - Formspark JSON submission
+  - RGPD-compliant explicit consent gate
+- Legal pages: `/mentions-legales`, `/politique-confidentialite` — backed by `config/legals.ts`
+- Navigation system with per-item `showInDesktopNav` flag (Accueil visible in footer and mobile nav only)
+- Astro asset pipeline for all images (`src/assets/`) with `<Image>` component and srcset generation
+- Favicon set: SVG, PNG 96×96, ICO, Apple Touch Icon, Web App Manifest
 
-Run the dev server:
+---
 
-```sh
-pnpm dev          # Astro dev (reads .env via dotenv-cli)
-```
+### Performance
 
-Run standalone Studio (separate terminal):
+Performance report: à préciser
 
-```sh
-cd viviane-barbin-peintre-studio && pnpm dev
-```
+---
 
-#### Production (Cloudflare Workers)
+### Getting Started
 
-No dataset environment variables are required. The dataset is hardcoded to `production` in all configuration files.
+1. Clone the repository:
 
-Deploy:
+   ```bash
+   git clone <repository-url>
+   cd viviane-barbin-peintre.fr
+   ```
 
-```sh
-pnpm deploy       # builds + wrangler deploy
-```
+2. Install dependencies:
 
-#### Preview (Cloudflare)
+   ```bash
+   pnpm install
+   ```
 
-Preview deploys use the `wrangler.jsonc` → `env.preview` config (`--env preview`). The dataset is hardcoded to `production` for all environments.
+3. Set up environment variables (copy and fill in values):
 
-Deploy preview:
+   ```bash
+   cp .env.example .env
+   ```
 
-```sh
-pnpm deploy:preview   # builds + wrangler deploy --env preview
-```
+   | Variable                      | Scope               | Description          |
+   | ----------------------------- | ------------------- | -------------------- |
+   | `PUBLIC_BOTPOISON_PUBLIC_KEY` | Build-time + client | Botpoison public key |
+   | `BOTPOISON_SECRET_KEY`        | Runtime server      | Botpoison secret key |
+   | `PUBLIC_FORMSPARK_FORM_ID`    | Build-time + client | Formspark form ID    |
 
-### Where to configure Cloudflare env vars (if needed for other purposes)
+4. Start the development server:
 
-Other **build-time** variables (not dataset-related) can be set in one of:
+   ```bash
+   pnpm dev          # Astro dev server → http://localhost:4321
+   ```
 
-1. **Cloudflare Dashboard** → Workers & Pages → your project → Settings → Variables and Secrets → select the environment (Production / Preview).
-2. **CI/CD secrets** (e.g. GitHub Actions `env:` block) — the build step must have them in the shell environment.
-3. **Local `.env.production`** file (gitignored) if you deploy from your machine.
+   To run the standalone Sanity Studio (separate terminal):
 
-### CORS origins for Sanity Studio
+   ```bash
+   cd viviane-barbin-peintre-studio && pnpm dev
+   ```
 
-Make sure the following origins are allowed in [Sanity project CORS settings](https://www.sanity.io/manage/project/x31r8s87/api#cors):
+5. Build and preview:
 
-| Origin                              | Environment                         |
-| ----------------------------------- | ----------------------------------- |
-| `http://localhost:4321`             | Local Astro dev (embedded Studio)   |
-| `http://localhost:3333`             | Local standalone Studio             |
-| `https://viviane-barbin-peintre.fr` | Production                          |
-| `https://*.workers.dev`             | Preview (if using workers.dev URLs) |
+   ```bash
+   pnpm build        # Production build (runs pre-build scripts first)
+   pnpm preview      # Local preview of the built output
+   ```
 
-### File reference
+6. Lint and format:
 
-| File                                             | Role                                                                                        |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `astro.config.mjs`                               | Reads `SANITY_DATASET`; configures Sanity integration + embedded Studio                     |
-| `sanity.config.ts`                               | Root Studio config (embedded); reads `SANITY_STUDIO_DATASET`                                |
-| `viviane-barbin-peintre-studio/sanity.config.ts` | Standalone Studio config; reads `SANITY_STUDIO_DATASET`                                     |
-| `src/utils/sanityConfig.ts`                      | Shared public config; exports resolved `SANITY_DATASET` for `sanityFetch` and `sanityImage` |
-| `src/lib/sanityFetch.ts`                         | SSR fetch helper; reads `SANITY_DATASET` at runtime (with fallback to `sanityConfig.ts`)    |
-| `env.example`                                    | Full annotated example of all env vars                                                      |
+   ```bash
+   pnpm lint         # ESLint
+   pnpm lint:fix     # ESLint with auto-fix
+   pnpm format       # Prettier
+   pnpm format:check # Prettier check (CI)
+   ```
 
-## Development
+7. Deploy to Cloudflare Workers:
 
-```sh
-pnpm install
-pnpm dev            # Astro dev server on http://localhost:4321
-```
+   ```bash
+   pnpm deploy           # Build + deploy to production
+   pnpm deploy:preview   # Build + deploy to preview environment
+   ```
 
-## Build & Deploy
+---
 
-```sh
-pnpm build          # production build (requires SANITY_DATASET to be set)
-pnpm deploy         # build + deploy to Cloudflare Workers (production)
-pnpm deploy:preview # build + deploy to Cloudflare Workers (preview)
-```
+### Credits
+
+#### Services
+
+- **Sanity** — ©[Sanity.io](https://www.sanity.io/) — headless CMS
+- **Formspark** — ©2018 [Formspark](https://formspark.io/) — form backend
+- **Botpoison** — ©2021 [Botpoison](https://botpoison.com/) — anti-spam / bot protection
+- **Cloudflare Workers** — ©[Cloudflare, Inc.](https://www.cloudflare.com/) — hosting and edge runtime
+- **Bunny Fonts** — ©[BunnyCDN](https://fonts.bunny.net/) — privacy-respecting font delivery
+
+#### Fonts
+
+- **Yeseva One** — [Google Fonts / Bunny Fonts](https://fonts.bunny.net/family/yeseva-one) — SIL Open Font License
+- **Nunito Sans** — ©[The Nunito Sans Project Authors](https://github.com/googlefonts/NunitoSans) — SIL Open Font License
+- **JetBrains Mono** — ©[JetBrains](https://github.com/JetBrains/JetBrainsMono) — SIL Open Font License
+- **Merriweather** — ©[The Merriweather Project Authors](https://github.com/SorkinType/Merriweather) — SIL Open Font License
+
+#### Icons
+
+- **Tabler Icons** — ©[Tabler](https://tabler.io/icons) — MIT License
+
+---
+
+**_Last update: 4th March 2026_**

@@ -11,7 +11,6 @@ export interface ThemeConfig {
     startYear: string;
     faviconSvg: string;
     faviconPng96: string;
-    faviconPng: string;
     faviconIco: string;
     webManifest: string;
     appleTouchIcon: string;

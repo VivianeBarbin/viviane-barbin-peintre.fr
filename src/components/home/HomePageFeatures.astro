@@ -16,6 +16,7 @@ const homeData = await fetchSanity<Record<string, any>>(HOME_CONTENT_QUERY);
 const contactData = await getContactData();
 const siteSettings = await getSiteSettings();
 const galerieLink = navigationLinks.find((nav) => nav.link === "/galeries");
+const workshopLink = navigationLinks.find((nav) => nav.link === "/atelier");
 
 // Local fallback image paths
 const ATELIER_IMAGE_PATH = "@images/homepage/homepage-placeholder_01.jpg";
@@ -106,7 +107,7 @@ const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPainting
         <div class="grid h-auto w-full grid-cols-1 gap-4 lg:h-full lg:grid-cols-2">
           <address class="hidden h-full flex-col justify-end not-italic lg:flex">
             <span>
-              {contactData.address.city} ({contactData.address.region}),
+              {contactData.address.city} ({contactData.address.regionNum}),
               {contactData.address.country}
             </span>
             <br />
@@ -198,7 +199,9 @@ const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPainting
               <div class="from-background via-background/10 absolute inset-0 bg-linear-to-t to-transparent" />
               <div class="absolute inset-0 flex items-end p-6">
                 <Button variant="secondary" size="sm" class="w-full md:w-auto">
-                  Découvrir l'atelier
+                  <a href={workshopLink?.link ?? "/ateliers"}>
+                    {workshopLink?.button ?? "Découvrir l'atelier"}
+                  </a>
                 </Button>
               </div>
             </div>

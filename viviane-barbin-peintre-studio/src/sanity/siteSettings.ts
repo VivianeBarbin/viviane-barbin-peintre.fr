@@ -73,12 +73,6 @@ export const siteSettingsType = defineType({
       description: 'Example: "/favicon-96x96.png"',
     }),
     defineField({
-      name: 'faviconPng',
-      title: 'Favicon PNG path',
-      type: 'string',
-      description: 'Example: "/favicon.png"',
-    }),
-    defineField({
       name: 'faviconIco',
       title: 'Favicon ICO path',
       type: 'string',

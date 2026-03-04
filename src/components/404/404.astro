@@ -1,0 +1,114 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import Button from "@/components/button/Button.astro";
+import { sectionHeaderSpacing, contentGridSpacing } from "@/utils/elementSizes";
+import paletteImage from "@/assets/images/404/palette.webp";
+
+// Using Astro's Image component with imported asset
+const title = "404";
+---
+
+<section class="workshop-section bg-background pt-8 pb-16 text-primary">
+  <div class="site-container">
+    {/* ── Header ─────────────────────────────────────────────────────── */}
+    <div id="error-404-header" class:list={[sectionHeaderSpacing.wrapper]}>
+      <h1 class="flex items-baseline gap-x-2 text-sm font-medium uppercase tracking-wider">
+        <span class="inline-flex self-center">
+          <Icon name="tabler/square" class="size-3.5 translate-y-1px" aria-hidden="true" />
+        </span>
+        {title}
+      </h1>
+
+      <h2 class="m-0 max-w-[36ch] text-[1.75rem] font-light leading-[1.3] md:text-[2.25rem]">
+        Page introuvable
+      </h2>
+    </div>
+
+    {/* ── Content Grid (Text + Image) ──────────────────────────────────── */}
+    <div id="error-404-grid" class:list={[contentGridSpacing.wrapper]}>
+      {/* Image column - order-2 on mobile, order-1 on desktop (left side) */}
+      <div class="hidden order-2 lg:order-1 lg:flex justify-center lg:justify-end">
+        <div class="relative animate-float w-full max-w-[690px] p-8">
+          <Image
+            src={paletteImage}
+            alt="Palette artistique"
+            widths={[320, 480, 640, 720]}
+            sizes="(max-width: 768px) 100vw, 690px"
+            loading="eager"
+            class="rotate--12 w-full h-auto max-h-[540px] object-contain"
+          />
+
+          <div
+            class="absolute -bottom-6 -left-6 w-24 h-24 border border-primary rounded-full opacity-10"
+            aria-hidden="true"
+          >
+          </div>
+        </div>
+      </div>
+
+      {/* Text column - order-1 on mobile, order-2 on desktop (right side) */}
+      <div class="order-1 lg:order-2 w-full flex items-start">
+        <div class="w-full h-full flex flex-col justify-center text-center lg:text-left">
+          <div class="flex flex-col gap-8">
+            {/* Description */}
+            <p
+              class="text-lg sm:text-xl text-primary/80 max-w-[70ch] mx-auto lg:mx-0 leading-relaxed"
+            >
+              Comme une toile vierge oubliée, cette page semble avoir disparu dans les couleurs du
+              temps.
+            </p>
+
+            {/* Decorative line */}
+            <div class="flex items-center justify-center lg:justify-start gap-4">
+              <div class="h-px w-12 bg-primary/30"></div>
+              <Icon name="tabler/palette" class="size-5 text-primary/50" aria-hidden="true" />
+              <div class="h-px w-12 bg-primary/30"></div>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div class="mt-8 flex justify-center lg:justify-start">
+            <Button variant="primary" size="sm" href="/" class="w-full md:w-auto">
+              <Icon name="tabler/chevron-left" class="size-5" aria-hidden="true" />
+              <span>Retour à l'accueil</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #error-404-grid {
+    overflow: hidden;
+  }
+
+  /* Allow overflow in grid columns for rotated image */
+  #error-404-grid > div {
+    overflow: visible;
+  }
+
+  /* Floating animation - keeping the existing animation */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(1deg);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float {
+      animation: none;
+    }
+  }
+</style>

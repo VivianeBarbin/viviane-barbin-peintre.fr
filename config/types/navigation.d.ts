@@ -5,6 +5,7 @@ export interface NavLinkItem {
   button?: string;
   newTab?: boolean;
   icon?: string;
+  showInDesktopNav?: boolean; // If false, hides from desktop header (still shows in mobile & footer). Defaults to true.
 }
 
 export interface LegalLinkItem {

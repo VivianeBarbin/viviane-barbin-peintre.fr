@@ -1,0 +1,312 @@
+---
+import { Icon } from "astro-icon/components";
+import Button from "@/components/button/Button.astro";
+import { getContactData } from "@config/contact";
+import { getSiteSettings } from "@config/site";
+import { legalsConfig } from "@config/legals";
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+const contact = await getContactData();
+const site = await getSiteSettings();
+
+const { developer, host, dates } = legalsConfig;
+
+const siteUrl = site.url ?? contact.website;
+const siteName = site.title ?? "Viviane Barbin Peintre";
+
+const fullAddress = [
+  contact.address.street,
+  `${contact.address.postalCode} ${contact.address.city}`,
+  contact.address.regionLong,
+  contact.address.country,
+].join(", ");
+---
+
+<section class="workshop-section bg-background pt-8 pb-16 text-primary">
+  <div class="site-container">
+    {/* ── Page header ──────────────────────────────────────────────────── */}
+    <div class="my-10 flex flex-col gap-y-[1.875rem]">
+      <p class="flex items-baseline gap-x-2 text-sm font-medium uppercase tracking-wider">
+        <span class="inline-flex self-center">
+          <Icon name="tabler/square" class="size-3.5 translate-y-1px" aria-hidden="true" />
+        </span>
+        Informations légales
+      </p>
+
+      <h1 class="m-0 max-w-[36ch] text-[1.75rem] font-light leading-[1.3] md:text-[2.25rem]">
+        Mentions légales
+      </h1>
+    </div>
+
+    {/* ── Article ──────────────────────────────────────────────────────── */}
+    <article class="legal-article flex flex-col gap-12 max-w-[72ch] pb-8">
+      {/* 1 — Éditeur */}
+      <section aria-labelledby="legal-editor">
+        <h2 id="legal-editor" class="heading-4 mb-4">Éditeur du site</h2>
+        <dl class="legal-dl">
+          <div class="legal-dl__row">
+            <dt>Nom</dt>
+            <dd>{site.author}</dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Activité</dt>
+            <dd>Artiste peintre — activité non commerciale à titre personnel</dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Adresse</dt>
+            <dd>{fullAddress}</dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Téléphone</dt>
+            <dd>
+              <a href={contact.phone_link}>{contact.phone}</a>
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>E-mail</dt>
+            <dd>
+              <a href={`mailto:${contact.email}`}>{contact.email}</a>
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Site web</dt>
+            <dd>
+              <a href={siteUrl} rel="noopener noreferrer">{siteUrl}</a>
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 2 — Conception */}
+      <section aria-labelledby="legal-dev">
+        <h2 id="legal-dev" class="heading-4 mb-4">Conception et développement</h2>
+        <dl class="legal-dl">
+          <div class="legal-dl__row">
+            <dt>Développeur</dt>
+            <dd>
+              <a href={developer.url} rel="noopener noreferrer" target="_blank">
+                {developer.name}
+              </a>
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>E-mail</dt>
+            <dd>
+              <a href={`mailto:${developer.email}`}>{developer.email}</a>
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>SIRET</dt>
+            <dd>{developer.siret}</dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Technologies</dt>
+            <dd>Astro, UnoCSS, Sanity CMS, Cloudflare Pages</dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 3 — Hébergement */}
+      <section aria-labelledby="legal-host">
+        <h2 id="legal-host" class="heading-4 mb-4">Hébergement</h2>
+        <dl class="legal-dl">
+          <div class="legal-dl__row">
+            <dt>Hébergeur</dt>
+            <dd>
+              <a href={host.url} rel="noopener noreferrer" target="_blank">{host.name}</a>
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Adresse</dt>
+            <dd>{host.address}</dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 4 — Propriété intellectuelle */}
+      <section aria-labelledby="legal-ip">
+        <h2 id="legal-ip" class="heading-4 mb-4">Propriété intellectuelle</h2>
+        <p class="body leading-relaxed">
+          L'ensemble du contenu de ce site — textes, photographies, reproductions d'œuvres,
+          illustrations, mise en page et charte graphique — est la propriété exclusive de{" "}
+          {site.author} ou de leurs auteurs respectifs, et est protégé par le droit d'auteur français
+          et les conventions internationales. Toute reproduction, représentation, diffusion ou rediffusion,
+          en tout ou partie, sur quelque support que ce soit, sans l'autorisation expresse et écrite de
+          l'éditeur, est interdite et constituerait une contrefaçon sanctionnée par les articles L.335-2
+          et suivants du Code de la propriété intellectuelle.
+        </p>
+      </section>
+
+      {/* 5 — Responsabilité */}
+      <section aria-labelledby="legal-liability">
+        <h2 id="legal-liability" class="heading-4 mb-4">Responsabilité</h2>
+        <p class="body leading-relaxed">
+          Les informations contenues sur ce site sont fournies à titre indicatif. L'éditeur
+          s'efforce de maintenir ces informations à jour et exactes, mais ne saurait être tenu
+          responsable des erreurs ou omissions, ni des dommages directs ou indirects pouvant
+          résulter de l'utilisation de ces informations. Les liens hypertextes vers des sites tiers
+          sont proposés à titre informatif ; l'éditeur n'exerce aucun contrôle sur leur contenu et
+          décline toute responsabilité quant aux informations qui y sont diffusées.
+        </p>
+      </section>
+
+      {/* 6 — Données personnelles */}
+      <section aria-labelledby="legal-data">
+        <h2 id="legal-data" class="heading-4 mb-4">Données personnelles</h2>
+        <p class="body leading-relaxed">
+          Ce site collecte des données personnelles dans le strict cadre des finalités décrites dans
+          la{" "}
+          <a href="/politique-confidentialite">politique de confidentialité</a>. Conformément au
+          Règlement Général sur la Protection des Données (RGPD — UE 2016/679) et à la loi
+          Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement
+          et de portabilité des données vous concernant. Pour exercer ces droits, contactez
+          l'éditeur à l'adresse{" "}
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>.
+        </p>
+      </section>
+
+      {/* 7 — Crédits */}
+      <section aria-labelledby="legal-credits">
+        <h2 id="legal-credits" class="heading-4 mb-4">Crédits</h2>
+        <dl class="legal-dl">
+          <div class="legal-dl__row">
+            <dt>Photographies</dt>
+            <dd>{site.author} — tous droits réservés</dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Reproductions des œuvres</dt>
+            <dd>{site.author} — tous droits réservés</dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Icônes</dt>
+            <dd>
+              <a href="https://tabler.io/icons" rel="noopener noreferrer" target="_blank">
+                Tabler Icons
+              </a>{" "}
+              — licence MIT
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 8 — Polices de caractères */}
+      <section aria-labelledby="legal-fonts">
+        <h2 id="legal-fonts" class="heading-4 mb-4">Polices de caractères</h2>
+        <dl class="legal-dl">
+          <div class="legal-dl__row">
+            <dt>Yeseva One</dt>
+            <dd>
+              <a href="https://fonts.bunny.net" rel="noopener noreferrer" target="_blank">
+                Bunny Fonts
+              </a>{" "}
+              — licence OFL
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Nunito Sans</dt>
+            <dd>
+              <a href="https://fonts.bunny.net" rel="noopener noreferrer" target="_blank">
+                Bunny Fonts
+              </a>{" "}
+              — licence OFL
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>JetBrains Mono</dt>
+            <dd>
+              <a href="https://fonts.bunny.net" rel="noopener noreferrer" target="_blank">
+                Bunny Fonts
+              </a>{" "}
+              — licence OFL
+            </dd>
+          </div>
+        </dl>
+        <p class="body leading-relaxed mt-4 text-mutedForeground text-sm">
+          Les polices sont servies via{" "}
+          <a href="https://fonts.bunny.net" rel="noopener noreferrer" target="_blank">Bunny Fonts</a
+          >, un service respectueux de la vie privée qui ne dépose pas de cookies tiers.
+        </p>
+      </section>
+
+      {/* 9 — Services tiers */}
+      <section aria-labelledby="legal-services">
+        <h2 id="legal-services" class="heading-4 mb-4">Services tiers</h2>
+        <dl class="legal-dl">
+          <div class="legal-dl__row">
+            <dt>Gestion de contenu</dt>
+            <dd>
+              <a href="https://www.sanity.io" rel="noopener noreferrer" target="_blank">
+                Sanity.io
+              </a>
+              {" "}— CMS headless (San Francisco, CA, États-Unis)
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Formulaire de contact</dt>
+            <dd>
+              <a href="https://formspark.io" rel="noopener noreferrer" target="_blank">
+                Formspark
+              </a>
+              {" "}— traitement des soumissions de formulaire
+            </dd>
+          </div>
+          <div class="legal-dl__row">
+            <dt>Protection anti-spam</dt>
+            <dd>
+              <a href="https://botpoison.com" rel="noopener noreferrer" target="_blank">
+                Botpoison
+              </a>
+              {" "}— détection de bots lors de la soumission du formulaire de contact
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 10 — Dernière mise à jour */}
+      <section aria-labelledby="legal-updated">
+        <h2 id="legal-updated" class="heading-4 mb-4">Dernière mise à jour</h2>
+        <p class="body leading-relaxed">
+          Ces mentions légales ont été mises à jour le{" "}
+          <time datetime={dates.lastUpdatedIso}>{dates.lastUpdated}</time>.
+        </p>
+      </section>
+
+      {/* ── CTAs ─────────────────────────────────────────────────────────── */}
+      <div class="flex flex-wrap gap-4 pt-4">
+        <Button variant="primary" size="sm" href="/">
+          <Icon name="tabler/chevron-left" class="size-4" aria-hidden="true" />
+          Retour à l'accueil
+        </Button>
+        <Button variant="outline" size="sm" href="/contact">
+          <Icon name="tabler/mail" class="size-4" aria-hidden="true" />
+          Nous contacter
+        </Button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  /* Definition list — single column on mobile, 2-col on lg+ */
+  .legal-dl {
+    @apply flex flex-col gap-2;
+  }
+
+  .legal-dl__row {
+    @apply grid gap-x-6 gap-y-0.5 grid-cols-1 lg:grid-cols-[12rem_1fr];
+  }
+
+  .legal-dl dt {
+    @apply font-semibold text-primary;
+  }
+
+  .legal-dl dd {
+    @apply text-primary/80;
+  }
+
+  /* Inline links — exclude Button component (<a class="button …">) */
+  .legal-article a:not(.button) {
+    @apply text-link underline underline-offset-2 hover:text-primary transition-colors;
+  }
+</style>

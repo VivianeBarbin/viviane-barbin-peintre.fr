@@ -231,3 +231,50 @@ export function watchElementWidth(
 
 /** Shared ElementSizer instance for common use cases */
 export const elementSizer = new ElementSizer();
+
+// ============================================================================
+// SPACING TOKENS (UnoCSS-compatible class strings)
+// ============================================================================
+
+/**
+ * Section header wrapper spacing tokens
+ * Used consistently across Workshop, Book, Contact, Galleries, and 404 components
+ *
+ * Values:
+ * - my-10: 2.5rem vertical margin (UnoCSS default scale)
+ * - gap-y-[1.875rem]: 30px (1.875rem) vertical gap between header elements
+ */
+export const sectionHeaderSpacing = {
+  /** Vertical margin for section header wrapper */
+  my: "my-10" as const,
+  /** Vertical gap between header elements (h1, h2, etc.) */
+  gapY: "gap-y-[1.875rem]" as const,
+  /** Combined classes for section header wrapper */
+  wrapper: "my-10 flex flex-col gap-y-[1.875rem]" as const,
+} as const;
+
+/**
+ * Content grid spacing tokens
+ * Used for 2-column layouts (image + text) in Workshop, 404, and similar components
+ *
+ * Values:
+ * - gap-16: 4rem gap between grid columns
+ * - lg:grid-cols-2: 2 columns on desktop
+ * - md:py-10: 2.5rem vertical padding on medium+ screens
+ * - mb-8: 2rem bottom margin (mobile)
+ * - md:mb-16: 4rem bottom margin (desktop)
+ */
+export const contentGridSpacing = {
+  /** Gap between grid columns */
+  gap: "gap-16" as const,
+  /** 2-column layout on desktop */
+  cols: "lg:grid-cols-2" as const,
+  /** Vertical padding on medium+ screens */
+  py: "md:py-10" as const,
+  /** Bottom margin (mobile) */
+  mb: "mb-8" as const,
+  /** Bottom margin (desktop) */
+  mbMd: "md:mb-16" as const,
+  /** Combined classes for content grid */
+  wrapper: "grid gap-16 lg:grid-cols-2 md:py-10 mb-8 md:mb-16" as const,
+} as const;

@@ -1,4 +1,5 @@
 /* config/types/index.d.ts */
-export * from "./theme";
 export * from "./contact";
+export * from "./legals";
 export * from "./navigation";
+export * from "./theme";

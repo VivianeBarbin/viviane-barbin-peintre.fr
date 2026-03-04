@@ -1,0 +1,413 @@
+---
+import { Icon } from "astro-icon/components";
+import Button from "@/components/button/Button.astro";
+import { getContactData } from "@config/contact";
+import { getSiteSettings } from "@config/site";
+import { legalsConfig } from "@config/legals";
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+const contact = await getContactData();
+const site = await getSiteSettings();
+
+const { host, dates } = legalsConfig;
+
+const siteName = site.title ?? "Viviane Barbin Peintre";
+const siteUrl = site.url ?? contact.website;
+---
+
+<section class="workshop-section bg-background pt-8 pb-16 text-primary">
+  <div class="site-container">
+    {/* ── Page header ──────────────────────────────────────────────────── */}
+    <div class="my-10 flex flex-col gap-y-[1.875rem]">
+      <p class="flex items-baseline gap-x-2 text-sm font-medium uppercase tracking-wider">
+        <span class="inline-flex self-center">
+          <Icon name="tabler/square" class="size-3.5 translate-y-1px" aria-hidden="true" />
+        </span>
+        Données personnelles
+      </p>
+
+      <h1 class="m-0 max-w-[36ch] text-[1.75rem] font-light leading-[1.3] md:text-[2.25rem]">
+        Politique de confidentialité
+      </h1>
+    </div>
+
+    {/* ── Article ──────────────────────────────────────────────────────── */}
+    <article class="privacy-article flex flex-col gap-12 max-w-[72ch] pb-8">
+      {/* Intro */}
+      <p class="body leading-relaxed">
+        La présente politique de confidentialité décrit la manière dont{" "}
+        <strong>{siteName}</strong>{" "}
+        (<a href={siteUrl}>{siteUrl}</a>) collecte, utilise et protège les données personnelles des
+        visiteurs de ce site, conformément au Règlement Général sur la Protection des Données (RGPD
+        — UE 2016/679) et à la loi Informatique et Libertés.
+      </p>
+
+      {/* 1 — Responsable du traitement */}
+      <section aria-labelledby="privacy-controller">
+        <h2 id="privacy-controller" class="heading-4 mb-4">Responsable du traitement</h2>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>Nom</dt>
+            <dd>{site.author}</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Adresse</dt>
+            <dd>
+              {contact.address.street},{" "}
+              {contact.address.postalCode}
+              {contact.address.city},{" "}
+              {contact.address.regionLong},{" "}
+              {contact.address.country}
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>E-mail</dt>
+            <dd>
+              <a href={`mailto:${contact.email}`}>{contact.email}</a>
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Téléphone</dt>
+            <dd>
+              <a href={contact.phone_link}>{contact.phone}</a>
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 2 — Données collectées */}
+      <section aria-labelledby="privacy-data">
+        <h2 id="privacy-data" class="heading-4 mb-4">Données collectées</h2>
+        <p class="body leading-relaxed mb-4">
+          Ce site collecte des données personnelles uniquement via le formulaire de contact. Aucune
+          donnée n'est collectée automatiquement à des fins de profilage ou de suivi publicitaire.
+        </p>
+
+        <h3 class="text-base font-semibold mb-3 mt-6">Formulaire de contact</h3>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>Données collectées</dt>
+            <dd>Nom complet, adresse e-mail, message (facultatif), consentement au traitement</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Caractère</dt>
+            <dd>Obligatoire pour les champs nom et e-mail ; le message est facultatif</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Collecte conditionnée</dt>
+            <dd>
+              Le formulaire ne peut être soumis qu'après avoir coché la case de consentement
+              explicite au traitement des données
+            </dd>
+          </div>
+        </dl>
+
+        <h3 class="text-base font-semibold mb-3 mt-6">Données techniques</h3>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>Journaux serveur</dt>
+            <dd>
+              L'hébergeur (Cloudflare) peut enregistrer des données techniques standard (adresse IP,
+              navigateur, horodatage) à des fins de sécurité et de diagnostic réseau
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Cookies</dt>
+            <dd>Ce site ne dépose pas de cookies de suivi ni de cookies publicitaires.</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Mesure d'audience</dt>
+            <dd>Aucun outil d'analyse d'audience n'est actuellement actif sur ce site.</dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 3 — Finalités */}
+      <section aria-labelledby="privacy-purposes">
+        <h2 id="privacy-purposes" class="heading-4 mb-4">Finalités du traitement</h2>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>Répondre à vos demandes</dt>
+            <dd>
+              Les données du formulaire de contact sont utilisées exclusivement pour traiter et
+              répondre à votre message
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Prévention du spam</dt>
+            <dd>
+              Un mécanisme de protection anti-robots (Botpoison) analyse les soumissions afin de
+              détecter les envois automatisés malveillants
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Sécurité du service</dt>
+            <dd>
+              L'hébergeur traite des données techniques pour assurer la disponibilité, l'intégrité
+              et la sécurité du site
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 4 — Base légale */}
+      <section aria-labelledby="privacy-legal-basis">
+        <h2 id="privacy-legal-basis" class="heading-4 mb-4">Base légale</h2>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>Formulaire de contact</dt>
+            <dd>
+              Consentement explicite de la personne concernée (art. 6.1.a RGPD), matérialisé par la
+              case de consentement cochée avant soumission
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Sécurité réseau</dt>
+            <dd>
+              Intérêt légitime du responsable du traitement à assurer la disponibilité et la
+              sécurité du service (art. 6.1.f RGPD)
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 5 — Durées de conservation */}
+      <section aria-labelledby="privacy-retention">
+        <h2 id="privacy-retention" class="heading-4 mb-4">Durées de conservation</h2>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>Messages de contact</dt>
+            <dd>
+              Conservés le temps nécessaire au traitement de la demande, puis supprimés (en
+              pratique, 12 mois maximum sauf nécessité d'archivage légal)
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Journaux serveur</dt>
+            <dd>
+              Conservés par Cloudflare selon sa propre politique de rétention (généralement quelques
+              jours à quelques semaines)
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 6 — Destinataires */}
+      <section aria-labelledby="privacy-recipients">
+        <h2 id="privacy-recipients" class="heading-4 mb-4">Destinataires des données</h2>
+        <p class="body leading-relaxed mb-4">
+          Les données personnelles collectées via le formulaire de contact sont transmises aux
+          sous-traitants suivants, dans le strict cadre des finalités décrites ci-dessus. Aucune
+          donnée n'est vendue ni cédée à des tiers à des fins commerciales.
+        </p>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>
+              <a href="https://formspark.io" rel="noopener noreferrer" target="_blank">
+                Formspark
+              </a>
+            </dt>
+            <dd>
+              Service de traitement de formulaires en ligne. Reçoit les soumissions du formulaire de
+              contact (nom, e-mail, message, consentement) pour les acheminer vers le responsable du
+              traitement. Politique de confidentialité :{" "}
+              <a
+                href="https://formspark.io/legal/privacy-policy/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                formspark.io/legal/privacy-policy
+              </a>
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>
+              <a href="https://botpoison.com" rel="noopener noreferrer" target="_blank">
+                Botpoison
+              </a>
+            </dt>
+            <dd>
+              Service de protection anti-robots. Analyse les métadonnées de soumission pour détecter
+              les envois automatisés ; ne stocke pas les données du formulaire. Politique de
+              confidentialité :{" "}
+              <a
+                href="https://botpoison.com/legal/privacy-policy/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                botpoison.com/legal/privacy-policy
+              </a>
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>
+              <a href="https://www.sanity.io" rel="noopener noreferrer" target="_blank">
+                Sanity.io
+              </a>
+            </dt>
+            <dd>
+              CMS headless utilisé pour gérer le contenu du site. Ne traite pas les données soumises
+              par les visiteurs. Politique de confidentialité :{" "}
+              <a
+                href="https://www.sanity.io/legal/privacy"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                sanity.io/legal/privacy
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 7 — Hébergement */}
+      <section aria-labelledby="privacy-hosting">
+        <h2 id="privacy-hosting" class="heading-4 mb-4">Hébergement</h2>
+        <p class="body leading-relaxed">
+          Ce site est hébergé par{" "}
+          <a href={host.url} rel="noopener noreferrer" target="_blank">{host.name}</a>
+          {" "}({host.address}). Cloudflare peut traiter des données techniques (adresses IP,
+          en-têtes HTTP) dans le cadre de la fourniture de son service de réseau et de sécurité.
+          Pour en savoir plus :{" "}
+          <a href={host.privacyPolicyUrl} rel="noopener noreferrer" target="_blank">
+            Politique de confidentialité Cloudflare
+          </a>.
+        </p>
+      </section>
+
+      {/* 8 — Vos droits RGPD */}
+      <section aria-labelledby="privacy-rights">
+        <h2 id="privacy-rights" class="heading-4 mb-4">Vos droits (RGPD)</h2>
+        <p class="body leading-relaxed mb-4">
+          Conformément au RGPD et à la loi Informatique et Libertés, vous disposez des droits
+          suivants sur vos données personnelles :
+        </p>
+        <dl class="privacy-dl">
+          <div class="privacy-dl__row">
+            <dt>Droit d'accès</dt>
+            <dd>Obtenir la confirmation que vos données sont traitées et en recevoir une copie</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Droit de rectification</dt>
+            <dd>Faire corriger des données inexactes ou incomplètes</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Droit à l'effacement</dt>
+            <dd>
+              Demander la suppression de vos données, sous réserve des obligations légales de
+              conservation
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Droit à la limitation</dt>
+            <dd>Demander la suspension temporaire du traitement de vos données</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Droit à la portabilité</dt>
+            <dd>Recevoir vos données dans un format structuré et couramment utilisé</dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Droit d'opposition</dt>
+            <dd>
+              Vous opposer au traitement fondé sur l'intérêt légitime, pour des raisons tenant à
+              votre situation particulière
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Retrait du consentement</dt>
+            <dd>
+              Retirer votre consentement à tout moment, sans que cela remette en cause la licéité du
+              traitement effectué avant ce retrait
+            </dd>
+          </div>
+          <div class="privacy-dl__row">
+            <dt>Réclamation</dt>
+            <dd>
+              Introduire une réclamation auprès de la{" "}
+              <a href="https://www.cnil.fr" rel="noopener noreferrer" target="_blank"> CNIL </a>{
+                " "
+              }
+              (Commission Nationale de l'Informatique et des Libertés)
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {/* 9 — Contact */}
+      <section aria-labelledby="privacy-contact">
+        <h2 id="privacy-contact" class="heading-4 mb-4">Exercer vos droits — Contact</h2>
+        <p class="body leading-relaxed">
+          Pour exercer vos droits ou pour toute question relative au traitement de vos données
+          personnelles, contactez le responsable du traitement :
+        </p>
+        <ul class="flex flex-col gap-1 mt-4 not-italic">
+          <li>
+            <span class="font-semibold">E-mail : </span>
+            <a href={`mailto:${contact.email}`}>{contact.email}</a>
+          </li>
+          <li>
+            <span class="font-semibold">Téléphone : </span>
+            <a href={contact.phone_link}>{contact.phone}</a>
+          </li>
+        </ul>
+        <p class="body leading-relaxed mt-4 text-mutedForeground text-sm">
+          Nous nous engageons à répondre à toute demande dans un délai d'un mois à compter de sa
+          réception (délai pouvant être prolongé de deux mois supplémentaires en cas de demandes
+          complexes ou nombreuses).
+        </p>
+      </section>
+
+      {/* 10 — Dernière mise à jour */}
+      <section aria-labelledby="privacy-updated">
+        <h2 id="privacy-updated" class="heading-4 mb-4">Dernière mise à jour</h2>
+        <p class="body leading-relaxed">
+          Cette politique de confidentialité a été mise à jour le{" "}
+          <time datetime={dates.lastUpdatedIso}>{dates.lastUpdated}</time>. Elle est susceptible
+          d'être modifiée à tout moment ; la version en vigueur est toujours accessible à l'adresse{
+            " "
+          }
+          <a href={`${siteUrl}/politique-confidentialite`}>
+            {siteUrl}/politique-confidentialite
+          </a>.
+        </p>
+      </section>
+
+      {/* ── CTAs ─────────────────────────────────────────────────────────── */}
+      <div class="flex flex-wrap gap-4 pt-4">
+        <Button variant="primary" size="sm" href="/">
+          <Icon name="tabler/chevron-left" class="size-4" aria-hidden="true" />
+          Retour à l'accueil
+        </Button>
+        <Button variant="outline" size="sm" href="/contact">
+          <Icon name="tabler/mail" class="size-4" aria-hidden="true" />
+          Nous contacter
+        </Button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  /* Definition list — single column on mobile, 2-col label/value on lg+ */
+  .privacy-dl {
+    @apply flex flex-col gap-3;
+  }
+
+  .privacy-dl__row {
+    @apply grid gap-x-6 gap-y-0.5 grid-cols-1 lg:grid-cols-[12rem_1fr];
+  }
+
+  .privacy-dl dt {
+    @apply text-primary;
+  }
+
+  .privacy-dl dd {
+    @apply text-primary/80;
+  }
+
+  /* Inline links — exclude Button component (<a class="button …">) */
+  .privacy-article a:not(.button) {
+    @apply text-link underline underline-offset-2 hover:text-primary transition-colors;
+  }
+</style>

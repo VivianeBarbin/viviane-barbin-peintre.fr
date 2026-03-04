@@ -1,3 +1,24 @@
+---
+import { getSiteSettings } from "@config/site";
+
+const siteSettings = await getSiteSettings();
+const {
+  title,
+  slogan,
+  subtitle,
+  description,
+  author,
+  url,
+  base,
+  startYear,
+  faviconSvg,
+  faviconPng96,
+  faviconIco,
+  webManifest,
+  appleTouchIcon,
+} = siteSettings;
+---
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width" />
 <link rel="dns-prefetch" href="https://fonts.bunny.net" />
@@ -6,6 +27,16 @@
   rel="stylesheet"
   href="https://fonts.bunny.net/css?family=yeseva-one:400|nunito-sans:400,600,700|jetbrains-mono:400,700|merriweather:400,700&display=swap"
 />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+{/* Favicon - Modern browsers */}
+{faviconSvg && <link rel="icon" type="image/svg+xml" href={`${base}${faviconSvg}`} />}
+{/* Favicon - PNG fallback */}
+{faviconPng96 && <link rel="icon" type="image/png" sizes="96x96" href={`${base}${faviconPng96}`} />}
+{/* Favicon - Legacy */}
+{faviconIco && <link rel="icon" type="image/x-icon" href={`${base}${faviconIco}`} />}
+{/* Apple Touch Icon */}
+{appleTouchIcon && <link rel="apple-touch-icon" href={`${base}${appleTouchIcon}`} />}
+{/* Web App Manifest */}
+{webManifest && <link rel="manifest" href={`${base}${webManifest}`} />}
+
 <meta name="generator" content={Astro.generator} />
 <title>Viviane Barbin Peintre</title>
