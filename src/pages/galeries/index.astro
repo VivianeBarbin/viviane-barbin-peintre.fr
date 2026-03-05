@@ -1,4 +1,5 @@
 ---
+import Galleries from "@/components/galleries/Galleries.astro";
 /**
  * /galeries – Gallery index page.
  *
@@ -6,13 +7,12 @@
  * and passes them to the <Galleries> section component.
  */
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import Galleries from "@/components/galleries/Galleries.astro";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { GALLERIES_LIST_QUERY } from "@/lib/sanityQueries";
 import type { GalleryListItem } from "@/types/galleries";
 
 // ── Data fetching (build-time) ───────────────────────────────────────
-const galleries = (await fetchSanity<GalleryListItem[]>(GALLERIES_LIST_QUERY)) ?? [];
+const _galleries = (await fetchSanity<GalleryListItem[]>(GALLERIES_LIST_QUERY)) ?? [];
 ---
 
 <BaseLayout>

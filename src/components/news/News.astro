@@ -1,15 +1,27 @@
 ---
-import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
-import { resolveImageWithFallback } from "@/utils/imageUtils";
-import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
-import { getColorByCycle } from "@/utils/colorUtils";
 import { getEventTypeLabel } from "@config/eventTypes";
-
+import { Icon } from "astro-icon/components";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { NEWS_CONTENT_QUERY } from "@/lib/sanityQueries";
+import { getColorByCycle } from "@/utils/colorUtils";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
-const newsData = await fetchSanity<Record<string, any>>(NEWS_CONTENT_QUERY);
+interface NewsItem {
+  eventDate: string;
+  eventTitle?: string;
+  eventType?: string;
+  eventImage?: { asset?: unknown; alt?: string };
+  [key: string]: unknown;
+}
+
+interface NewsData {
+  sectionTitle?: string;
+  news?: NewsItem[];
+}
+
+const newsData = await fetchSanity<NewsData>(NEWS_CONTENT_QUERY);
 
 const hasData = newsData !== null;
 const sectionTitle = newsData?.sectionTitle ?? "Actualités";
@@ -17,7 +29,7 @@ const newsItems = newsData?.news ?? [];
 
 // Sort by date (most recent first)
 const sortedNews = newsItems.sort(
-  (a: any, b: any) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
+  (a: NewsItem, b: NewsItem) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
 );
 
 // --- Image handling for news items ---
@@ -28,7 +40,7 @@ const newsImageWideWidth = 920;
 const newsImageWideHeight = 460;
 
 // Process each news item to generate optimized Sanity image URLs
-const processedNews = sortedNews.map((item: any, index: number) => {
+const processedNews = sortedNews.map((item: NewsItem, index: number) => {
   const sanityImageSource = item.eventImage ?? null;
   const sanityImageAlt = item.eventImage?.alt ?? item.eventTitle ?? "Image événement";
 

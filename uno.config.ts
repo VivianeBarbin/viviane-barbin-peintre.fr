@@ -53,7 +53,7 @@ export default defineConfig({
     "heading-4":
       "text-[clamp(1rem,1.331rem+0.7235vw,1.331rem)] font-sans leading-[1.24] text-foreground max-w-full",
     // prettier-ignore
-    "body": "text-[clamp(1.0625rem,0.98rem+0.35vw,1.331rem)] leading-[1.6] text-foreground",
+    body: "text-[clamp(1.0625rem,0.98rem+0.35vw,1.331rem)] leading-[1.6] text-foreground",
     "heading-home":
       "text-[clamp(1.5rem,3.5vw+0.5rem,3rem)] lg:text-[clamp(1.375rem,0.875rem+1.3vw,1.675rem)] font-display leading-[1.4] text-foreground",
   },

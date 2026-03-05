@@ -8,14 +8,14 @@
  * The entire card links to `/galeries/{slug}`.
  */
 import { Image } from "astro:assets";
-import { resolveImageWithFallback } from "@/utils/imageUtils";
-import { buildSanityImageUrl, buildSanityDprSrcSet } from "@/utils/sanityImage";
 import {
   formatGalleryDate,
   formatGalleryYear,
   formatMediumLabels,
   type GalleryListItem,
 } from "@/types/galleries";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
 export interface Props {
   gallery: GalleryListItem;

@@ -248,7 +248,7 @@ export async function renderPdfToImages(
       const filePath = join(fullOutputDir, filename);
 
       // Render the page
-      const result = await page.evaluate(
+      const _result = await page.evaluate(
         async (pNum: number, s: number) => {
           // @ts-expect-error - renderPage is defined in page context
           return await window.renderPage(pNum, s);

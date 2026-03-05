@@ -1,5 +1,7 @@
 {
-  "formatter": "prettier",
+  "formatter": {
+    "language_server": { "name": "biome" }
+  },
   "format_on_save": "on",
   "tab_size": 2,
   "soft_wrap": "editor_width",
@@ -14,47 +16,65 @@
   },
   "languages": {
     "Astro": {
-      "formatter": "prettier",
+      "formatter": {
+        "language_server": { "name": "biome" }
+      },
       "format_on_save": "on",
       "tab_size": 2
     },
     "TypeScript": {
-      "formatter": "prettier",
+      "formatter": {
+        "language_server": { "name": "biome" }
+      },
       "format_on_save": "on",
       "tab_size": 2,
       "code_actions_on_format": {
-        "source.organizeImports": true,
-        "source.fixAll": false
+        "source.organizeImports.biome": true,
+        "source.fixAll.biome": true
       }
     },
     "TSX": {
-      "formatter": "prettier",
+      "formatter": {
+        "language_server": { "name": "biome" }
+      },
       "format_on_save": "on",
-      "tab_size": 2
+      "tab_size": 2,
+      "code_actions_on_format": {
+        "source.organizeImports.biome": true,
+        "source.fixAll.biome": true
+      }
     },
     "JavaScript": {
-      "formatter": "prettier",
+      "formatter": {
+        "language_server": { "name": "biome" }
+      },
       "format_on_save": "on",
-      "tab_size": 2
+      "tab_size": 2,
+      "code_actions_on_format": {
+        "source.organizeImports.biome": true,
+        "source.fixAll.biome": true
+      }
     },
     "JSON": {
-      "formatter": "prettier",
+      "formatter": {
+        "language_server": { "name": "biome" }
+      },
       "format_on_save": "on",
       "tab_size": 2
     },
     "CSS": {
-      "formatter": "prettier",
+      "formatter": {
+        "language_server": { "name": "biome" }
+      },
       "format_on_save": "on",
       "tab_size": 2
     }
   },
   "lsp": {
-    "astro": {
+    "astro-language-server": {
       "settings": {
-        "astro": {
-          "language-server": {
-            "runtime": "node"
-          }
+        "typescript": {
+          "tsdk": "./node_modules/typescript/lib"
         }
       }
     },
@@ -68,13 +88,5 @@
         }
       }
     }
-  },
-  "prettier": {
-    "printWidth": 100,
-    "tabWidth": 2,
-    "useTabs": false,
-    "semi": true,
-    "singleQuote": false,
-    "trailingComma": "es5"
   }
 }

@@ -1,4 +1,7 @@
 ---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { PortableText } from "astro-portabletext";
 /**
  * /galeries/:slug – Gallery detail page.
  *
@@ -8,21 +11,18 @@
  * If a slug has no matching document (edge case), renders a not-found message.
  */
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { Icon } from "astro-icon/components";
-import { Image } from "astro:assets";
-import { PortableText } from "astro-portabletext";
 import { fetchSanity } from "@/lib/sanityFetch";
-import { GALLERY_SLUGS_QUERY, GALLERY_DETAIL_QUERY } from "@/lib/sanityQueries";
-import { buildSanityImageUrl, buildSanityDprSrcSet } from "@/utils/sanityImage";
-import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { GALLERY_DETAIL_QUERY, GALLERY_SLUGS_QUERY } from "@/lib/sanityQueries";
 import {
   formatGalleryDate,
   formatGalleryYear,
   formatMediumLabels,
-  type GallerySlug,
   type GalleryDetail,
   type GalleryImageItem,
+  type GallerySlug,
 } from "@/types/galleries";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 import "litelight-js/css";
 
 // ── Data fetching (on-demand SSR) ────────────────────────────────────────
@@ -33,21 +33,21 @@ const gallery = await fetchSanity<GalleryDetail>(GALLERY_DETAIL_QUERY, { slug })
 
 // Guard: if document not found, we still render but show a not-found state.
 // (In static mode, this path should only be hit if a document was deleted after build.)
-const hasData = gallery !== null;
+const _hasData = gallery !== null;
 
 // ── Derived values ───────────────────────────────────────────────────
 
 const title = gallery?.title ?? "Galerie introuvable";
 const date = gallery?.date ?? "";
 const medium = gallery?.medium ?? [];
-const body = gallery?.body ?? [];
+const _body = gallery?.body ?? [];
 
-const formattedDate = date ? formatGalleryDate(date) : "";
-const mediumItems = formatMediumLabels(medium);
+const _formattedDate = date ? formatGalleryDate(date) : "";
+const _mediumItems = formatMediumLabels(medium);
 
 // Sort images by explicit order (if set), otherwise keep array order from Sanity
 const rawImages: GalleryImageItem[] = gallery?.images ?? [];
-const sortedImages = [...rawImages].sort((a, b) => {
+const _sortedImages = [...rawImages].sort((a, b) => {
   if (a.order != null && b.order != null) return a.order - b.order;
   if (a.order != null) return -1;
   if (b.order != null) return 1;
@@ -62,7 +62,7 @@ const PLACEHOLDER_PATH = "@images/galleries/galleries-placeholder.jpg";
 const gridImageWidth = 600;
 const gridImageHeight = 600;
 
-function buildImageData(item: GalleryImageItem) {
+function _buildImageData(item: GalleryImageItem) {
   const source = item.image ?? null;
   const alt = item.alt || `${title} — image`;
   const caption = item.caption || undefined;

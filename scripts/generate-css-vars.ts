@@ -16,7 +16,7 @@
  */
 
 import { writeFileSync } from "fs";
-import { join, dirname } from "path";
+import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 import { themeConfig } from "../config/site.ts";
@@ -66,7 +66,7 @@ function generateVarBlock(colors: ColorMap, keys: string[], indent = "    "): st
 function assertConfigShape(
   cfg: unknown
 ): asserts cfg is { colors: { light: ColorMap; dark: ColorMap } } {
-  const c: any = (cfg as any)?.colors;
+  const c: unknown = (cfg as Record<string, unknown>)?.colors;
   if (!c || typeof c !== "object") throw new Error("themeConfig.colors is missing");
   if (!c.light || typeof c.light !== "object")
     throw new Error("themeConfig.colors.light is missing");

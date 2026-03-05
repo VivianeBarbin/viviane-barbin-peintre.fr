@@ -1,13 +1,14 @@
 ---
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
+import type { PortableTextProps } from "astro-portabletext/types";
 import Button from "@/components/button/Button.astro";
 import RichText from "@/components/portable-text/RichText.astro";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { WORKSHOP_CONTENT_QUERY } from "@/lib/sanityQueries";
-import { buildSanityImageUrl, buildSanityDprSrcSet } from "@/utils/sanityImage";
-import { resolveImageWithFallback } from "@/utils/imageUtils";
 import { getColorByCycle } from "@/utils/colorUtils";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -39,7 +40,7 @@ interface Cta {
 
 interface IntroItem {
   image?: SanityImage;
-  text?: any[];
+  text?: PortableTextProps["value"];
   cta?: Cta;
 }
 
@@ -84,7 +85,7 @@ const IMG = Object.freeze({
  * Resolve a Sanity image into { src, srcset, alt }.
  * Returns null when the asset reference is absent — no URL is built blindly.
  */
-function resolveSanityImage(image: SanityImage | undefined) {
+function _resolveSanityImage(image: SanityImage | undefined) {
   if (!image?.asset) return null;
 
   const src = buildSanityImageUrl({
@@ -117,19 +118,19 @@ const { title = "L'atelier" } = Astro.props;
 
 const workshopData = await fetchSanity<WorkshopData>(WORKSHOP_CONTENT_QUERY);
 
-const hasData = !!workshopData;
-const subtitle = workshopData?.subtitle ?? "Un lieu de partage et de création";
+const _hasData = !!workshopData;
+const _subtitle = workshopData?.subtitle ?? "Un lieu de partage et de création";
 
 // Guard against schema shape mismatch: the CMS may still hold the old single-object
 // shape while the query migrates to an array. Array.isArray ensures we never .map()
 // over a plain object or undefined.
-const introSection: IntroItem[] = Array.isArray(workshopData?.introSection)
+const _introSection: IntroItem[] = Array.isArray(workshopData?.introSection)
   ? workshopData.introSection
   : [];
 
 // Fallback image resolved once — shared by every item that has no Sanity asset.
 const WORKSHOP_FALLBACK_PATH = "@images/homepage/homepage-placeholder_01.jpg";
-const workshopFallback = resolveImageWithFallback(null, WORKSHOP_FALLBACK_PATH);
+const _workshopFallback = resolveImageWithFallback(null, WORKSHOP_FALLBACK_PATH);
 
 // ── Testimonials image config — portrait 390×603 ──────────────────────────────
 const TIMG = Object.freeze({
@@ -142,11 +143,11 @@ const TIMG = Object.freeze({
 });
 
 const testimonialsSection = workshopData?.testimonialsSection;
-const sectionTitle = testimonialsSection?.sectionTitle;
-const sectionIntro = testimonialsSection?.sectionIntro;
-const sectionCta = testimonialsSection?.cta;
+const _sectionTitle = testimonialsSection?.sectionTitle;
+const _sectionIntro = testimonialsSection?.sectionIntro;
+const _sectionCta = testimonialsSection?.cta;
 
-const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) => {
+const _testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) => {
   const initials = [t.firstName, t.lastName]
     .filter(Boolean)
     .map((n) => n!.charAt(0).toUpperCase())

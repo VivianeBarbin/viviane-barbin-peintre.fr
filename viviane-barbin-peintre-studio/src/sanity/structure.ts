@@ -1,4 +1,4 @@
-import type {StructureResolver} from 'sanity/structure'
+import type { StructureResolver } from "sanity/structure";
 
 /**
  * Custom Studio structure
@@ -11,40 +11,40 @@ import type {StructureResolver} from 'sanity/structure'
  */
 export const structure: StructureResolver = (S) =>
   S.list()
-    .title('Content')
+    .title("Content")
     .items([
       S.listItem()
-        .title('Contact')
-        .id('contactSettings')
+        .title("Contact")
+        .id("contactSettings")
         .child(
-          S.document().schemaType('contactSettings').documentId('contactSettings').title('Contact'),
+          S.document().schemaType("contactSettings").documentId("contactSettings").title("Contact")
         ),
 
       S.listItem()
-        .title('Site')
-        .id('siteSettings')
-        .child(S.document().schemaType('siteSettings').documentId('siteSettings').title('Site')),
+        .title("Site")
+        .id("siteSettings")
+        .child(S.document().schemaType("siteSettings").documentId("siteSettings").title("Site")),
 
       S.listItem()
-        .title('Galeries – Paramètres')
-        .id('gallerySettings')
+        .title("Galeries – Paramètres")
+        .id("gallerySettings")
         .child(
           S.document()
-            .schemaType('gallerySettings')
-            .documentId('gallerySettings')
-            .title('Galeries – Paramètres'),
+            .schemaType("gallerySettings")
+            .documentId("gallerySettings")
+            .title("Galeries – Paramètres")
         ),
 
       S.divider(),
 
       // Galeries — regular document list (not a singleton)
       S.listItem()
-        .title('Galeries')
-        .id('galleriesContent')
+        .title("Galeries")
+        .id("galleriesContent")
         .child(
-          S.documentTypeList('galleriesContent')
-            .title('Galeries')
-            .defaultOrdering([{field: 'date', direction: 'desc'}]),
+          S.documentTypeList("galleriesContent")
+            .title("Galeries")
+            .defaultOrdering([{ field: "date", direction: "desc" }])
         ),
 
       S.divider(),
@@ -52,8 +52,8 @@ export const structure: StructureResolver = (S) =>
       // Keep the rest of the document types accessible, excluding the singletons and galleries
       ...S.documentTypeListItems().filter(
         (listItem) =>
-          !['contactSettings', 'siteSettings', 'gallerySettings', 'galleriesContent'].includes(
-            listItem.getId() || '',
-          ),
+          !["contactSettings", "siteSettings", "gallerySettings", "galleriesContent"].includes(
+            listItem.getId() || ""
+          )
       ),
-    ])
+    ]);

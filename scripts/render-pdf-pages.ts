@@ -55,7 +55,7 @@ async function main() {
       console.error("❌ No pages were rendered! Check errors above.");
       process.exit(1);
     }
-  } catch (error) {
+  } catch (_error) {
     process.exit(1);
   }
 }

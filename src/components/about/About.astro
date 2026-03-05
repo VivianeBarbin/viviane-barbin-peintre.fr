@@ -1,26 +1,28 @@
 ---
-import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
-import { resolveImageWithFallback } from "@/utils/imageUtils";
-import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
-
+import { Icon } from "astro-icon/components";
+import type { PortableTextProps } from "astro-portabletext/types";
 import RichText from "@/components/portable-text/RichText.astro";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { ABOUT_CONTENT_QUERY } from "@/lib/sanityQueries";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
-const aboutData = await fetchSanity<Record<string, any>>(ABOUT_CONTENT_QUERY);
+const aboutData = await fetchSanity<Record<string, unknown>>(ABOUT_CONTENT_QUERY);
 
 // Handle case where no document exists in Sanity
 const hasData = aboutData !== null;
 const title = aboutData?.title ?? "Parcours";
 
-const topText = aboutData?.topText ?? [];
-const imageText = aboutData?.imageText ?? [];
-const bottomText = aboutData?.bottomText ?? [];
+const topText = (aboutData?.topText ?? []) as PortableTextProps["value"];
+const imageText = (aboutData?.imageText ?? []) as PortableTextProps["value"];
+const bottomText = (aboutData?.bottomText ?? []) as PortableTextProps["value"];
 
 // --- Image handling: Sanity optimized (remote pipeline) with local fallback ---
 const sanityImageSource = aboutData?.image ?? null;
-const sanityImageAlt = aboutData?.image?.alt ?? "Portrait de l'artiste Viviane Barbin";
+const sanityImageAlt =
+  ((aboutData?.image as Record<string, unknown> | null)?.alt as string) ??
+  "Portrait de l'artiste Viviane Barbin";
 
 // target display size (CSS pixels)
 const targetWidth = 365;
@@ -66,7 +68,7 @@ const shouldRenderFallbackImage = !shouldRenderSanityImage && portraitImage !== 
           {title}
         </h2>
 
-        {topText.length > 0 && (
+        {Array.isArray(topText) && topText.length > 0 && (
           <div class="pt-8 about-text about-text--top">
             <RichText value={topText} />
           </div>
@@ -103,7 +105,7 @@ const shouldRenderFallbackImage = !shouldRenderSanityImage && portraitImage !== 
             )}
           </div>
 
-          {imageText.length > 0 && (
+          {Array.isArray(imageText) && imageText.length > 0 && (
             <div class="about-text about-text--image">
               <RichText value={imageText} />
             </div>
@@ -118,7 +120,7 @@ const shouldRenderFallbackImage = !shouldRenderSanityImage && portraitImage !== 
           <div class="flex-1 border-t border-primaryForeground/60" />
         </div>
 
-        {bottomText.length > 0 && (
+        {Array.isArray(bottomText) && bottomText.length > 0 && (
           <div class="about-text about-text--bottom">
             <RichText value={bottomText} />
           </div>

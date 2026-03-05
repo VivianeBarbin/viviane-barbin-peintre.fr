@@ -14,10 +14,10 @@ import type { GalleryMedium } from "@config/galleryMediums";
 
 export {
   DEFAULT_MEDIUM_LABELS,
+  DEFAULT_MEDIUM_LABELS as MEDIUM_LABELS,
   formatMediumLabels,
   GALLERY_MEDIUMS,
   getMediumLabels,
-  DEFAULT_MEDIUM_LABELS as MEDIUM_LABELS,
 } from "@config/galleryMediums";
 export type { GalleryMedium };
 

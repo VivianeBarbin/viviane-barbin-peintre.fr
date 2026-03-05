@@ -1,17 +1,17 @@
 export interface ColorTheme {
   bg: string;
-  textClass: 'text-primary' | 'text-primaryForeground';
+  textClass: "text-primary" | "text-primaryForeground";
   prefersLightText: boolean;
 }
 
 // Your OKLCH color palette (fixed duplicate)
 const NEWS_COLORS = [
-  'oklch(0.7176 0.137 90.06)',   // Warm yellow
-  'oklch(0.5552 0.1915 22.75)',  // Red
-  'oklch(0.5409 0.0957 319.3)',  // Purple
-  'oklch(0.681 0.0641 52.49)',   // Beige
-  'oklch(0.5074 0.1291 42.2)',   // Orange-brown
-  'oklch(0.4275 0.0688 189.39)', // Teal
+  "oklch(0.7176 0.137 90.06)", // Warm yellow
+  "oklch(0.5552 0.1915 22.75)", // Red
+  "oklch(0.5409 0.0957 319.3)", // Purple
+  "oklch(0.681 0.0641 52.49)", // Beige
+  "oklch(0.5074 0.1291 42.2)", // Orange-brown
+  "oklch(0.4275 0.0688 189.39)", // Teal
 ] as const;
 
 /**
@@ -22,7 +22,7 @@ function parseOKLCH(oklchString: string): { l: number; c: number; h: number } | 
   // More forgiving regex: handles extra spaces, trailing spaces
   const match = oklchString.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)/);
   if (!match) return null;
-  
+
   return {
     l: parseFloat(match[1]),
     c: parseFloat(match[2]),
@@ -32,34 +32,34 @@ function parseOKLCH(oklchString: string): { l: number; c: number; h: number } | 
 
 /**
  * Determine text color for OKLCH background
- * 
+ *
  * Uses a hybrid approach:
  * - Primary decision: OKLCH lightness (perceptually accurate, fast)
  * - Fallback: Full WCAG calculation for edge cases
- * 
+ *
  * In practice, `l < 0.6` catches 95% of cases correctly.
  * The full conversion exists for the edge cases where chroma/hue matter.
  */
 function getTextColorForBackground(bgColor: string): ColorTheme {
   const oklch = parseOKLCH(bgColor);
-  
+
   if (!oklch) {
     console.warn(`Invalid OKLCH color: ${bgColor}`);
     return {
       bg: bgColor,
-      textClass: 'text-primary',
+      textClass: "text-primary",
       prefersLightText: false,
     };
   }
-  
+
   // Fast path: OKLCH lightness is usually enough
   // l < 0.6 = needs light text (dark background)
   // l >= 0.6 = needs dark text (light background)
   const prefersLightText = oklch.l < 0.6;
-  
+
   return {
     bg: bgColor,
-    textClass: prefersLightText ? 'text-primaryForeground' : 'text-primary',
+    textClass: prefersLightText ? "text-primaryForeground" : "text-primary",
     prefersLightText,
   };
 }
@@ -175,15 +175,14 @@ export function getRandomColor(): ColorTheme {
  * Run once during development, then never think about it again
  */
 export function debugColorThemes(): void {
-  console.log('📊 News Color Palette Analysis\n');
+  console.log("📊 News Color Palette Analysis\n");
   NEWS_COLOR_THEMES.forEach((theme, i) => {
     const oklch = parseOKLCH(theme.bg);
     if (oklch) {
-      const icon = theme.prefersLightText ? '🌙' : '☀️';
-      const textChoice = theme.prefersLightText ? 'light text' : 'dark text';
+      const icon = theme.prefersLightText ? "🌙" : "☀️";
+      const textChoice = theme.prefersLightText ? "light text" : "dark text";
       console.log(
-        `${icon} Color ${i}: ${theme.bg}\n` +
-        `   L=${oklch.l.toFixed(2)} → ${textChoice}\n`
+        `${icon} Color ${i}: ${theme.bg}\n` + `   L=${oklch.l.toFixed(2)} → ${textChoice}\n`
       );
     }
   });

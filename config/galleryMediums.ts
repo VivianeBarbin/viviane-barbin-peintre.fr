@@ -1,7 +1,7 @@
 // config/galleryMediums.ts
 
-import { devLog, fetchSanity } from "../src/lib/sanityFetch"
-import { GALLERY_SETTINGS_QUERY } from "../src/lib/sanityQueries"
+import { devLog, fetchSanity } from "../src/lib/sanityFetch";
+import { GALLERY_SETTINGS_QUERY } from "../src/lib/sanityQueries";
 
 /**
  * Single source of truth for gallery medium values.
@@ -13,22 +13,22 @@ import { GALLERY_SETTINGS_QUERY } from "../src/lib/sanityQueries"
  * Rule: to add/remove a medium, edit THIS file only.
  */
 export const GALLERY_MEDIUMS = [
-  { title: "Pastel",          value: "PASTEL"          },
-  { title: "Aquarelle",       value: "AQUARELLE"       },
+  { title: "Pastel", value: "PASTEL" },
+  { title: "Aquarelle", value: "AQUARELLE" },
   { title: "Huile sur toile", value: "HUILE_SUR_TOILE" },
-  { title: "Huile sur bois",  value: "HUILE_SUR_BOIS"  },
-  { title: "Acrylique",       value: "ACRYLIQUE"       },
-  { title: "Encre",           value: "ENCRE"           },
-  { title: "Fusain",          value: "FUSAIN"          },
-  { title: "Crayon",          value: "CRAYON"          },
+  { title: "Huile sur bois", value: "HUILE_SUR_BOIS" },
+  { title: "Acrylique", value: "ACRYLIQUE" },
+  { title: "Encre", value: "ENCRE" },
+  { title: "Fusain", value: "FUSAIN" },
+  { title: "Crayon", value: "CRAYON" },
   { title: "Technique mixte", value: "TECHNIQUE_MIXTE" },
-  { title: "Autre",           value: "AUTRE"           },
-] as const
+  { title: "Autre", value: "AUTRE" },
+] as const;
 
 // ── Derived types ─────────────────────────────────────────────────────
 
 /** Union of all valid medium values — derived automatically, never hand-written. */
-export type GalleryMedium = (typeof GALLERY_MEDIUMS)[number]["value"]
+export type GalleryMedium = (typeof GALLERY_MEDIUMS)[number]["value"];
 
 // ── Static fallback labels ────────────────────────────────────────────
 
@@ -44,16 +44,15 @@ export type GalleryMedium = (typeof GALLERY_MEDIUMS)[number]["value"]
  *   DEFAULT_MEDIUM_LABELS["PASTEL"]          // → "Pastel"
  *   DEFAULT_MEDIUM_LABELS["TECHNIQUE_MIXTE"] // → "Technique mixte"
  */
-export const DEFAULT_MEDIUM_LABELS: Record<GalleryMedium, string> =
-  Object.fromEntries(
-    GALLERY_MEDIUMS.map((m) => [m.value, m.title])
-  ) as Record<GalleryMedium, string>
+export const DEFAULT_MEDIUM_LABELS: Record<GalleryMedium, string> = Object.fromEntries(
+  GALLERY_MEDIUMS.map((m) => [m.value, m.title])
+) as Record<GalleryMedium, string>;
 
 // ── Dynamic Sanity-backed labels ──────────────────────────────────────
 
-type MediumLabelEntry = { value: string; label: string }
+type MediumLabelEntry = { value: string; label: string };
 
-let cachedMediumLabels: Record<GalleryMedium, string> | null = null
+let cachedMediumLabels: Record<GalleryMedium, string> | null = null;
 
 /**
  * Async getter (SSR / build time):
@@ -71,35 +70,33 @@ let cachedMediumLabels: Record<GalleryMedium, string> | null = null
  *   labels["PASTEL"] // "Pastel" (or custom label if set in Studio)
  */
 export async function getMediumLabels(): Promise<Record<GalleryMedium, string>> {
-  if (cachedMediumLabels) return cachedMediumLabels
+  if (cachedMediumLabels) return cachedMediumLabels;
 
   try {
-    const data = await fetchSanity<{ mediumLabels: MediumLabelEntry[] }>(
-      GALLERY_SETTINGS_QUERY
-    )
+    const data = await fetchSanity<{ mediumLabels: MediumLabelEntry[] }>(GALLERY_SETTINGS_QUERY);
 
     if (!data?.mediumLabels?.length) {
-      devLog("[galleryMediums] Using fallback labels (no gallerySettings document found).")
-      cachedMediumLabels = DEFAULT_MEDIUM_LABELS
-      return cachedMediumLabels
+      devLog("[galleryMediums] Using fallback labels (no gallerySettings document found).");
+      cachedMediumLabels = DEFAULT_MEDIUM_LABELS;
+      return cachedMediumLabels;
     }
 
     const custom = Object.fromEntries(
       data.mediumLabels
         .filter((m) => m.value?.trim() && m.label?.trim())
         .map((m) => [m.value, m.label])
-    )
+    );
 
     cachedMediumLabels = {
       ...DEFAULT_MEDIUM_LABELS,
       ...custom,
-    } as Record<GalleryMedium, string>
+    } as Record<GalleryMedium, string>;
 
-    return cachedMediumLabels
+    return cachedMediumLabels;
   } catch (err) {
-    devLog("[galleryMediums] Using fallback labels (Sanity fetch failed).", err)
-    cachedMediumLabels = DEFAULT_MEDIUM_LABELS
-    return cachedMediumLabels
+    devLog("[galleryMediums] Using fallback labels (Sanity fetch failed).", err);
+    cachedMediumLabels = DEFAULT_MEDIUM_LABELS;
+    return cachedMediumLabels;
   }
 }
 
@@ -124,9 +121,7 @@ export function formatMediumLabels(
   mediums: GalleryMedium[] | string[] | undefined | null,
   labelMap: Record<string, string> = DEFAULT_MEDIUM_LABELS
 ): { label: string }[] {
-  if (!mediums?.length) return []
+  if (!mediums?.length) return [];
 
-  return mediums
-    .map((m) => ({ label: labelMap[m] ?? m }))
-    .filter((item) => Boolean(item.label))
+  return mediums.map((m) => ({ label: labelMap[m] ?? m })).filter((item) => Boolean(item.label));
 }

@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 /**
  * Book.astro
  *
@@ -8,9 +9,9 @@
  * PDF pages are pre-rendered at build time by scripts/render-pdf-pages.ts
  * This component reads the pre-generated images from public/pdf-pages/
  */
-import { Icon } from "astro-icon/components";
-import Button from "@/components/button/Button.astro";
+import type { PortableTextProps } from "astro-portabletext/types";
 import PdfSlider from "@/components/book/PdfSlider.astro";
+import Button from "@/components/button/Button.astro";
 import RichText from "@/components/portable-text/RichText.astro";
 
 import { fetchSanity } from "@/lib/sanityFetch";
@@ -34,7 +35,7 @@ interface Props {
 interface BookData {
   subtitle?: string;
   pdfUrl?: string;
-  content?: any[];
+  content?: PortableTextProps["value"];
   resellerLink?: {
     label: string;
     url: string;
@@ -50,6 +51,7 @@ const bookData = await fetchSanity<BookData>(BOOK_CONTENT_QUERY);
 const hasData = bookData !== null && bookData !== undefined;
 const subtitle = bookData?.subtitle ?? "Les mots qui racontent mes toiles";
 const content = bookData?.content ?? [];
+const contentArray = (Array.isArray(content) ? content : [content]) as unknown[];
 const resellerLink = bookData?.resellerLink ?? {
   label: "Acheter le livre",
   url: "#",
@@ -95,7 +97,7 @@ const pdfHeight = PDF_HEIGHT;
             )}
           </div>
 
-          {content && content.length > 0 && (
+          {contentArray.length > 0 && (
             <div class="mb-12">
               <RichText value={content} />
             </div>

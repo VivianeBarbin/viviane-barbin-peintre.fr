@@ -6,6 +6,9 @@ dist/
 # generated types
 .astro/
 
+# sanity generated runtime
+.sanity/
+
 # dependencies
 node_modules/
 

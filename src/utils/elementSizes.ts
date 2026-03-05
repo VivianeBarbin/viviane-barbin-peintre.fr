@@ -60,7 +60,9 @@ export class ElementSizer {
    */
   watch(el: Element | null, callback: SizeCallback): () => void {
     if (!el || !this.ro) {
-      return () => {}; // No-op cleanup for SSR or null element
+      return () => {
+        /* no-op */
+      }; // No-op cleanup for SSR or null element
     }
 
     this.elements.set(el, {
@@ -146,13 +148,17 @@ export function watchElementHeight(
   sizer?: ElementSizer
 ): () => void {
   if (typeof document === "undefined") {
-    return () => {};
+    return () => {
+      /* no-op */
+    };
   }
 
   const element = document.querySelector(selector);
   if (!element) {
     console.warn(`[watchElementHeight] Element not found: "${selector}"`);
-    return () => {};
+    return () => {
+      /* no-op */
+    };
   }
 
   const sizerInstance = sizer ?? new ElementSizer();
@@ -192,13 +198,17 @@ export function watchElementWidth(
   sizer?: ElementSizer
 ): () => void {
   if (typeof document === "undefined") {
-    return () => {};
+    return () => {
+      /* no-op */
+    };
   }
 
   const element = document.querySelector(selector);
   if (!element) {
     console.warn(`[watchElementWidth] Element not found: "${selector}"`);
-    return () => {};
+    return () => {
+      /* no-op */
+    };
   }
 
   const sizerInstance = sizer ?? new ElementSizer();

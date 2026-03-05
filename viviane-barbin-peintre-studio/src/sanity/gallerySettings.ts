@@ -1,5 +1,5 @@
-import { defineField, defineType } from "sanity"
-import { GALLERY_MEDIUMS } from "../../../config/galleryMediums"
+import { defineField, defineType } from "sanity";
+import { GALLERY_MEDIUMS } from "../../../config/galleryMediums";
 
 /**
  * gallerySettings — Singleton document for gallery-wide configuration.
@@ -42,21 +42,19 @@ export const gallerySettingsType = defineType({
                 "Clé interne stockée dans les galeries. " +
                 "Ne pas modifier — doit correspondre exactement à la liste des médiums.",
               validation: (Rule) =>
-                Rule.required()
-                  .custom((val) => {
-                    if (!val) return "Requis"
-                    const valid = GALLERY_MEDIUMS.map((m) => m.value as string)
-                    return valid.includes(val)
-                      ? true
-                      : `Valeur inconnue. Valeurs autorisées : ${valid.join(", ")}`
-                  }),
+                Rule.required().custom((val) => {
+                  if (!val) return "Requis";
+                  const valid = GALLERY_MEDIUMS.map((m) => m.value as string);
+                  return valid.includes(val)
+                    ? true
+                    : `Valeur inconnue. Valeurs autorisées : ${valid.join(", ")}`;
+                }),
             }),
             defineField({
               name: "label",
               title: "Label affiché",
               type: "string",
-              description:
-                "Libellé visible sur le site (ex : « Pastel à l'huile », « Huile »).",
+              description: "Libellé visible sur le site (ex : « Pastel à l'huile », « Huile »).",
               validation: (Rule) => Rule.required().max(80),
             }),
           ],
@@ -69,7 +67,7 @@ export const gallerySettingsType = defineType({
               return {
                 title: title ?? "(label vide)",
                 subtitle: subtitle ?? "",
-              }
+              };
             },
           },
         },
@@ -82,14 +80,14 @@ export const gallerySettingsType = defineType({
       labels: "mediumLabels",
     },
     prepare({ labels }) {
-      const count = Array.isArray(labels) ? labels.length : 0
+      const count = Array.isArray(labels) ? labels.length : 0;
       return {
         title: "Galeries – Paramètres",
         subtitle:
           count > 0
             ? `${count} label${count > 1 ? "s" : ""} personnalisé${count > 1 ? "s" : ""}`
             : "Aucun label personnalisé — labels par défaut actifs",
-      }
+      };
     },
   },
-})
+});

@@ -4,9 +4,10 @@
  * Wrapper component for PortableText with proper styling
  */
 import { PortableText } from "astro-portabletext";
+import type { PortableTextProps } from "astro-portabletext/types";
 
 interface Props {
-  value: any;
+  value: PortableTextProps["value"];
   class?: string;
 }
 

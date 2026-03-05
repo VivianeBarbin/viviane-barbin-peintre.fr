@@ -9,12 +9,12 @@
 
   "routes": [
     { "pattern": "viviane-barbin-peintre.fr", "custom_domain": true },
-    { "pattern": "www.viviane-barbin-peintre.fr", "custom_domain": true },
+    { "pattern": "www.viviane-barbin-peintre.fr", "custom_domain": true }
   ],
 
   "assets": {
     "binding": "ASSETS",
-    "directory": "./dist",
+    "directory": "./dist"
   },
 
   "observability": { "enabled": true },
@@ -33,7 +33,7 @@
     "preview": {
       "name": "viviane-barbin-peintre-preview",
       "workers_dev": true,
-      "preview_urls": true,
-    },
-  },
+      "preview_urls": true
+    }
+  }
 }

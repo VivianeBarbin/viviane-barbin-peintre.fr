@@ -1,16 +1,16 @@
 ---
 import { Image } from "astro:assets";
-import Button from "@/components/button/Button.astro";
-import { resolveImageWithFallback } from "@/utils/imageUtils";
-import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 import { getContactData } from "@config/contact";
-import { getSiteSettings, themeConfig } from "@config/site";
 import { navigationLinks } from "@config/navigation";
+import { getSiteSettings, themeConfig } from "@config/site";
+import Button from "@/components/button/Button.astro";
 import { fetchSanity } from "@/lib/sanityFetch";
 import { HOME_CONTENT_QUERY } from "@/lib/sanityQueries";
+import { resolveImageWithFallback } from "@/utils/imageUtils";
+import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
 // Fetch home content from Sanity (via shared fetch helper + named query)
-const homeData = await fetchSanity<Record<string, any>>(HOME_CONTENT_QUERY);
+const homeData = await fetchSanity<Record<string, unknown>>(HOME_CONTENT_QUERY);
 
 // Resolve settings singletons (Sanity + fallback)
 const contactData = await getContactData();
@@ -28,7 +28,7 @@ const FALLBACK_IMAGE_PATH = "@images/homepage/homepage-placeholder_01.jpg";
 // The "atelier" card must render the image stored in `paintingImage`.
 const sanityAtelierSource = homeData?.paintingImage ?? null;
 const sanityAtelierAlt =
-  homeData?.paintingImage?.alt ??
+  ((homeData?.paintingImage as Record<string, unknown> | null)?.alt as string) ??
   "L'atelier de Viviane Barbin, un espace de création baigné de lumière naturelle";
 
 // Target display size for atelier image (CSS pixels)
@@ -65,7 +65,7 @@ const hasAtelierImage = shouldRenderSanityAtelierImage || shouldRenderAtelierFal
 // NOTE: mapping fix — the "painting" card must render the image stored in `atelierImage`.
 const sanityPaintingSource = homeData?.atelierImage ?? null;
 const sanityPaintingAlt =
-  homeData?.atelierImage?.alt ??
+  ((homeData?.atelierImage as Record<string, unknown> | null)?.alt as string) ??
   "Peinture de paysage forestier avec rivière, œuvre de Viviane Barbin";
 
 // Target display size for painting image (CSS pixels)

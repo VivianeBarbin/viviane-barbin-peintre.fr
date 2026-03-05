@@ -1,11 +1,11 @@
 // @ts-check
-import { defineConfig } from "astro/config";
-import UnoCSS from "unocss/astro";
-import sanity from "@sanity/astro";
-import react from "@astrojs/react";
-import icon from "astro-icon";
 
 import cloudflare from "@astrojs/cloudflare";
+import react from "@astrojs/react";
+import sanity from "@sanity/astro";
+import { defineConfig } from "astro/config";
+import icon from "astro-icon";
+import UnoCSS from "unocss/astro";
 
 // ---------------------------------------------------------------------------
 // Dataset configuration
