@@ -1,3 +1,5 @@
+// ./sanity.config.ts
+
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
@@ -8,9 +10,6 @@ import {
 } from "./viviane-barbin-peintre-studio/src/sanity/singletons";
 import { structure } from "./viviane-barbin-peintre-studio/src/sanity/structure";
 
-// ─── Dataset configuration ────────────────────────────────────────────
-// Always use the production dataset
-// ──────────────────────────────────────────────────────────────────────
 const dataset = "production";
 
 export default defineConfig({

@@ -1,13 +1,15 @@
 # build output
 dist/
 
-
-
 # generated types
 .astro/
 
 # sanity generated runtime
 .sanity/
+
+# cline
+.cline/*
+.zed/
 
 # dependencies
 node_modules/
@@ -27,3 +29,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# documentations
+.docs/*

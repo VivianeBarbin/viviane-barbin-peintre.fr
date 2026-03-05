@@ -1,3 +1,4 @@
+// ./wrangler.json
 {
   "main": "dist/_worker.js/index.js",
   "name": "vbp",
@@ -19,15 +20,7 @@
 
   "observability": { "enabled": true },
 
-  // Note: Environment variables should be set in Cloudflare Pages dashboard
-  // Settings → Environment variables → Production/Preview
-  // PUBLIC_* variables: Plain Variables (for build-time bundling)
-  // BOTPOISON_SECRET_KEY: Secret (for runtime server-side use)
-  "vars": {
-    // These are placeholders - set actual values in Cloudflare dashboard
-    // "PUBLIC_BOTPOISON_PUBLIC_KEY": "pb_xxxxx",
-    // "PUBLIC_FORMSPARK_FORM_ID": "xxxxx"
-  },
+  "vars": {},
 
   "env": {
     "preview": {

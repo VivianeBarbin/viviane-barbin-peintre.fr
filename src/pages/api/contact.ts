@@ -26,9 +26,8 @@ interface ContactFormData {
 export const POST: APIRoute = async ({ request, locals }) => {
   // Sur Cloudflare Pages avec SSR, import.meta.env n'est pas toujours accessible
   // dans les API routes — on utilise context.locals.runtime.env en priorité.
-  const cfEnv = (locals as any)?.runtime?.env ?? {};
-  const getEnv = (key: string): string | undefined =>
-    cfEnv[key] ?? import.meta.env[key];
+  const cfEnv = (locals as { runtime?: { env?: Record<string, string> } })?.runtime?.env ?? {};
+  const getEnv = (key: string): string | undefined => cfEnv[key] ?? import.meta.env[key];
   try {
     const body = (await request.json()) as ContactFormData;
 
