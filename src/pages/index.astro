@@ -3,9 +3,41 @@ import About from "../components/about/About.astro";
 import HomePageFeatures from "../components/home/HomePageFeatures.astro";
 import News from "../components/news/News.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const homepageDescription =
+  "Viviane Barbin, artiste peintre nivernaise. Portraits et paysages de Bourgogne au pastel et à l'acrylique. Découvrez ses œuvres, expositions et son atelier-chambre d'hôtes à Talon.";
+
+const jsonLdNodes = [
+  {
+    "@type": "WebPage",
+    "@id": "https://viviane-barbin-peintre.fr/#webpage",
+    url: "https://viviane-barbin-peintre.fr/",
+    name: "Viviane Barbin — Peintre — Atelier et Chambre d'hôtes à Talon",
+    description: homepageDescription,
+    inLanguage: "fr-FR",
+    isPartOf: { "@id": "https://viviane-barbin-peintre.fr/#website" },
+    about: { "@id": "https://viviane-barbin-peintre.fr/#person" },
+    mainEntity: { "@id": "https://viviane-barbin-peintre.fr/#bedandbreakfast" },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Accueil",
+          item: "https://viviane-barbin-peintre.fr/",
+        },
+      ],
+    },
+  },
+];
 ---
 
-<BaseLayout>
+<BaseLayout
+  title="Viviane Barbin - Peintre - Accueil"
+  description={homepageDescription}
+  jsonLdNodes={jsonLdNodes}
+>
   <HomePageFeatures />
   <About />
   <News />

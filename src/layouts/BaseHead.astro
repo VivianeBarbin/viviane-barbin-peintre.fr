@@ -1,42 +1,76 @@
 ---
 import { getSiteSettings } from "@config/site";
+import JsonLd from "@/components/seo/JsonLd.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  jsonLdNodes?: Record<string, unknown>[];
+}
+
+const { title, description: propDescription, image, jsonLdNodes = [] } = Astro.props;
 
 const siteSettings = await getSiteSettings();
 const {
-  title,
-  slogan,
-  subtitle,
-  description,
-  author,
-  url,
+  appleTouchIcon,
   base,
-  startYear,
+  description: siteDescription,
   faviconSvg,
   faviconPng96,
   faviconIco,
   webManifest,
-  appleTouchIcon,
 } = siteSettings;
+
+const metaDescription =
+  propDescription ??
+  siteDescription ??
+  "Viviane Barbin, artiste peintre nivernaise. Portraits et paysages de Bourgogne au pastel et à l'acrylique.";
+
+const ogImage = image ?? `${Astro.url.origin}/og-fallback.jpg`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const pageUrl = Astro.url.origin + Astro.url.pathname;
 ---
 
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width" />
-<link rel="dns-prefetch" href="https://fonts.bunny.net" />
-<link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
-<link
-  rel="stylesheet"
-  href="https://fonts.bunny.net/css?family=yeseva-one:400|nunito-sans:400,600,700|jetbrains-mono:400,700|merriweather:400,700&display=swap"
-/>
-{/* Favicon - Modern browsers */}
-{faviconSvg && <link rel="icon" type="image/svg+xml" href={`${base}${faviconSvg}`} />}
-{/* Favicon - PNG fallback */}
-{faviconPng96 && <link rel="icon" type="image/png" sizes="96x96" href={`${base}${faviconPng96}`} />}
-{/* Favicon - Legacy */}
-{faviconIco && <link rel="icon" type="image/x-icon" href={`${base}${faviconIco}`} />}
-{/* Apple Touch Icon */}
-{appleTouchIcon && <link rel="apple-touch-icon" href={`${base}${appleTouchIcon}`} />}
-{/* Web App Manifest */}
-{webManifest && <link rel="manifest" href={`${base}${webManifest}`} />}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="generator" content={Astro.generator} />
 
-<meta name="generator" content={Astro.generator} />
-<title>Viviane Barbin Peintre</title>
+  <title>{title}</title>
+  <meta name="description" content={metaDescription} />
+
+  <link rel="canonical" href={canonicalUrl} />
+
+  {/* ── Open Graph ───────────────────────────────────────────────────── */}
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={metaDescription} />
+  <meta property="og:url" content={pageUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:site_name" content="Viviane Barbin" />
+
+  {/* ── Twitter Card ─────────────────────────────────────────────────── */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={metaDescription} />
+  <meta name="twitter:image" content={ogImage} />
+
+  {/* ── Fonts ────────────────────────────────────────────────────────── */}
+  <link rel="dns-prefetch" href="https://fonts.bunny.net" />
+  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.bunny.net/css?family=yeseva-one:400|nunito-sans:400,600,700|jetbrains-mono:400,700|merriweather:400,700&display=swap"
+  />
+
+  {/* ── Favicons ─────────────────────────────────────────────────────── */}
+  {faviconSvg && <link rel="icon" type="image/svg+xml" href={`${base}${faviconSvg}`} />}
+  {faviconPng96 && <link rel="icon" type="image/png" sizes="96x96" href={`${base}${faviconPng96}`} />}
+  {faviconIco && <link rel="icon" type="image/x-icon" href={`${base}${faviconIco}`} />}
+  {appleTouchIcon && <link rel="apple-touch-icon" href={`${base}${appleTouchIcon}`} />}
+  {webManifest && <link rel="manifest" href={`${base}${webManifest}`} />}
+
+  <JsonLd extraNodes={jsonLdNodes} />
+</head>

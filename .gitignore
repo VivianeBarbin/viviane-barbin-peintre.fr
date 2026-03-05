@@ -8,7 +8,7 @@ dist/
 .sanity/
 
 # cline
-.cline/*
+.cline/
 .zed/
 
 # dependencies
@@ -31,4 +31,4 @@ pnpm-debug.log*
 .idea/
 
 # documentations
-.docs/*
+docs/

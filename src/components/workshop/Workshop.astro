@@ -40,7 +40,7 @@ interface Cta {
 
 interface IntroItem {
   image?: SanityImage;
-  text?: PortableTextProps["value"];
+  text?: Extract<PortableTextProps["value"], unknown[]>;
   cta?: Cta;
 }
 
@@ -85,7 +85,7 @@ const IMG = Object.freeze({
  * Resolve a Sanity image into { src, srcset, alt }.
  * Returns null when the asset reference is absent — no URL is built blindly.
  */
-function _resolveSanityImage(image: SanityImage | undefined) {
+function resolveSanityImage(image: SanityImage | undefined) {
   if (!image?.asset) return null;
 
   const src = buildSanityImageUrl({
@@ -118,19 +118,19 @@ const { title = "L'atelier" } = Astro.props;
 
 const workshopData = await fetchSanity<WorkshopData>(WORKSHOP_CONTENT_QUERY);
 
-const _hasData = !!workshopData;
-const _subtitle = workshopData?.subtitle ?? "Un lieu de partage et de création";
+const hasData = !!workshopData;
+const subtitle = workshopData?.subtitle ?? "Un lieu de partage et de création";
 
 // Guard against schema shape mismatch: the CMS may still hold the old single-object
 // shape while the query migrates to an array. Array.isArray ensures we never .map()
 // over a plain object or undefined.
-const _introSection: IntroItem[] = Array.isArray(workshopData?.introSection)
+const introSection: IntroItem[] = Array.isArray(workshopData?.introSection)
   ? workshopData.introSection
   : [];
 
 // Fallback image resolved once — shared by every item that has no Sanity asset.
 const WORKSHOP_FALLBACK_PATH = "@images/homepage/homepage-placeholder_01.jpg";
-const _workshopFallback = resolveImageWithFallback(null, WORKSHOP_FALLBACK_PATH);
+const workshopFallback = resolveImageWithFallback(null, WORKSHOP_FALLBACK_PATH);
 
 // ── Testimonials image config — portrait 390×603 ──────────────────────────────
 const TIMG = Object.freeze({
@@ -143,11 +143,11 @@ const TIMG = Object.freeze({
 });
 
 const testimonialsSection = workshopData?.testimonialsSection;
-const _sectionTitle = testimonialsSection?.sectionTitle;
-const _sectionIntro = testimonialsSection?.sectionIntro;
-const _sectionCta = testimonialsSection?.cta;
+const sectionTitle = testimonialsSection?.sectionTitle;
+const sectionIntro = testimonialsSection?.sectionIntro;
+const sectionCta = testimonialsSection?.cta;
 
-const _testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) => {
+const testimonials = (testimonialsSection?.testimonials ?? []).map((t, index) => {
   const initials = [t.firstName, t.lastName]
     .filter(Boolean)
     .map((n) => n!.charAt(0).toUpperCase())

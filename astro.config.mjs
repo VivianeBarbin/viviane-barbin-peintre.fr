@@ -5,6 +5,7 @@ import react from "@astrojs/react";
 import sanity from "@sanity/astro";
 import { defineConfig } from "astro/config";
 import icon from "astro-icon";
+import sitemap from "@astrojs/sitemap";
 import UnoCSS from "unocss/astro";
 
 const sanityDataset = "production";
@@ -12,6 +13,7 @@ const sanityDataset = "production";
 console.info(`[astro.config] Sanity dataset → "${sanityDataset}"`);
 
 export default defineConfig({
+  site: "https://viviane-barbin-peintre.fr",
   output: "server",
 
   experimental: { svgo: true },
@@ -19,6 +21,7 @@ export default defineConfig({
   devToolbar: { enabled: false },
 
   integrations: [
+    sitemap(),
     UnoCSS({ injectReset: true, configFile: "uno.config.ts" }),
     sanity({
       projectId: "x31r8s87",

@@ -1,8 +1,58 @@
 ---
 import Book from "@/components/book/Book.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const description =
+  "Découvrez le livre de Viviane Barbin, artiste peintre nivernaise — un recueil illustré de ses œuvres au pastel et à l'acrylique, paysages de Bourgogne et carnets de voyage.";
+
+const jsonLdNodes = [
+  {
+    "@type": "WebPage",
+    "@id": "https://viviane-barbin-peintre.fr/mon-livre#webpage",
+    url: "https://viviane-barbin-peintre.fr/mon-livre",
+    name: "Mon Livre — Viviane Barbin",
+    description,
+    inLanguage: "fr-FR",
+    isPartOf: { "@id": "https://viviane-barbin-peintre.fr/#website" },
+    about: { "@id": "https://viviane-barbin-peintre.fr/#person" },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Accueil",
+          item: "https://viviane-barbin-peintre.fr/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Mon Livre",
+          item: "https://viviane-barbin-peintre.fr/mon-livre",
+        },
+      ],
+    },
+  },
+  {
+    "@type": "Book",
+    "@id": "https://viviane-barbin-peintre.fr/mon-livre#book",
+    name: "Le Livre de Viviane Barbin",
+    author: { "@id": "https://viviane-barbin-peintre.fr/#person" },
+    url: "https://viviane-barbin-peintre.fr/mon-livre",
+    inLanguage: "fr-FR",
+    genre: "Art",
+    about: {
+      "@type": "VisualArtwork",
+      artMedium: ["Pastel", "Acrylique"],
+    },
+  },
+];
 ---
 
-<BaseLayout>
+<BaseLayout
+  title="Mon Livre - Viviane Barbin"
+  description={description}
+  jsonLdNodes={jsonLdNodes}
+>
   <Book />
 </BaseLayout>

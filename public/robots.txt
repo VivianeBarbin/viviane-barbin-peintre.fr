@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://viviane-barbin-peintre.fr/sitemap-index.xml

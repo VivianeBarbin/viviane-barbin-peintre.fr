@@ -1,0 +1,163 @@
+---
+import { Schema } from 'astro-seo-schema';
+import { getSiteSettings } from "@config/site";
+import { getContactData } from "@config/contact";
+import { socialLinks } from "@config/navigation";
+import { GALLERY_MEDIUMS } from "@config/galleryMediums";
+
+interface Props {
+  /** Additional JSON-LD nodes merged into the @graph for the current page. */
+  extraNodes?: Record<string, unknown>[];
+}
+
+const { extraNodes = [] } = Astro.props;
+
+const siteSettings = await getSiteSettings();
+const { title, description } = siteSettings;
+
+const contactSettings = await getContactData();
+const {
+  phone,
+  email,
+  websiteBnB,
+  address: {
+    street,
+    city,
+    postalCode,
+    regionLong,
+    country,
+  },
+  businessHours,
+} = contactSettings;
+
+// ── sameAs — all authoritative external profiles ──────────────────────────────
+const sameAsUrls: string[] = socialLinks
+  .map((l) => l.link)
+  .filter((link) => link.startsWith('http'));
+
+// ── knowsAbout — derived from the gallery mediums source of truth ─────────────
+const knowsAbout = GALLERY_MEDIUMS.map((m) => m.title);
+
+// ── openingHoursSpecification ─────────────────────────────────────────────────
+// Parses "9:00 - 18:00" → { opens: "09:00", closes: "18:00" }
+// Returns null for "Fermé" or any unparseable string.
+function parseHours(range: string): { opens: string; closes: string } | null {
+  const match = range.match(/^\s*(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})\s*$/);
+  if (!match) return null;
+  const pad = (t: string) => t.padStart(5, '0');
+  return { opens: pad(match[1]), closes: pad(match[2]) };
+}
+
+const openingHoursEntries: any[] = [];
+
+const weekdayHours = parseHours(businessHours.weekdays);
+if (weekdayHours) {
+  openingHoursEntries.push({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    opens: weekdayHours.opens,
+    closes: weekdayHours.closes,
+  });
+}
+
+const saturdayHours = parseHours(businessHours.saturday);
+if (saturdayHours) {
+  openingHoursEntries.push({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: 'Saturday',
+    opens: saturdayHours.opens,
+    closes: saturdayHours.closes,
+  });
+}
+---
+
+<Schema item={{
+  '@context': 'https://schema.org',
+  '@graph': [
+
+    // ── WebSite ───────────────────────────────────────────────────────────────
+    {
+      '@type': 'WebSite',
+      '@id': `${Astro.site}/#website`,
+      url: `${Astro.site}`,
+      name: 'Viviane Barbin',
+      inLanguage: 'fr-FR',
+      publisher: { '@id': `${Astro.site}/#person` },
+    },
+
+    // ── WebPage (homepage) ────────────────────────────────────────────────────
+    {
+      '@type': 'WebPage',
+      '@id': `${Astro.site}/#webpage`,
+      url: `${Astro.site}`,
+      name: 'Viviane Barbin \u2014 Peintre \u2014 Atelier et Chambre d\u2019h\u00f4tes \u00e0 Talon',
+      description: description,
+      inLanguage: 'fr-FR',
+      isPartOf: { '@id': `${Astro.site}/#website` },
+      about: { '@id': `${Astro.site}/#person` },
+      mainEntity: { '@id': `${Astro.site}/#bedandbreakfast` },
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Accueil',
+            item: `${Astro.site}`,
+          },
+        ],
+      },
+    },
+
+    // ── Person / VisualArtist ─────────────────────────────────────────────────
+    // @type 'Person' covers the VisualArtist subtype via jobTitle + knowsAbout;
+    // astro-seo-schema does not support @type arrays so we stay with Person here.
+    {
+      '@type': 'Person',
+      '@id': `${Astro.site}/#person`,
+      name: title,
+      alternateName: 'Viviane Barbin \u2014 Peintre',
+      url: `${Astro.site}`,
+      jobTitle: 'Artiste Peintre',
+      description: 'Artiste peintre nivernaise \u2014 Portraits et paysages de Bourgogne au pastel et \u00e0 l\u2019acrylique.',
+      email: email,
+      telephone: phone,
+      sameAs: sameAsUrls,
+      knowsAbout: knowsAbout,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: street,
+        addressLocality: city,
+        postalCode: postalCode,
+        addressRegion: regionLong,
+        addressCountry: country,
+      },
+    },
+
+    // ── BedAndBreakfast ───────────────────────────────────────────────────────
+    // The atelier doubles as a chambre d'hôtes — resolves the mainEntity ref above.
+    {
+      '@type': 'BedAndBreakfast',
+      '@id': `${Astro.site}/#bedandbreakfast`,
+      name: 'Atelier et Chambre d\u2019h\u00f4tes de Viviane Barbin',
+      url: `${Astro.site}`,
+      ...(websiteBnB ? { sameAs: [websiteBnB] } : {}),
+      email: email,
+      telephone: phone,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: street,
+        addressLocality: city,
+        postalCode: postalCode,
+        addressRegion: regionLong,
+        addressCountry: country,
+      },
+      ...(openingHoursEntries.length > 0
+        ? { openingHoursSpecification: openingHoursEntries }
+        : {}),
+    },
+
+    // ── Per-page nodes (WebPage, ImageGallery, etc.) ──────────────────────────
+    ...(extraNodes as any[]),
+  ],
+}} />

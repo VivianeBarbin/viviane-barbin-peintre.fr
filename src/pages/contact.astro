@@ -1,8 +1,45 @@
 ---
 import ContactComponent from "@/components/contact/ContactComponent.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const description =
+  "Contactez Viviane Barbin, artiste peintre à Talon en Bourgogne nivernaise. Renseignements sur les œuvres, commandes, ateliers et la chambre d'hôtes.";
+
+const jsonLdNodes = [
+  {
+    "@type": "WebPage",
+    "@id": "https://viviane-barbin-peintre.fr/contact#webpage",
+    url: "https://viviane-barbin-peintre.fr/contact",
+    name: "Contact — Viviane Barbin Peintre",
+    description,
+    inLanguage: "fr-FR",
+    isPartOf: { "@id": "https://viviane-barbin-peintre.fr/#website" },
+    about: { "@id": "https://viviane-barbin-peintre.fr/#person" },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Accueil",
+          item: "https://viviane-barbin-peintre.fr/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Contact",
+          item: "https://viviane-barbin-peintre.fr/contact",
+        },
+      ],
+    },
+  },
+];
 ---
 
-<BaseLayout>
+<BaseLayout
+  title="Contact - Viviane Barbin Peintre"
+  description={description}
+  jsonLdNodes={jsonLdNodes}
+>
   <ContactComponent />
 </BaseLayout>

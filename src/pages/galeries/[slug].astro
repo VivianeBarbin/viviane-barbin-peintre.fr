@@ -20,6 +20,7 @@ import {
   type GalleryDetail,
   type GalleryImageItem,
   type GallerySlug,
+  type PortableTextBlock,
 } from "@/types/galleries";
 import { resolveImageWithFallback } from "@/utils/imageUtils";
 import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
@@ -33,21 +34,123 @@ const gallery = await fetchSanity<GalleryDetail>(GALLERY_DETAIL_QUERY, { slug })
 
 // Guard: if document not found, we still render but show a not-found state.
 // (In static mode, this path should only be hit if a document was deleted after build.)
-const _hasData = gallery !== null;
+const hasData = gallery !== null;
 
 // ── Derived values ───────────────────────────────────────────────────
 
 const title = gallery?.title ?? "Galerie introuvable";
 const date = gallery?.date ?? "";
-const medium = gallery?.medium ?? [];
-const _body = gallery?.body ?? [];
+const _medium = gallery?.medium ?? [];
+const body = gallery?.body ?? [];
 
-const _formattedDate = date ? formatGalleryDate(date) : "";
-const _mediumItems = formatMediumLabels(medium);
+const formattedDate = date ? formatGalleryDate(date) : "";
+const mediumItems = formatMediumLabels(_medium);
+
+// ── SEO helpers ──────────────────────────────────────────────────────
+
+/**
+ * Extract a plain-text string from the first Portable Text block.
+ * Walks the `children` spans and concatenates their `text` values.
+ * Safe against any shape mismatch — returns "" if nothing is found.
+ */
+function portableTextToPlain(blocks: PortableTextBlock[]): string {
+  return blocks
+    .slice(0, 3) // limit to first 3 paragraphs
+    .map((block) => {
+      const children = (block.children ?? []) as { text?: unknown }[];
+      return children
+        .map((span) => (typeof span.text === "string" ? span.text : ""))
+        .join("");
+    })
+    .filter(Boolean)
+    .join(" ");
+}
+
+// Gallery page title: "Titre — Médium — Mois Année — Viviane Barbin"
+const mediumLabel = mediumItems.map((m) => m.label).join(", ");
+const seoTitle = gallery
+  ? [title, mediumLabel, formattedDate, "Viviane Barbin"]
+      .filter(Boolean)
+      .join(" — ")
+  : "Galerie introuvable — Viviane Barbin";
+
+// Gallery page description: plain text from body, falling back to title + medium
+const bodyPlain = portableTextToPlain(body);
+const seoDescription = gallery
+  ? bodyPlain
+    ? `${title}${mediumLabel ? ` — ${mediumLabel}` : ""}. ${bodyPlain}`.slice(0, 160)
+    : `${title}${mediumLabel ? ` — ${mediumLabel}` : ""}${formattedDate ? `, ${formattedDate}` : ""}. Galerie de peintures de Viviane Barbin.`
+  : undefined;
+
+// OG image: first image of the gallery at 1200×630 (standard OG ratio)
+const _ogImageSource = gallery?.coverImage ?? gallery?.images?.[0]?.image ?? null;
+const seoImage = buildSanityImageUrl({
+  source: _ogImageSource,
+  width: 1200,
+  height: 630,
+  quality: 85,
+  format: "jpg",
+  fit: "crop",
+}) ?? undefined;
+
+// ── JSON-LD nodes ─────────────────────────────────────────────────────────────
+const pageUrl = `https://viviane-barbin-peintre.fr/galeries/${slug}`;
+
+const jsonLdNodes: Record<string, unknown>[] = gallery
+  ? [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: seoTitle,
+        description: seoDescription,
+        inLanguage: "fr-FR",
+        isPartOf: { "@id": "https://viviane-barbin-peintre.fr/#website" },
+        about: { "@id": "https://viviane-barbin-peintre.fr/#person" },
+        ...(seoImage ? { image: seoImage } : {}),
+        breadcrumb: {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Accueil",
+              item: "https://viviane-barbin-peintre.fr/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Galeries",
+              item: "https://viviane-barbin-peintre.fr/galeries",
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: title,
+              item: pageUrl,
+            },
+          ],
+        },
+      },
+      {
+        "@type": "ImageGallery",
+        "@id": `${pageUrl}#gallery`,
+        url: pageUrl,
+        name: title,
+        ...(seoDescription ? { description: seoDescription } : {}),
+        ...(formattedDate ? { dateCreated: date } : {}),
+        ...(mediumLabel ? { artMedium: mediumLabel } : {}),
+        creator: { "@id": "https://viviane-barbin-peintre.fr/#person" },
+        isPartOf: { "@id": `${pageUrl}#webpage` },
+        inLanguage: "fr-FR",
+        ...(seoImage ? { thumbnailUrl: seoImage } : {}),
+      },
+    ]
+  : [];
 
 // Sort images by explicit order (if set), otherwise keep array order from Sanity
 const rawImages: GalleryImageItem[] = gallery?.images ?? [];
-const _sortedImages = [...rawImages].sort((a, b) => {
+const sortedImages = [...rawImages].sort((a, b) => {
   if (a.order != null && b.order != null) return a.order - b.order;
   if (a.order != null) return -1;
   if (b.order != null) return 1;
@@ -62,7 +165,7 @@ const PLACEHOLDER_PATH = "@images/galleries/galleries-placeholder.jpg";
 const gridImageWidth = 600;
 const gridImageHeight = 600;
 
-function _buildImageData(item: GalleryImageItem) {
+function buildImageData(item: GalleryImageItem) {
   const source = item.image ?? null;
   const alt = item.alt || `${title} — image`;
   const caption = item.caption || undefined;
@@ -106,7 +209,7 @@ function _buildImageData(item: GalleryImageItem) {
 }
 ---
 
-<BaseLayout>
+<BaseLayout title={seoTitle} description={seoDescription} image={seoImage} jsonLdNodes={jsonLdNodes}>
   {
     hasData ? (
       <article class="gallery-detail bg-background text-primary">

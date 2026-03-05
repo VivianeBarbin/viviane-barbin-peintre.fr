@@ -8,7 +8,7 @@ export const themeConfig: ThemeConfig = {
     title: "Viviane Barbin",
     slogan: "Couleurs d'ailleurs",
     subtitle: "Peinture &\nPartage d'atelier",
-    description: "",
+    description: "Viviane Barbin, artiste peintre nivernaise. Portraits et paysages de Bourgogne au pastel et à l'acrylique. Découvrez ses œuvres et expositions.",
     author: "Viviane Barbin",
     url: "https://viviane-barbin-peintre.fr",
     base: "/",

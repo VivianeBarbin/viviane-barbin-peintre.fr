@@ -3,13 +3,27 @@ import "@/styles/index.css";
 import Footer from "@/components/footer/Footer.astro";
 import Nav from "@/components/nav/Nav.astro";
 import BaseHead from "./BaseHead.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  jsonLdNodes?: Record<string, unknown>[];
+}
+
+const {
+  title = "Viviane Barbin - Peintre - Atelier et Chambre d'hôtes Talon",
+  description,
+  image,
+  jsonLdNodes = [],
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead />
-  </head>
+<html lang="fr">
+
+  <BaseHead title={title} description={description} image={image} jsonLdNodes={jsonLdNodes} />
+
   <body id="body" class="bg-background flex min-h-dvh flex-col">
     <Nav />
     <main class="relative flex-1 overflow-x-clip pt-(--navbar-height,90px)">
