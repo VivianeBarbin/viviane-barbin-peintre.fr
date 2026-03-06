@@ -9,6 +9,7 @@ interface Props {
   description?: string;
   image?: string;
   jsonLdNodes?: Record<string, unknown>[];
+  preloadImage?: string;
 }
 
 const {
@@ -16,13 +17,14 @@ const {
   description,
   image,
   jsonLdNodes = [],
+  preloadImage,
 } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="fr">
 
-  <BaseHead title={title} description={description} image={image} jsonLdNodes={jsonLdNodes} />
+  <BaseHead title={title} description={description} image={image} jsonLdNodes={jsonLdNodes} preloadImage={preloadImage} />
 
   <body id="body" class="bg-background flex min-h-dvh flex-col">
     <Nav />

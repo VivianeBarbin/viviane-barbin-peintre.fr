@@ -9,8 +9,22 @@ import { HOME_CONTENT_QUERY } from "@/lib/sanityQueries";
 import { resolveImageWithFallback } from "@/utils/imageUtils";
 import { buildSanityDprSrcSet, buildSanityImageUrl } from "@/utils/sanityImage";
 
-// Fetch home content from Sanity (via shared fetch helper + named query)
-const homeData = await fetchSanity<Record<string, unknown>>(HOME_CONTENT_QUERY);
+interface Props {
+  /**
+   * Pre-fetched home document from Sanity.
+   * When provided by the parent page (index.astro), avoids a duplicate fetch.
+   * Falls back to an internal fetch if omitted (e.g. used standalone).
+   */
+  homeData?: Record<string, unknown> | null;
+}
+
+// Use prop if passed (avoids a second round-trip from index.astro),
+// otherwise fetch independently.
+const { homeData: homeDataProp } = Astro.props;
+const homeData =
+  homeDataProp !== undefined
+    ? homeDataProp
+    : await fetchSanity<Record<string, unknown>>(HOME_CONTENT_QUERY);
 
 // Resolve settings singletons (Sanity + fallback)
 const contactData = await getContactData();
@@ -182,7 +196,8 @@ const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPainting
                   height={paintingHeight}
                   alt={sanityPaintingAlt}
                   class="feature-image"
-                  loading="lazy"
+                  loading="eager"
+                  fetchpriority="high"
                   decoding="async"
                 />
               ) : shouldRenderPaintingFallback ? (
@@ -192,7 +207,8 @@ const hasPaintingImage = shouldRenderSanityPaintingImage || shouldRenderPainting
                   class="feature-image"
                   widths={[320, 480, 702, 800]}
                   sizes="(max-width: 768px) 100vw, 702px"
-                  loading="lazy"
+                  loading="eager"
+                  fetchpriority="high"
                   decoding="async"
                 />
               ) : null}

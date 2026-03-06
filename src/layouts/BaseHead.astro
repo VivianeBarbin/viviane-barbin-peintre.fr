@@ -7,9 +7,10 @@ interface Props {
   description?: string;
   image?: string;
   jsonLdNodes?: Record<string, unknown>[];
+  preloadImage?: string;
 }
 
-const { title, description: propDescription, image, jsonLdNodes = [] } = Astro.props;
+const { title, description: propDescription, image, jsonLdNodes = [], preloadImage } = Astro.props;
 
 const siteSettings = await getSiteSettings();
 const {
@@ -27,8 +28,8 @@ const metaDescription =
   siteDescription ??
   "Viviane Barbin, artiste peintre nivernaise. Portraits et paysages de Bourgogne au pastel et à l'acrylique.";
 
-const ogImage = image ?? `${Astro.url.origin}/og-fallback.jpg`;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image ?? "/og-fallback.jpg", Astro.url.origin).toString();
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const pageUrl = Astro.url.origin + Astro.url.pathname;
 ---
 
@@ -36,11 +37,23 @@ const pageUrl = Astro.url.origin + Astro.url.pathname;
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="generator" content={Astro.generator} />
+  <meta name="robots" content="index, follow" />
 
   <title>{title}</title>
   <meta name="description" content={metaDescription} />
 
   <link rel="canonical" href={canonicalUrl} />
+
+  {/* ── LCP image preload — makes the request discoverable immediately ── */}
+  {preloadImage && (
+    <link
+      rel="preload"
+      as="image"
+      href={preloadImage}
+      fetchpriority="high"
+      imagesrcset={preloadImage}
+    />
+  )}
 
   {/* ── Open Graph ───────────────────────────────────────────────────── */}
   <meta property="og:title" content={title} />
@@ -58,12 +71,31 @@ const pageUrl = Astro.url.origin + Astro.url.pathname;
   <meta name="twitter:image" content={ogImage} />
 
   {/* ── Fonts ────────────────────────────────────────────────────────── */}
+  {/* Yeseva One — heading font, render-blocking to prevent FOUT on hero */}
   <link rel="dns-prefetch" href="https://fonts.bunny.net" />
   <link rel="preconnect" href="https://fonts.bunny.net" crossorigin />
   <link
     rel="stylesheet"
-    href="https://fonts.bunny.net/css?family=yeseva-one:400|nunito-sans:400,600,700|jetbrains-mono:400,700|merriweather:400,700&display=swap"
+    href="https://fonts.bunny.net/css?family=yeseva-one:400&display=swap"
   />
+  {/* Nunito Sans — body/UI font, deferred via print-swap trick */}
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.bunny.net/css?family=nunito-sans:400,600,700&display=swap"
+  />
+  <link
+    rel="stylesheet"
+    media="print"
+    onload="this.media='all'"
+    href="https://fonts.bunny.net/css?family=nunito-sans:400,600,700&display=swap"
+  />
+  <noscript>
+    <link
+      rel="stylesheet"
+      href="https://fonts.bunny.net/css?family=nunito-sans:400,600,700&display=swap"
+    />
+  </noscript>
 
   {/* ── Favicons ─────────────────────────────────────────────────────── */}
   {faviconSvg && <link rel="icon" type="image/svg+xml" href={`${base}${faviconSvg}`} />}

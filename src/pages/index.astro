@@ -3,6 +3,24 @@ import About from "../components/about/About.astro";
 import HomePageFeatures from "../components/home/HomePageFeatures.astro";
 import News from "../components/news/News.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { fetchSanity } from "@/lib/sanityFetch";
+import { HOME_CONTENT_QUERY } from "@/lib/sanityQueries";
+import { buildSanityImageUrl } from "@/utils/sanityImage";
+
+// ── LCP image preload ─────────────────────────────────────────────────────────
+// feature-card-3 (painting, 702×936, right column spanning 2 rows) is the LCP
+// element on desktop. Fetch its URL here so we can emit <link rel="preload">
+// in <head> — making the request discoverable before the component renders.
+const homeData = await fetchSanity<Record<string, unknown>>(HOME_CONTENT_QUERY);
+const lcpImageSource = homeData?.atelierImage ?? null; // NOTE: fields are intentionally swapped in the layout
+const lcpImageUrl = buildSanityImageUrl({
+  source: lcpImageSource,
+  width: 702,
+  height: 936,
+  quality: 80,
+  format: "webp",
+  fit: "crop",
+}) ?? undefined;
 
 const homepageDescription =
   "Viviane Barbin, artiste peintre nivernaise. Portraits et paysages de Bourgogne au pastel et à l'acrylique. Découvrez ses œuvres, expositions et son atelier-chambre d'hôtes à Talon.";
@@ -37,8 +55,9 @@ const jsonLdNodes = [
   title="Viviane Barbin - Peintre - Accueil"
   description={homepageDescription}
   jsonLdNodes={jsonLdNodes}
+  preloadImage={lcpImageUrl}
 >
-  <HomePageFeatures />
+  <HomePageFeatures homeData={homeData} />
   <About />
   <News />
 </BaseLayout>
