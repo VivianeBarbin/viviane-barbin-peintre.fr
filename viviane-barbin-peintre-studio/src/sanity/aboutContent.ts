@@ -54,7 +54,7 @@ const paragraphField = (name: string, title: string, description: string): Field
 
 export const aboutContentType = defineType({
   name: "aboutContent",
-  title: "About Content",
+  title: "À Propos",
   type: "document",
   icon: () => "📝",
   description: 'Page d\'accueil - Section "À propos"',

@@ -15,7 +15,7 @@ import { GALLERY_MEDIUMS } from "../../../config/galleryMediums";
  */
 export const gallerySettingsType = defineType({
   name: "gallerySettings",
-  title: "Galeries – Paramètres",
+  title: "Paramètres",
   type: "document",
   icon: () => "🖼️",
 
