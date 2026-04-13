@@ -82,7 +82,7 @@ export const gallerySettingsType = defineType({
     prepare({ labels }) {
       const count = Array.isArray(labels) ? labels.length : 0;
       return {
-        title: "Galeries – Paramètres",
+        title: "Paramètres",
         subtitle:
           count > 0
             ? `${count} label${count > 1 ? "s" : ""} personnalisé${count > 1 ? "s" : ""}`
